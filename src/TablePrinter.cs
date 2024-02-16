@@ -1,10 +1,10 @@
-namespace Bbranch.Output.Data;
+namespace Bbranch.Branch.TablePrinter;
 
-using Bbranch.Table;
+using Bbranch.Branch.TableData;
 
 public class Data
 {
-    public static void PrintBranchTable(List<Table> branchTable)
+    public static void PrintBranchTable(List<TableRow> branchTable)
     {
         int minimumBranchNameWidth = 11;
         var longestBranchName = Math.Max(minimumBranchNameWidth, branchTable.Max(x => x.BranchName.Length));

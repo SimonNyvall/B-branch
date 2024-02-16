@@ -3,11 +3,11 @@ namespace Bbranch.Branch.Info;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-public class Branch
+public class BranchInfo
 {
     public string? GitPath { get; private set; } = null;
 
-    public Branch()
+    public BranchInfo()
     {
         SetGitPath();
     }
