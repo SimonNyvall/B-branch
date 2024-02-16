@@ -17,14 +17,21 @@ public class Branch
         int ahead = 0;
         int behind = 0;
 
-        const string command = "git";
-        string arguments = $"rev-list --left-right --count {branchName}...origin/main";
+        string checkLocalBranchCommand = $"git rev-parse --verify {branchName}";
+        string checkRemoteBranchCommand = $"git rev-parse --verify origin/{branchName}";
 
-        const string pattern = @"(\d+)\s+(\d+)";
+        if (!ExecuteGitCommand(gitPath, checkLocalBranchCommand) || !ExecuteGitCommand(gitPath, checkRemoteBranchCommand))
+        {
+            return (ahead, behind);
+        }
+
+        const string command = "git";
+        string arguments = $"rev-list --left-right --count {branchName}...origin/{branchName}";
 
         ProcessStartInfo startInfo = new ProcessStartInfo(command, arguments)
         {
             RedirectStandardOutput = true,
+            RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
             WorkingDirectory = gitPath
@@ -34,25 +41,48 @@ public class Branch
 
         if (process == null) return (ahead, behind);
 
-        using StreamReader reader = process!.StandardOutput;
+        string result = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
 
-        string result = reader.ReadToEnd();
-        var parts = result.Split(' ');
-
-        foreach (var part in parts)
+        if (!string.IsNullOrEmpty(error))
         {
-            if (Regex.IsMatch(part, pattern))
-            {
-                var match = Regex.Match(part, pattern);
-                ahead = int.Parse(match.Groups[1].Value);
-                behind = int.Parse(match.Groups[2].Value);
-            }
+            Console.WriteLine($"Error: {error}");
+            return (ahead, behind);
+        }
+
+        const string pattern = @"(\d+)\s+(\d+)";
+        Match match = Regex.Match(result, pattern);
+        if (match.Success)
+        {
+            ahead = int.Parse(match.Groups[1].Value);
+            behind = int.Parse(match.Groups[2].Value);
         }
 
         return (ahead, behind);
     }
 
-    public static Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
+    private bool ExecuteGitCommand(string gitPath, string arguments)
+    {
+        ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = gitPath
+        };
+
+        using Process? process = Process.Start(startInfo);
+        if (process == null) return false;
+
+        string error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        return string.IsNullOrEmpty(error) && process.ExitCode == 0;
+    }
+
+    public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
     {
         var branches = new Dictionary<string, DateTime>();
         var branchDir = Path.Combine(gitPath, "refs", "heads");
