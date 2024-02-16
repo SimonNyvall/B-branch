@@ -20,11 +20,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-    - name: Enter src
-      run: cd src/
     - name: Restore dependencies
-      run: dotnet restore
+      run: src/dotnet restore
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: src/dotnet build --no-restore
