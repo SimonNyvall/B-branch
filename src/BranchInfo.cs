@@ -1,5 +1,6 @@
 namespace Bbranch.Branch.Info;
 
+using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -64,12 +65,13 @@ public class BranchInfo
 
     public string? GetWorkingBranch(string gitPath)
     {
-        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD"));
+        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD")).Trim();
 
         if (HEADFile.StartsWith("ref:"))
         {
-            var branchName = HEADFile.Split('/').Last();
-            branchName = branchName.Contains("\n") ? branchName.Replace("\n", "") : branchName;
+            var branchNameComponents = HEADFile.Split('/');
+
+            var branchName = string.Join("/", branchNameComponents.Skip(2));
 
             return branchName;
         }
