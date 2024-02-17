@@ -22,15 +22,17 @@ List<TableRow> MapBranches(Dictionary<string, DateTime> branches)
 
         string lastCommit = string.Empty;
         string lastCommitString = String.Empty;
-        if ((DateTime.Now.Day - branch.Value.Day) == 0)
+        int days = DateTime.Now.Day - branch.Value.Day;
+
+        if (days == 0)
         {
             lastCommit = branch.Value.ToString("HH:mm");
             lastCommitString = "Today";
         }
         else
         {
-            lastCommit = branch.Value.Day.ToString();
-            lastCommitString = "Days ago";
+            lastCommit = days.ToString();
+            lastCommitString = days == 1 ? "Day ago" : "Days ago";
         }
 
         branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString)));
