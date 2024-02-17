@@ -62,25 +62,7 @@ public class BranchInfo
         return (ahead, behind);
     }
 
-    private bool ExecuteGitCommand(string gitPath, string arguments)
-    {
-        ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = gitPath
-        };
 
-        using Process? process = Process.Start(startInfo);
-        if (process == null) return false;
-
-        string error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-
-        return string.IsNullOrEmpty(error) && process.ExitCode == 0;
-    }
 
     public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
     {
@@ -99,6 +81,26 @@ public class BranchInfo
         return branches
             .OrderByDescending(x => x.Value)
             .ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    private bool ExecuteGitCommand(string gitPath, string arguments)
+    {
+        ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = gitPath
+        };
+
+        using Process? process = Process.Start(startInfo);
+        if (process == null) return false;
+
+        string error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        return string.IsNullOrEmpty(error) && process.ExitCode == 0;
     }
 
     private void SetGitPath()
