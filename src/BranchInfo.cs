@@ -1,6 +1,5 @@
 namespace Bbranch.Branch.Info;
 
-using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
