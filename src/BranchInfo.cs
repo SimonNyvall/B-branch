@@ -17,8 +17,8 @@ public class BranchInfo
         int ahead = 0;
         int behind = 0;
 
-        string checkLocalBranchCommand = $"git rev-parse --verify {branchName}";
-        string checkRemoteBranchCommand = $"git rev-parse --verify origin/{branchName}";
+        string checkLocalBranchCommand = $"rev-parse --verify {branchName}";
+        string checkRemoteBranchCommand = $"rev-parse --verify origin/{branchName}";
 
         if (!ExecuteGitCommand(gitPath, checkLocalBranchCommand) || !ExecuteGitCommand(gitPath, checkRemoteBranchCommand))
         {

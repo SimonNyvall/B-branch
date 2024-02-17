@@ -6,13 +6,15 @@ public class Data
 {
     public static void PrintBranchTable(List<TableRow> branchTable)
     {
-        int minimumBranchNameWidth = 13;
+        int minimumBranchNameWidth = 14;
         var longestBranchName = Math.Max(minimumBranchNameWidth, branchTable.Max(x => x.BranchName.Length));
 
-        string branchHeader = "Branch Name ".PadRight(longestBranchName);
-        string underline = new string('-', longestBranchName);
+        int maxLastCommitWidth = branchTable.Max(x => $"{x.LastCommit.Item1} {x.LastCommit.Item2}".Length) - 6;
 
-        string[] headers = { " Ahead 󰜘", " Behind 󰜘", branchHeader, "Last commit " };
+        string branchHeader = " Branch Name  ".PadRight(longestBranchName);
+        string underline = new string('-', longestBranchName + 1);
+
+        string[] headers = { " Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  " };
 
         Console.WriteLine();
 
@@ -24,15 +26,16 @@ public class Data
             Console.Write(" | ");
         }
 
-        Console.WriteLine($"\n-------- | --------- | {underline} | --------------");
+        Console.WriteLine($"\n--------- | ---------- | {underline} | {new string('-', maxLastCommitWidth + 10)}");
 
         foreach (var branch in branchTable)
         {
             var aHead = branch.Ahead.ToString().PadRight(8);
             var behind = branch.Behind.ToString().PadRight(9);
             var branchName = branch.BranchName.PadRight(longestBranchName);
+            var lastCommitText = $"{branch.LastCommit.Item1.PadRight(maxLastCommitWidth)} {branch.LastCommit.Item2}";
 
-            Console.WriteLine($"{aHead} | {behind} | {branchName} | {branch.LastCommit.Item1} {branch.LastCommit.Item2}");
+            Console.WriteLine($" {aHead} |  {behind} |  {branchName} |  {lastCommitText}");
         }
     }
 }
