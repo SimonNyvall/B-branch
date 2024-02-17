@@ -89,9 +89,11 @@ public class BranchInfo
 
         if (!Directory.Exists(branchDir)) throw new Exception("Branch directory does not exist");
 
-        foreach (var file in Directory.GetFiles(branchDir))
+        foreach (var file in Directory.GetFiles(branchDir, "*", SearchOption.AllDirectories))
         {
-            branches.Add(Path.GetFileName(file), File.GetLastWriteTime(file));
+            var relativePath = Path.GetRelativePath(branchDir, file);
+            var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+            branches.Add(branchName, File.GetLastWriteTime(file));
         }
 
         return branches
