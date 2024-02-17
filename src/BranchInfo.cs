@@ -97,6 +97,26 @@ public class BranchInfo
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
+    public string GetBranchDescription(string gitPath, string branchName)
+    {
+        var descriptionFile = File.ReadAllText(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
+
+        var branches = GetNamesAndLastWirte(gitPath);
+
+        if (descriptionFile.Contains(branchName))
+        {
+            var lines = descriptionFile.Split('\n');
+
+            var linesWithoutComments = lines.Where(x => !x.StartsWith("#"));
+
+            var description = string.Join(" ", linesWithoutComments);
+
+            return description;
+        }
+
+        return String.Empty;
+    }
+
     private bool ExecuteGitCommand(string gitPath, string arguments)
     {
         ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
