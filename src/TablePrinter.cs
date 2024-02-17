@@ -35,7 +35,20 @@ public class Data
             var branchName = branch.BranchName.PadRight(longestBranchName);
             var lastCommitText = $"{branch.LastCommit.Item1.PadRight(maxLastCommitWidth)} {branch.LastCommit.Item2}";
 
-            Console.WriteLine($" {aHead} |  {behind} |  {branchName} |  {lastCommitText}");
+            Console.Write($" {aHead} |  {behind} |  ");
+
+            if (branch.IsWorkingBranch)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write($"{branchName}");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.Write($"{branchName}");
+            }
+
+            Console.WriteLine($" |  {lastCommitText}");
         }
     }
 }

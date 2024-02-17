@@ -62,6 +62,40 @@ public class BranchInfo
         return (ahead, behind);
     }
 
+    public string? GetWorkingBranch(string gitPath)
+    {
+        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD"));
+
+        if (HEADFile.StartsWith("ref:"))
+        {
+            var branchName = HEADFile.Split('/').Last();
+            branchName = branchName.Contains("\n") ? branchName.Replace("\n", "") : branchName;
+
+            return branchName;
+        }
+
+        return null;
+    }
+
+    public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
+    {
+        var branches = new Dictionary<string, DateTime>();
+        var branchDir = Path.Combine(gitPath, "refs", "heads");
+
+        if (!Directory.Exists(branchDir)) throw new Exception("Branch directory does not exist");
+
+        foreach (var file in Directory.GetFiles(branchDir, "*", SearchOption.AllDirectories))
+        {
+            var relativePath = Path.GetRelativePath(branchDir, file);
+            var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+            branches.Add(branchName, File.GetLastWriteTime(file));
+        }
+
+        return branches
+            .OrderByDescending(x => x.Value)
+            .ToDictionary(x => x.Key, x => x.Value);
+    }
+
     private bool ExecuteGitCommand(string gitPath, string arguments)
     {
         ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
@@ -80,23 +114,6 @@ public class BranchInfo
         process.WaitForExit();
 
         return string.IsNullOrEmpty(error) && process.ExitCode == 0;
-    }
-
-    public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
-    {
-        var branches = new Dictionary<string, DateTime>();
-        var branchDir = Path.Combine(gitPath, "refs", "heads");
-
-        if (!Directory.Exists(branchDir)) throw new Exception("Branch directory does not exist");
-
-        foreach (var file in Directory.GetFiles(branchDir))
-        {
-            branches.Add(Path.GetFileName(file), File.GetLastWriteTime(file));
-        }
-
-        return branches
-            .OrderByDescending(x => x.Value)
-            .ToDictionary(x => x.Key, x => x.Value);
     }
 
     private void SetGitPath()
