@@ -6,6 +6,8 @@ Features
 Branch Table Visualization: Displays an organized table of branches in your Git repository, including ahead/behind information relative to the main branch and the date of the last commit.
 Instead of using the `git branch` command, which only lists branch names in a flat list organized by alphabetical order, **B-branch** provides a more structured view of branch information, making it easier to see the status of each branch in relation to the main branch.
 
+<img src="./images/screen.jpg" alt="screen" width="500"/>
+
 ---
 
 Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS.
