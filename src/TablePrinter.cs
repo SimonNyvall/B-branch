@@ -48,7 +48,7 @@ public class Data
                 Console.Write($"{branchName}");
             }
 
-            Console.WriteLine($" |  {lastCommitText}");
+            Console.WriteLine($" |  {lastCommitText}     {branch.description}");
         }
     }
 }

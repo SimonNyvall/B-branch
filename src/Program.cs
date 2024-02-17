@@ -39,13 +39,15 @@ List<TableRow> MapBranches(Dictionary<string, DateTime> branches, string working
             lastCommitString = days == 1 ? "Day ago" : "Days ago";
         }
 
+        var description = branchInfo.GetBranchDescription(gitPath, branch.Key);
+
         if (branch.Key == workingBranch)
         {
-            branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), true));
+            branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), true, description));
             continue;
         }
 
-        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), false));
+        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), false, description));
     }
 
     return branchTable;

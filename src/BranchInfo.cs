@@ -64,12 +64,13 @@ public class BranchInfo
 
     public string? GetWorkingBranch(string gitPath)
     {
-        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD"));
+        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD")).Trim();
 
         if (HEADFile.StartsWith("ref:"))
         {
-            var branchName = HEADFile.Split('/').Last();
-            branchName = branchName.Contains("\n") ? branchName.Replace("\n", "") : branchName;
+            var branchNameComponents = HEADFile.Split('/');
+
+            var branchName = string.Join("/", branchNameComponents.Skip(2));
 
             return branchName;
         }
@@ -94,6 +95,26 @@ public class BranchInfo
         return branches
             .OrderByDescending(x => x.Value)
             .ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    public string GetBranchDescription(string gitPath, string branchName)
+    {
+        var descriptionFile = File.ReadAllText(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
+
+        var branches = GetNamesAndLastWirte(gitPath);
+
+        if (descriptionFile.Contains(branchName))
+        {
+            var lines = descriptionFile.Split('\n');
+
+            var linesWithoutComments = lines.Where(x => !x.StartsWith("#"));
+
+            var description = string.Join(" ", linesWithoutComments);
+
+            return description;
+        }
+
+        return String.Empty;
     }
 
     private bool ExecuteGitCommand(string gitPath, string arguments)
