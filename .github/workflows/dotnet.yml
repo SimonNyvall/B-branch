@@ -27,4 +27,3 @@ jobs:
         working-directory: src
       - name: Test
         run: dotnet test --no-build
-        working-directory: tests
