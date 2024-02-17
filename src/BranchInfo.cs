@@ -62,7 +62,20 @@ public class BranchInfo
         return (ahead, behind);
     }
 
+    public string? GetWorkingBranch(string gitPath)
+    {
+        var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD"));
 
+        if (HEADFile.StartsWith("ref:"))
+        {
+            var branchName = HEADFile.Split('/').Last();
+            branchName = branchName.Contains("\n") ? branchName.Replace("\n", "") : branchName;
+
+            return branchName;
+        }
+
+        return null;
+    }
 
     public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
     {

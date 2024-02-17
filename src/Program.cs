@@ -8,11 +8,15 @@ var gitPath = branchInfo.GitPath;
 
 if (gitPath is null) throw new Exception("There is no .git directory in the current path");
 
-var barnchTable = MapBranches(branchInfo.GetNamesAndLastWirte(gitPath));
+var workingBranch = branchInfo.GetWorkingBranch(gitPath);
+
+if (workingBranch is null) throw new Exception("There is no working branch in the current path");
+
+var barnchTable = MapBranches(branchInfo.GetNamesAndLastWirte(gitPath), workingBranch);
 
 Data.PrintBranchTable(barnchTable);
 
-List<TableRow> MapBranches(Dictionary<string, DateTime> branches)
+List<TableRow> MapBranches(Dictionary<string, DateTime> branches, string workingBranch)
 {
     var branchTable = new List<TableRow>();
 
@@ -35,7 +39,13 @@ List<TableRow> MapBranches(Dictionary<string, DateTime> branches)
             lastCommitString = days == 1 ? "Day ago" : "Days ago";
         }
 
-        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString)));
+        if (branch.Key == workingBranch)
+        {
+            branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), true));
+            continue;
+        }
+
+        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString), false));
     }
 
     return branchTable;
