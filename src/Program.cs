@@ -19,9 +19,21 @@ List<TableRow> MapBranches(Dictionary<string, DateTime> branches)
     foreach (var branch in branches)
     {
         var (ahead, behind) = branchInfo.GetAheadBehind(gitPath, branch.Key);
-        var lastCommit = (DateTime.Now - branch.Value).Days;
 
-        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, "Days ago")));
+        string lastCommit = string.Empty;
+        string lastCommitString = String.Empty;
+        if ((DateTime.Now.Day - branch.Value.Day) == 0)
+        {
+            lastCommit = branch.Value.ToString("HH:mm");
+            lastCommitString = "Today";
+        }
+        else
+        {
+            lastCommit = branch.Value.Day.ToString();
+            lastCommitString = "Days ago";
+        }
+
+        branchTable.Add(new TableRow(ahead, behind, branch.Key, (lastCommit, lastCommitString)));
     }
 
     return branchTable;
