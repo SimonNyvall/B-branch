@@ -5,7 +5,7 @@
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-      - [Option 1 (Download the compiled src file)](#option-1-download-the-compiled-src-file)
+      - [Option 1 (Download the compiled B-branch file)](#option-1-download-the-compiled-B-branch-file)
       - [Option 2 (Build from source)](#option-2-build-from-source)
   - [Usage](#usage)
   - [Contributing](#contributing)
@@ -47,13 +47,13 @@ Prerequisites
 
 ## Installation
 
-### Option 1 (Download the compiled src file)
+### Option 1 (Download the compiled B-branch file)
 
 1. Download the compiled src file
 2. Run the command below
 
 ```sh
-git config --global alias.bb '!sh -c "/path/to/bin/src"'
+git config --global alias.bb '!sh -c "/path/to/bin/B-branch"'
 ```
 
 This will set a alias in the `.gitconfig` file to point to that executable.
@@ -88,10 +88,10 @@ dotnet build
 Make an alias in the bashrc to point at the src executable:
 
 ```sh
-.bachrc << "alias 'git bb'=/home/.../path/to/bin/src"
+.bachrc << "alias 'git bb'=/home/.../path/to/bin/B-branch"
 ```
 
-The src file will be under the `bin/debug/net8.0` in the project.
+The B-branch file will be under the `bin/debug/net8.0` in the project.
 
 Additional thing is to run
 
