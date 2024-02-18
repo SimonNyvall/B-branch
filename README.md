@@ -1,10 +1,30 @@
 # B-branch [![.NET](https://github.com/SimonNyvall/B-branch/actions/workflows/dotnet.yml/badge.svg)](https://github.com/SimonNyvall/B-branch/actions/workflows/dotnet.yml)
 
-**B-branch** is a .NET-based application designed to enhance the way developers interact with Git repositories directly from their terminal. Inspired by innovative ideas shared in a video by **GitButler** on YouTube, this tool aims to streamline the workflow for managing and visualizing Git branches, making it easier to see branch details at a glance.
+- [B-branch](#b-branch)
+  - [Features](#features)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+      - [Option 1 (Download the compiled src file)](#option-1-download-the-compiled-src-file)
+      - [Option 2 (Build from source)](#option-2-build-from-source)
+  - [Usage](#usage)
+  - [Contributing](#contributing)
+  - [Acknowledgments](#acknowledgments)
+  - [License](#license)
+
+## Features
+
+**B-branch** is a .NET-based application designed to enhance the way developers interact with Git repositories directly from their terminal. Inspired by innovative ideas shared in a [video by **GitButler** on YouTube](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), this tool aims to streamline the workflow for managing and visualizing Git branches, making it easier to see branch details at a glance.
 Features
 
 Branch Table Visualization: Displays an organized table of branches in your Git repository, including ahead/behind information relative to the main branch and the date of the last commit.
 Instead of using the `git branch` command, which only lists branch names in a flat list organized by alphabetical order, **B-branch** provides a more structured view of branch information, making it easier to see the status of each branch in relation to the main branch.
+
+The ability to see the branch description is also a feature that is not available in the standard `git branch` command. To add a description to a branch, use the following command:
+
+    git branch --edit-description
+
+Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
 <img src="./images/screen.jpg" alt="screen" width="500"/>
 
@@ -19,9 +39,11 @@ The output of the B-branch will look like this
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 Prerequisites
 
+    git
+
     .NET 8.0 SDK installed on your machine.
 
-    OBS! This only applies if you build from source.
+    OBS! .NET 8.0 SDK only applies if you build from source.
 
 ## Installation
 
