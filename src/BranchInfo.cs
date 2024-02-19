@@ -99,6 +99,8 @@ public class BranchInfo
 
     public string GetBranchDescription(string gitPath, string branchName)
     {
+        if (!File.Exists(Path.Combine(gitPath, "EDIT_DESCRIPTION"))) return String.Empty;
+
         var descriptionFile = File.ReadAllText(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
 
         var branches = GetNamesAndLastWirte(gitPath);
