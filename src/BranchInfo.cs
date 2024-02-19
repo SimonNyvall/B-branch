@@ -1,7 +1,8 @@
-namespace Bbranch.Branch.Info;
+namespace Bbranch.Info;
 
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Bbranch.TableData;
 
 public class BranchInfo
 {
@@ -9,10 +10,10 @@ public class BranchInfo
 
     public BranchInfo()
     {
-        SetGitPath();
+        TrySetGitPath();
     }
 
-    public (int, int) GetAheadBehind(string gitPath, string branchName)
+    public (int Ahead, int Behind) GetAheadBehind(string gitPath, string branchName)
     {
         int ahead = 0;
         int behind = 0;
@@ -39,7 +40,7 @@ public class BranchInfo
 
         using Process? process = Process.Start(startInfo);
 
-        if (process == null) return (ahead, behind);
+        if (process is null) return (ahead, behind);
 
         string result = process.StandardOutput.ReadToEnd();
         string error = process.StandardError.ReadToEnd();
@@ -62,7 +63,19 @@ public class BranchInfo
         return (ahead, behind);
     }
 
-    public string? GetWorkingBranch(string gitPath)
+    public string? TryGetWorkingBranch(string gitPath)
+    {
+        try
+        {
+            return GetWorkingBranch(gitPath);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private string? GetWorkingBranch(string gitPath)
     {
         var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD")).Trim();
 
@@ -78,7 +91,7 @@ public class BranchInfo
         return null;
     }
 
-    public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
+    public List<GitBranch> GetNamesAndLastWirte(string gitPath)
     {
         var branches = new Dictionary<string, DateTime>();
         var branchDir = Path.Combine(gitPath, "refs", "heads");
@@ -93,8 +106,9 @@ public class BranchInfo
         }
 
         return branches
-            .OrderByDescending(x => x.Value)
-            .ToDictionary(x => x.Key, x => x.Value);
+            .Select(x => new GitBranch(x.Key, x.Value))
+            .OrderByDescending(x => x.LastCommit)
+            .ToList();
     }
 
     public string GetBranchDescription(string gitPath, string branchName)
@@ -105,18 +119,15 @@ public class BranchInfo
 
         var branches = GetNamesAndLastWirte(gitPath);
 
-        if (descriptionFile.Contains(branchName))
-        {
-            var lines = descriptionFile.Split('\n');
+        if (!descriptionFile.Contains(branchName)) return String.Empty;
 
-            var linesWithoutComments = lines.Where(x => !x.StartsWith("#"));
+        var lines = descriptionFile.Split('\n');
 
-            var description = string.Join(" ", linesWithoutComments);
+        var linesWithoutComments = lines.Where(x => !x.StartsWith("#"));
 
-            return description;
-        }
+        var description = string.Join(" ", linesWithoutComments);
 
-        return String.Empty;
+        return description;
     }
 
     private bool ExecuteGitCommand(string gitPath, string arguments)
@@ -139,7 +150,7 @@ public class BranchInfo
         return string.IsNullOrEmpty(error) && process.ExitCode == 0;
     }
 
-    private void SetGitPath()
+    private void TrySetGitPath()
     {
         const string command = "git";
         const string argument = "rev-parse --git-dir";
@@ -148,7 +159,8 @@ public class BranchInfo
         {
             RedirectStandardOutput = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
+            RedirectStandardError = true
         };
 
         using Process? process = Process.Start(startInfo);
@@ -157,6 +169,10 @@ public class BranchInfo
 
         using StreamReader reader = process!.StandardOutput;
 
-        GitPath = reader.ReadToEnd().Trim();
+        string gitPath = reader.ReadToEnd().Trim();
+
+        if (string.IsNullOrEmpty(gitPath)) return;
+
+        GitPath = gitPath;
     }
 }
