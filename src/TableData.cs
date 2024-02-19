@@ -1,9 +1,9 @@
 namespace Bbranch.Branch.TableData;
 
-public record Branch(string Branch, DateTime LastCommit);
+//public record Branch(string Branch, DateTime LastCommit);
 
 public record BranchTableRow(int Ahead, int Behind, string BranchName, (string, string) LastCommit, bool IsWorkingBranch, string description);
-
+/*
 public class Map
 {
     public static List<BranchTableRow> BranchesToTable(List<Branch> branches)
@@ -17,4 +17,4 @@ public class Map
 
         return branchTable;
     }
-}
+}*/

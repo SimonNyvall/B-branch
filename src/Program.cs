@@ -9,7 +9,7 @@ var gitPath = branchInfo.GitPath;
 
 Error.HandleGitDirNotFound(gitPath);
 
-var workingBranch = branchInfo.GetWorkingBranch(gitPath!);
+var workingBranch = branchInfo.TryGetWorkingBranch(gitPath!);
 
 Error.HandleNoWorkingBranch(workingBranch);
 
