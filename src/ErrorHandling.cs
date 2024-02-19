@@ -1,4 +1,4 @@
-namespace Bbranch.Branch.ErrorHandling;
+namespace Bbranch.ErrorHandling;
 
 public class Error
 {

@@ -1,6 +1,6 @@
-namespace Bbranch.Branch.TablePrinter;
+namespace Bbranch.TablePrinter;
 
-using Bbranch.Branch.TableData;
+using Bbranch.TableData;
 
 public class Data
 {

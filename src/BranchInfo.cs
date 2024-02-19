@@ -1,7 +1,8 @@
-namespace Bbranch.Branch.Info;
+namespace Bbranch.Info;
 
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Bbranch.TableData;
 
 public class BranchInfo
 {
@@ -12,7 +13,7 @@ public class BranchInfo
         TrySetGitPath();
     }
 
-    public (int, int) GetAheadBehind(string gitPath, string branchName)
+    public (int Ahead, int Behind) GetAheadBehind(string gitPath, string branchName)
     {
         int ahead = 0;
         int behind = 0;
@@ -90,7 +91,7 @@ public class BranchInfo
         return null;
     }
 
-    public Dictionary<string, DateTime> GetNamesAndLastWirte(string gitPath)
+    public List<GitBranch> GetNamesAndLastWirte(string gitPath)
     {
         var branches = new Dictionary<string, DateTime>();
         var branchDir = Path.Combine(gitPath, "refs", "heads");
@@ -105,8 +106,9 @@ public class BranchInfo
         }
 
         return branches
-            .OrderByDescending(x => x.Value)
-            .ToDictionary(x => x.Key, x => x.Value);
+            .Select(x => new GitBranch(x.Key, x.Value))
+            .OrderByDescending(x => x.LastCommit)
+            .ToList();
     }
 
     public string GetBranchDescription(string gitPath, string branchName)
