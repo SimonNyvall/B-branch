@@ -4,7 +4,7 @@ using Bbranch.Branch.TableData;
 
 public class Data
 {
-    public static void PrintBranchTable(List<TableRow> branchTable)
+    public static void PrintBranchTable(List<BranchTableRow> branchTable)
     {
         int minimumBranchNameWidth = 14;
         var longestBranchName = Math.Max(minimumBranchNameWidth, branchTable.Max(x => x.BranchName.Length));

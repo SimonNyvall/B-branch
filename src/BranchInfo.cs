@@ -39,7 +39,7 @@ public class BranchInfo
 
         using Process? process = Process.Start(startInfo);
 
-        if (process == null) return (ahead, behind);
+        if (process is null) return (ahead, behind);
 
         string result = process.StandardOutput.ReadToEnd();
         string error = process.StandardError.ReadToEnd();
