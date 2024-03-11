@@ -1,69 +1,60 @@
 namespace Bbranch.Info;
 
-using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using Bbranch.TableData;
+using CliWrap;
 
 public class BranchInfo
 {
-    public string? GitPath { get; private set; } = null;
+    public static string? GitPath { get; private set; } = null;
 
-    public BranchInfo()
+    public static async Task Initialize()
     {
-        TrySetGitPath();
+        await TrySetGitPath();
     }
 
-    public (int Ahead, int Behind) GetAheadBehind(string gitPath, string branchName)
+    public static async Task<(int Ahead, int Behind)> GetAheadBehind(string gitPath, string branchName)
     {
-        int ahead = 0;
-        int behind = 0;
+        int ahead = 0, behind = 0;
 
         string checkLocalBranchCommand = $"rev-parse --verify {branchName}";
         string checkRemoteBranchCommand = $"rev-parse --verify origin/{branchName}";
 
-        if (!ExecuteGitCommand(gitPath, checkLocalBranchCommand) || !ExecuteGitCommand(gitPath, checkRemoteBranchCommand))
+        if (await ExecuteGitCommand(gitPath, checkLocalBranchCommand) || await ExecuteGitCommand(gitPath, checkRemoteBranchCommand))
         {
             return (ahead, behind);
         }
 
-        const string command = "git";
         string arguments = $"rev-list --left-right --count {branchName}...origin/{branchName}";
 
-        ProcessStartInfo startInfo = new ProcessStartInfo(command, arguments)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = gitPath
-        };
+        var stdOutBuffer = new StringBuilder();
 
-        using Process? process = Process.Start(startInfo);
+        var result = await Cli.Wrap("git")
+            .WithArguments(arguments)
+            .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
+            .WithWorkingDirectory(gitPath)
+            .ExecuteAsync();
 
-        if (process is null) return (ahead, behind);
+        var stdOut = stdOutBuffer.ToString();
 
-        string result = process.StandardOutput.ReadToEnd();
-        string error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
+        if (String.IsNullOrEmpty(stdOut)) return (ahead, behind);
 
-        if (!string.IsNullOrEmpty(error))
-        {
-            Console.WriteLine($"Error: {error}");
-            return (ahead, behind);
-        }
+        if (result.ExitCode != 0) return (ahead, behind);
 
         const string pattern = @"(\d+)\s+(\d+)";
-        Match match = Regex.Match(result, pattern);
-        if (match.Success)
-        {
-            ahead = int.Parse(match.Groups[1].Value);
-            behind = int.Parse(match.Groups[2].Value);
-        }
+
+        Match match = Regex.Match(stdOut, pattern);
+
+        if (!match.Success) return (ahead, behind);
+
+        ahead = int.Parse(match.Groups[1].Value);
+        behind = int.Parse(match.Groups[2].Value);
 
         return (ahead, behind);
     }
 
-    public string? TryGetWorkingBranch(string gitPath)
+    public static string? TryGetWorkingBranch(string gitPath)
     {
         try
         {
@@ -75,7 +66,7 @@ public class BranchInfo
         }
     }
 
-    private string? GetWorkingBranch(string gitPath)
+    private static string? GetWorkingBranch(string gitPath)
     {
         var HEADFile = File.ReadAllText(Path.Combine(gitPath, "HEAD")).Trim();
 
@@ -91,7 +82,7 @@ public class BranchInfo
         return null;
     }
 
-    public List<GitBranch> GetNamesAndLastWirte(string gitPath)
+    public static List<GitBranch> GetNamesAndLastWirte(string gitPath)
     {
         var branches = new Dictionary<string, DateTime>();
         var branchDir = Path.Combine(gitPath, "refs", "heads");
@@ -111,11 +102,11 @@ public class BranchInfo
             .ToList();
     }
 
-    public string GetBranchDescription(string gitPath, string branchName)
+    public static async Task<string> GetBranchDescription(string gitPath, string branchName)
     {
         if (!File.Exists(Path.Combine(gitPath, "EDIT_DESCRIPTION"))) return String.Empty;
 
-        var descriptionFile = File.ReadAllText(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
+        var descriptionFile = await File.ReadAllTextAsync(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
 
         var branches = GetNamesAndLastWirte(gitPath);
 
@@ -130,49 +121,31 @@ public class BranchInfo
         return description;
     }
 
-    private bool ExecuteGitCommand(string gitPath, string arguments)
+    private static async Task<bool> ExecuteGitCommand(string gitPath, string arguments)
     {
-        ProcessStartInfo startInfo = new ProcessStartInfo("git", arguments)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = gitPath
-        };
+        var result = await Cli.Wrap("git")
+            .WithWorkingDirectory(gitPath)
+            .WithArguments(arguments)
+            .WithValidation(CommandResultValidation.None)
+            .ExecuteAsync();
 
-        using Process? process = Process.Start(startInfo);
-        if (process == null) return false;
-
-        string error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-
-        return string.IsNullOrEmpty(error) && process.ExitCode == 0;
+        return result.ExitCode != 0;
     }
 
-    private void TrySetGitPath()
+    private static async Task TrySetGitPath()
     {
-        const string command = "git";
         const string argument = "rev-parse --git-dir";
+        var stdOutBuffer = new StringBuilder();
 
-        ProcessStartInfo startInfo = new ProcessStartInfo(command, argument)
-        {
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardError = true
-        };
+        var result = await Cli.Wrap("git")
+            .WithArguments(argument)
+            .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
+            .ExecuteAsync();
 
-        using Process? process = Process.Start(startInfo);
+        var stdOut = stdOutBuffer.ToString().Trim();
 
-        if (process == null) return;
+        if (string.IsNullOrEmpty(stdOut)) return;
 
-        using StreamReader reader = process!.StandardOutput;
-
-        string gitPath = reader.ReadToEnd().Trim();
-
-        if (string.IsNullOrEmpty(gitPath)) return;
-
-        GitPath = gitPath;
+        GitPath = stdOut;
     }
 }

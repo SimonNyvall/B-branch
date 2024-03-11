@@ -111,3 +111,16 @@ This project was inspired by the innovative ideas shared by **GitButler**. Check
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+This project uses the Cli Wrap nuget package by Tyrrrz, and therefore inherits the TERMS OF USE from Cli Wrap.
+
+### Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
+
+By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
+
+- You **condemn Russia and its military aggression against Ukraine**
+- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
+- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
+- You **reject false narratives perpetuated by Russian state propaganda**
+
+To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦

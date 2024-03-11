@@ -3,16 +3,16 @@ using Bbranch.TablePrinter;
 using Bbranch.TableData;
 using Bbranch.ErrorHandling;
 
-var branchInfo = new BranchInfo();
+await BranchInfo.Initialize();
 
-var gitPath = branchInfo.GitPath;
+var gitPath = BranchInfo.GitPath;
 
 Error.HandleGitDirNotFound(gitPath);
 
-var workingBranch = branchInfo.TryGetWorkingBranch(gitPath!);
+var workingBranch = BranchInfo.TryGetWorkingBranch(gitPath!);
 
 Error.HandleNoWorkingBranch(workingBranch);
 
-var branchTable = Project.GitBranches(branchInfo.GetNamesAndLastWirte(gitPath!));
+var branchTable = await Project.GitBranches(BranchInfo.GetNamesAndLastWirte(gitPath!));
 
 Data.PrintBranchTable(branchTable);
