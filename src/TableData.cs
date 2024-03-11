@@ -8,22 +8,22 @@ public record BranchTableRow(int Ahead, int Behind, string BranchName, (string, 
 
 public class Project
 {
-    public static List<BranchTableRow> GitBranches(List<GitBranch> branches)
+    public static async Task<List<BranchTableRow>> GitBranches(List<GitBranch> branches)
     {
-        var branchInfo = new BranchInfo();
-        var gitPath = branchInfo.GitPath;
+        await BranchInfo.Initialize();
+        var gitPath = BranchInfo.GitPath;
 
         var branchTable = new List<BranchTableRow>();
 
         foreach (var branch in branches)
         {
-            var (ahead, behind) = branchInfo.GetAheadBehind(gitPath!, branch.Name);
+            var (ahead, behind) = await BranchInfo.GetAheadBehind(gitPath!, branch.Name);
 
             var (commitDate, timeElapsed) = parseLastCommit(branch.LastCommit);
 
-            var description = branchInfo.GetBranchDescription(gitPath!, branch.Name);
+            var description = BranchInfo.GetBranchDescription(gitPath!, branch.Name);
 
-            var workingBranch = branchInfo.TryGetWorkingBranch(gitPath!);
+            var workingBranch = BranchInfo.TryGetWorkingBranch(gitPath!);
 
             if (branch.Name == workingBranch)
             {
@@ -40,7 +40,7 @@ public class Project
     private static (string commitDate, string timeElapsed) parseLastCommit(DateTime lastCommit)
     {
         string lastCommitString = String.Empty;
-        int days = DateTime.Now.Day - lastCommit.Day;
+        int days = (DateTime.Now - lastCommit).Days;
 
         if (days == 0)
         {
