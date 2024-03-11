@@ -21,7 +21,7 @@ public class Project
 
             var (commitDate, timeElapsed) = parseLastCommit(branch.LastCommit);
 
-            var description = BranchInfo.GetBranchDescription(gitPath!, branch.Name);
+            var description = await BranchInfo.GetBranchDescription(gitPath!, branch.Name);
 
             var workingBranch = BranchInfo.TryGetWorkingBranch(gitPath!);
 
