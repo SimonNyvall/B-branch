@@ -102,11 +102,11 @@ public class BranchInfo
             .ToList();
     }
 
-    public static string GetBranchDescription(string gitPath, string branchName)
+    public static async Task<string> GetBranchDescription(string gitPath, string branchName)
     {
         if (!File.Exists(Path.Combine(gitPath, "EDIT_DESCRIPTION"))) return String.Empty;
 
-        var descriptionFile = File.ReadAllText(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
+        var descriptionFile = await File.ReadAllTextAsync(Path.Combine(gitPath, "EDIT_DESCRIPTION"));
 
         var branches = GetNamesAndLastWirte(gitPath);
 
