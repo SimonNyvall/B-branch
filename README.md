@@ -2,6 +2,7 @@
 
 - [B-branch](#b-branch)
   - [Features](#features)
+  - [Usage](#usage)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
@@ -27,6 +28,46 @@ The ability to see the branch description is also a feature that is not availabl
 Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
 <img src="./images/screen.jpg" alt="screen" width="500"/>
+
+## Usage
+
+```plaintext
+B-branch [options]
+```
+
+### Options
+
+- `-t, --track <String>`: Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.
+- `-q, --quiet`: Only displays the names of the branches without any additional information or formatting.
+- `-v, --version`: Shows the current version of the `B-branch` tool.
+- `-s, --sort <String>`: Sorts the branches based on the specified criterion. Valid options are `[date]`, `[name]`, `[ahead]`, or `[behind]`.
+- `-a, --all`: Displays all branches, both local and remote.
+- `-n, --no-contains <String>`: Filters the list to only show branches that do not contain the specified string.
+- `-c, --contains <String>`: Filters the list to only show branches that contain the specified string.
+- `-r, --remote`: Includes remote branches in the output.
+- `-h, --help`: Displays the help message with information about all available options.
+
+### Examples
+
+List all branches, including remote branches, sorted by the date of their last commit:
+
+```shell
+B-branch --all --sort date
+```
+
+Show branches that contain the string "feature", excluding remote branches, and list them by name:
+
+```shell
+B-branch --contains feature --sort name
+```
+
+Display how many commits the branch `feature/new-feature` is ahead or behind its upstream branch:
+
+```shell
+B-branch --track feature/new-feature
+```
+
+For further assistance or to report issues, please refer to the official `B-branch` documentation or use the `--help` option.
 
 ---
 
