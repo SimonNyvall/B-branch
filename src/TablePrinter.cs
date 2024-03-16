@@ -4,14 +4,40 @@ using Bbranch.TableData;
 
 public class Data
 {
-    public static void PrintBranchTable(List<BranchTableRow> branchTable)
+    public static void PrintBranchTable(List<BranchTableRow> branchTable, bool quiteFlag)
     {
         const int minimumBranchNameWidth = 14;
         int longestBranchName = Math.Max(minimumBranchNameWidth, branchTable.Max(x => x.BranchName.Length));
         int maxLastCommitWidth = branchTable.Max(x => $"{x.LastCommit.Item1} {x.LastCommit.Item2}".Length) - 6;
 
+        if (quiteFlag)
+        {
+            PrintOnlyBranchNames(branchTable);
+            return;
+        }
+
         PrintHeaders(longestBranchName, maxLastCommitWidth);
         PrintBranchRows(branchTable, longestBranchName, maxLastCommitWidth);
+    }
+
+    private static void PrintOnlyBranchNames(List<BranchTableRow> branchTable)
+    {
+        Console.WriteLine();
+
+        foreach (var branch in branchTable)
+        {
+            if (branch.IsWorkingBranch)
+            {
+                Console.Write("* ");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine(branch.BranchName);
+                Console.ResetColor();
+
+                continue;
+            }
+
+            Console.WriteLine($"  {branch.BranchName}");
+        }
     }
 
     private static void PrintHeaders(int longestBranchName, int maxLastCommitWidth)
