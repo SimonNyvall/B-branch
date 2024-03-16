@@ -43,7 +43,7 @@ public class Data
     private static void PrintHeaders(int longestBranchName, int maxLastCommitWidth)
     {
         string branchHeader = $" Branch Name  ".PadRight(longestBranchName + 1);
-        string underline = new string('-', longestBranchName + 2);
+        string underline = new string('-', longestBranchName + 1);
         string[] headers = { " Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  " };
 
         Console.WriteLine();
