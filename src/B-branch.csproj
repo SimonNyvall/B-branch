@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.6.6" />
+    <PackageReference Include="Cocona" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

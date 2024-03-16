@@ -1,6 +1,7 @@
 namespace Bbranch.TableData;
 
-using Bbranch.Info;
+using Bbranch.Git.Base.GitBase;
+using Bbranch.Git.Options.AheadBehind;
 
 public record GitBranch(string Name, DateTime LastCommit);
 
@@ -8,30 +9,34 @@ public record BranchTableRow(int Ahead, int Behind, string BranchName, (string, 
 
 public class Project
 {
-    public static async Task<List<BranchTableRow>> GitBranches(List<GitBranch> branches)
+    public static async Task<List<BranchTableRow>> MapGitBranches(GitBase gitBase, List<GitBranch> branches, string workingBranch, string targetBranch = "")
     {
-        await BranchInfo.Initialize();
-        var gitPath = BranchInfo.GitPath;
-
         var branchTable = new List<BranchTableRow>();
 
         foreach (var branch in branches)
         {
-            var (ahead, behind) = await BranchInfo.GetAheadBehind(gitPath!, branch.Name);
+            var AheadBehind = new AheadBehind();
+
+            if (!String.IsNullOrEmpty(targetBranch))
+            {
+                AheadBehind = await AheadBehindOptions.GetRemoteAheadBehind(branch.Name, targetBranch);
+            }
+            else
+            {
+                AheadBehind = await AheadBehindOptions.GetRemoteAheadBehind(branch.Name);
+            }
 
             var (commitDate, timeElapsed) = parseLastCommit(branch.LastCommit);
 
-            var description = await BranchInfo.GetBranchDescription(gitPath!, branch.Name);
+            var description = await GitBase.GetBranchDescription(branches, branch.Name);
 
-            var workingBranch = BranchInfo.TryGetWorkingBranch(gitPath!);
-
-            if (branch.Name == workingBranch)
+            if (branch.Name == workingBranch.Trim())
             {
-                branchTable.Add(new BranchTableRow(ahead, behind, branch.Name, (commitDate, timeElapsed), true, description));
+                branchTable.Add(new BranchTableRow(AheadBehind.Ahead, AheadBehind.Behind, branch.Name, (commitDate, timeElapsed), true, description));
                 continue;
             }
 
-            branchTable.Add(new BranchTableRow(ahead, behind, branch.Name, (commitDate, timeElapsed), false, description));
+            branchTable.Add(new BranchTableRow(AheadBehind.Ahead, AheadBehind.Behind, branch.Name, (commitDate, timeElapsed), false, description));
         }
 
         return branchTable;
@@ -39,16 +44,12 @@ public class Project
 
     private static (string commitDate, string timeElapsed) parseLastCommit(DateTime lastCommit)
     {
-        string lastCommitString = String.Empty;
+        string timeElapsed = String.Empty;
         int days = (DateTime.Now - lastCommit).Days;
 
-        if (days == 0)
-        {
-            lastCommitString = "Today";
-            return (lastCommit.ToString("HH:mm"), lastCommitString);
-        }
+        if (days == 0) return (lastCommit.ToString("HH:mm"), "Today");
 
-        lastCommitString = days == 1 ? "Day ago" : "Days ago";
-        return (days.ToString(), lastCommitString);
+        timeElapsed = days == 1 ? "Day ago" : "Days ago";
+        return (days.ToString(), timeElapsed);
     }
 }
