@@ -22,7 +22,7 @@ CoconaApp.Run(async (
             [Option('v', Description = versionDescription)] bool? version,
             [Option('s', Description = sortDescription)] string? sort,
             [Option('a', Description = allDescription)] bool? all,
-            [Option("nc", Description = noContainsDescription)] string? noContains,
+            [Option('n', Description = noContainsDescription)] string? noContains,
             [Option('c', Description = containsDescription)] string? contains,
             [Option('r', Description = remoteDescription)] bool? remote
             ) =>
