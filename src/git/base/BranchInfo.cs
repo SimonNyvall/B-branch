@@ -105,7 +105,7 @@ public class GitBase
             .WithValidation(CommandResultValidation.None)
             .ExecuteAsync();
 
-        return result.ExitCode != 0;
+        return result.ExitCode == 0;
     }
 
     private static async Task TrySetGitPath()

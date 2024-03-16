@@ -48,6 +48,7 @@ public class AheadBehindOptions : GitBase
         var result = await Cli.Wrap("git")
             .WithArguments(arguments)
             .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
+            .WithValidation(CommandResultValidation.None)
             .WithWorkingDirectory(gitPath)
             .ExecuteAsync();
 
