@@ -80,7 +80,7 @@ The output of the B-branch will look like this
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 Prerequisites
 
-    git
+    git 2.39.2 or later
 
     .NET 8.0 SDK installed on your machine.
 
@@ -94,7 +94,7 @@ Prerequisites
 2. Run the command below
 
 ```sh
-git config --global alias.bb '!sh -c "/path/to/bin/B-branch"'
+git config --global alias.bb '!bash -c '\"/home/nyvall/Code/B-branch/src/bin/Debug/net8.0/B-branch\" \"$@\"' bash''
 ```
 
 This will set a alias in the `.gitconfig` file to point to that executable.
