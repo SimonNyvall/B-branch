@@ -7,14 +7,14 @@ using Bbranch.Git.Options.TrackOptions;
 using Bbranch.Git.Options.SortOptions;
 using Cocona;
 
-const string trackDescription = "shows the ahead and behind of the arg branch";
-const string sortDescription = "sorts the branches by [date] or [name] or [ahead] or [behind]";
-const string containsDescription = "shows the branches that contain a string";
-const string noContainsDescription = "shows the branches that do not contain a string";
-const string allDescription = "shows all branches local and remote";
-const string remoteDescription = "also shows the remote branches";
-const string quietDescription = "does not show the table but only the branches";
-const string versionDescription = "shows the version";
+const string trackDescription = "Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.";
+const string sortDescription = "Sorts the branches based on the specified criterion. Valid options are [date], [name], [ahead], or [behind].";
+const string containsDescription = "Filters the list to only show branches that contain the specified string.";
+const string noContainsDescription = "Filters the list to only show branches that do not contain the specified string.";
+const string allDescription = "Displays all branches, both local and remote.";
+const string remoteDescription = "Includes remote branches in the output.";
+const string quietDescription = "Only displays the names of the branches without any additional information or formatting.";
+const string versionDescription = "Shows the current version of the tool.";
 
 CoconaApp.Run(async (
             [Option('t', Description = trackDescription)] string? track,
