@@ -1,16 +1,23 @@
-namespace Bbranch.TablePrinter;
+using TableData;
 
-using Bbranch.TableData;
+namespace Bbranch.TablePrinter;
 
 public class Data
 {
-    public static void PrintBranchTable(List<BranchTableRow> branchTable, bool quiteFlag)
+    public static void PrintBranchTable(
+        List<BranchTableRow> branchTable,
+        Dictionary<string, string> options
+    )
     {
         const int minimumBranchNameWidth = 14;
-        int longestBranchName = Math.Max(minimumBranchNameWidth, branchTable.Max(x => x.BranchName.Length));
-        int maxLastCommitWidth = branchTable.Max(x => $"{x.LastCommit.Item1} {x.LastCommit.Item2}".Length) - 6;
+        int longestBranchName = Math.Max(
+            minimumBranchNameWidth,
+            branchTable.Max(x => x.BranchName.Length)
+        );
+        int maxLastCommitWidth =
+            branchTable.Max(x => $"{x.LastCommit.Item1} {x.LastCommit.Item2}".Length) - 6;
 
-        if (quiteFlag)
+        if (options.ContainsKey("quite") || options.ContainsKey("q"))
         {
             PrintOnlyBranchNames(branchTable);
             return;
@@ -24,7 +31,7 @@ public class Data
     {
         Console.WriteLine();
 
-        foreach (var branch in branchTable)
+        foreach (BranchTableRow branch in branchTable)
         {
             if (branch.IsWorkingBranch)
             {
@@ -49,10 +56,16 @@ public class Data
         Console.WriteLine();
         PrintColoredLine(headers, ConsoleColor.Yellow);
         Console.ResetColor();
-        Console.WriteLine($"\n--------- | ---------- | {underline} | {new string('-', maxLastCommitWidth + 10)}");
+        Console.WriteLine(
+            $"\n--------- | ---------- | {underline} | {new string('-', maxLastCommitWidth + 10)}"
+        );
     }
 
-    private static void PrintBranchRows(List<BranchTableRow> branchTable, int longestBranchName, int maxLastCommitWidth)
+    private static void PrintBranchRows(
+        List<BranchTableRow> branchTable,
+        int longestBranchName,
+        int maxLastCommitWidth
+    )
     {
         foreach (var branch in branchTable)
         {
@@ -60,12 +73,17 @@ public class Data
         }
     }
 
-    private static void PrintBranchRow(BranchTableRow branch, int longestBranchName, int maxLastCommitWidth)
+    private static void PrintBranchRow(
+        BranchTableRow branch,
+        int longestBranchName,
+        int maxLastCommitWidth
+    )
     {
         var aHead = branch.Ahead.ToString().PadRight(8);
         var behind = branch.Behind.ToString().PadRight(9);
         var branchName = branch.BranchName.PadRight(longestBranchName);
-        var lastCommitText = $"{branch.LastCommit.Item1.PadRight(maxLastCommitWidth)} {branch.LastCommit.Item2}";
+        var lastCommitText =
+            $"{branch.LastCommit.Item1.PadRight(maxLastCommitWidth)} {branch.LastCommit.Item2}";
 
         Console.Write($" {aHead} |  {behind} |  ");
 
@@ -76,7 +94,7 @@ public class Data
         Console.Write($"{branchName}");
         Console.ResetColor();
 
-        Console.WriteLine($" |  {lastCommitText}     {branch.description}");
+        Console.WriteLine($" |  {lastCommitText}     {branch.Description}");
     }
 
     private static void PrintColoredLine(string[] texts, ConsoleColor color)
