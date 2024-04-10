@@ -1,81 +1,108 @@
-﻿using Bbranch.Git.Base.GitBase;
-using Bbranch.TablePrinter;
-using Bbranch.TableData;
-using Bbranch.Git.Options.BranchOptions;
-using Bbranch.Git.Options.ContainsOptions;
-using Bbranch.Git.Options.TrackOptions;
-using Bbranch.Git.Options.SortOptions;
-using Cocona;
+﻿using Bbranch.TablePrinter;
+using Git.Base;
+using Git.Options;
+using TableData;
 
-const string trackDescription = "Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.";
-const string sortDescription = "Sorts the branches based on the specified criterion. Valid options are [date], [name], [ahead], or [behind].";
-const string containsDescription = "Filters the list to only show branches that contain the specified string.";
-const string noContainsDescription = "Filters the list to only show branches that do not contain the specified string.";
-const string allDescription = "Displays all branches, both local and remote.";
-const string remoteDescription = "Includes remote branches in the output.";
-const string quietDescription = "Only displays the names of the branches without any additional information or formatting.";
-const string versionDescription = "Shows the current version of the tool.";
-
-CoconaApp.Run(async (
-            [Option('t', Description = trackDescription)] string? track,
-            [Option('q', Description = quietDescription)] bool? quiet,
-            [Option('v', Description = versionDescription)] bool? version,
-            [Option('s', Description = sortDescription)] string? sort,
-            [Option('a', Description = allDescription)] bool? all,
-            [Option('n', Description = noContainsDescription)] string? noContains,
-            [Option('c', Description = containsDescription)] string? contains,
-            [Option('r', Description = remoteDescription)] bool? remote
-            ) =>
+namespace Bbranch
 {
-    validateOptions(contains, noContains, all, remote, quiet, version, sort, track);
-
-    if (version == true)
+    public class Program
     {
-        Console.WriteLine("1.0.0");
-        return;
-    }
+        public static async Task Main(string[] args)
+        {
+            Dictionary<string, string> options = ParseArguments(args);
 
-    var gitBase = await GitBase.Initialize();
+            ValidateOptions(options);
 
-    var branches = new List<GitBranch>();
+            HelpOptions.Handle(options);
 
-    BranchOptions.GetBranches(all, remote, ref branches);
+            VersionOptions.Handle(options);
 
-    ContainsOptions.GetBranches(contains, noContains, ref branches);
+            List<BranchTableRow> branchTable = await AssembleBranchTable(options);
 
-    var workingBranch = await gitBase.TryGetWorkingBranch();
+            Data.PrintBranchTable(branchTable, options);
+        }
 
-    var branchTable = await TrackOptions.GetBranches(track, gitBase, branches, workingBranch);
+        private static async Task<List<BranchTableRow>> AssembleBranchTable(
+            Dictionary<string, string> options
+        )
+        {
+            GitBase gitBase = await GitBase.Initialize();
 
-    SortOptions.GetBranches(branchTable, sort, ref branchTable);
+            List<GitBranch> branches = [];
 
-    Data.PrintBranchTable(branchTable, quiet ?? false);
-});
+            BranchOptions.GetBranches(options, ref branches);
 
-void validateOptions(string? contains, string? noContains, bool? all, bool? remote, bool? quiet, bool? version, string? sort, string? track)
-{
-    if (version == true && (contains != null || noContains != null || all == true || remote == true || quiet == true || sort != null || track != null))
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("You cannot use --version with any other option");
-        Console.ResetColor();
-        Environment.Exit(1);
-    }
+            ContainsOptions.GetBranches(options, ref branches);
 
-    if (contains != null && noContains != null)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("You cannot use both --contains and --no-contains");
-        Console.ResetColor();
-        Environment.Exit(1);
-    }
+            string workingBranch = await GitBase.TryGetWorkingBranch();
 
-    if (all == true && remote == true)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("You cannot use both --all and --remote");
-        Console.ResetColor();
-        Environment.Exit(1);
+            List<BranchTableRow> branchTable = await TrackOptions.GetBranches(
+                options,
+                branches,
+                workingBranch
+            );
+
+            SortOptions.GetBranches(branchTable, options, ref branchTable);
+
+            return branchTable;
+        }
+
+        private static Dictionary<string, string> ParseArguments(string[] args)
+        {
+            Dictionary<string, string> options = [];
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].StartsWith("--") || args[i].StartsWith('-'))
+                {
+                    string option = args[i].TrimStart('-');
+
+                    if ((i + 1) < args.Length && !args[i + 1].StartsWith("--"))
+                    {
+                        options[option] = args[++i];
+                        continue;
+                    }
+
+                    options[option] = "true";
+                }
+            }
+            return options;
+        }
+
+        private static void ValidateOptions(Dictionary<string, string> options)
+        {
+            if (options.Count == 0)
+            {
+                return;
+            }
+
+            if (
+                options.Keys.Any(opt =>
+                    opt.Length == 1 && !HelpOptions.ValidArgs.Any(arg => arg.Item2 == opt)
+                )
+            )
+            {
+                Console.WriteLine("Invalid short option specified");
+                Environment.Exit(1);
+            }
+
+            if (options.ContainsKey("version") && options.Any(opt => opt.Key != "version"))
+            {
+                Console.WriteLine("You cannot use --version with any other option");
+                Environment.Exit(1);
+            }
+
+            if (options.ContainsKey("contains") && options.ContainsKey("no-contains"))
+            {
+                Console.WriteLine("You cannot use both --contains and --no-contains");
+                Environment.Exit(1);
+            }
+
+            if (options.ContainsKey("all") && options.ContainsKey("remote"))
+            {
+                Console.WriteLine("You cannot use both --all and --remote");
+                Environment.Exit(1);
+            }
+        }
     }
 }
-
