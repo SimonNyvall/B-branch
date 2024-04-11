@@ -8,11 +8,9 @@ namespace Git.Base
     {
         protected static string GitPath { get; private set; } = string.Empty;
 
-        public static async Task<GitBase> Initialize()
+        public static async Task Initialize()
         {
             await TrySetGitPath();
-
-            return new GitBase();
         }
 
         public static async Task<string> TryGetWorkingBranch()
