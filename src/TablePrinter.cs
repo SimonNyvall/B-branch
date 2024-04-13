@@ -12,7 +12,7 @@ public class Data
         const int minimumBranchNameWidth = 14;
         int longestBranchName = Math.Max(
             minimumBranchNameWidth,
-            branchTable.Max(x => x.BranchName.Length)
+            branchTable.Max(x => x.BranchName.Length + 1)
         );
         int maxLastCommitWidth =
             branchTable.Max(x => $"{x.LastCommit.Item1} {x.LastCommit.Item2}".Length) - 6;
