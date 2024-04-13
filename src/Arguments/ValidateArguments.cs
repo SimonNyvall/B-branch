@@ -1,4 +1,5 @@
 using Bbranch.ErrorHandler;
+using Bbranch.Flags;
 
 namespace Bbranch.ValidateArguments;
 
@@ -12,27 +13,28 @@ public class Validate
 {
     private static readonly (string, string)[] ValidArgs =
     {
-        ("--all", "-a"),
-        ("--help", "-h"),
-        ("--quiet", "-q"),
-        ("--sort", "-s"),
-        ("--contains", "-c"),
-        ("--no-contains", "-C"),
-        ("--remote", "-r"),
-        ("--track", "-t"),
-        ("--version", "-v")
+        (Flag.All, Flag.A),
+        (Flag.Help, Flag.H),
+        (Flag.Quiet, Flag.Q),
+        (Flag.Sort, Flag.S),
+        (Flag.Contains, Flag.C),
+        (Flag.NoContains, Flag.NoC),
+        (Flag.Remote, Flag.R),
+        (Flag.Track, Flag.T),
+        (Flag.Version, Flag.V)
     };
 
     public static Result Arguments(Dictionary<string, string> options)
     {
         var validators = new Func<Dictionary<string, string>, Result>[]
         {
-            ValidateCount,
-            ValidateShortArgument,
-            ValidateLongArgument,
+            ValidateValidArgument,
             ValidateVersion,
             ValidateContains,
-            ValidateAllRemote
+            ValidateAllRemote,
+            ValidateTrackQuiteFlags,
+            ValidateTrackValue,
+            ValidateSortValue,
         };
 
         foreach (var validator in validators)
@@ -49,31 +51,24 @@ public class Validate
         return Result.Success;
     }
 
-    private static Result ValidateCount(Dictionary<string, string> options)
+    private static Result ValidateValidArgument(Dictionary<string, string> options)
     {
-        if (options.Count == 0)
-            return Result.Error;
-
-        return Result.Success;
-    }
-
-    private static Result ValidateShortArgument(Dictionary<string, string> options)
-    {
-        if (options.Keys.Any(ops => !ValidArgs.Any(arg => arg.Item2 == ops)))
+        foreach (var option in options)
         {
-            Error.Register("Invalid short option specified");
-            return Result.Error;
-        }
-
-        return Result.Success;
-    }
-
-    private static Result ValidateLongArgument(Dictionary<string, string> options)
-    {
-        if (options.Keys.Any(ops => !ValidArgs.Any(arg => arg.Item1 == ops)))
-        {
-            Error.Register("Invalid long option specified");
-            return Result.Error;
+            bool isValid = false;
+            foreach (var validArg in ValidArgs)
+            {
+                if (option.Key == validArg.Item1 || option.Key == validArg.Item2)
+                {
+                    isValid = true;
+                    break;
+                }
+            }
+            if (!isValid)
+            {
+                Error.Register($"Invalid option: {option.Key}");
+                return Result.Error;
+            }
         }
 
         return Result.Success;
@@ -81,7 +76,7 @@ public class Validate
 
     private static Result ValidateVersion(Dictionary<string, string> options)
     {
-        if (options.ContainsKey("version") && options.Count > 1)
+        if (options.ContainsKey(Flag.Version) && options.Count > 1)
         {
             Error.Register("You cannot use --version with any other option");
             return Result.Error;
@@ -92,7 +87,13 @@ public class Validate
 
     private static Result ValidateContains(Dictionary<string, string> options)
     {
-        if (options.ContainsKey("contains") && options.ContainsKey("no-contains"))
+        bool contains = (
+            options.ContainsKey(Flag.Contains)
+            || options.ContainsKey(Flag.C) && options.ContainsKey(Flag.NoContains)
+            || options.ContainsKey(Flag.NoC)
+        );
+
+        if (contains)
         {
             Error.Register("You cannot use both --contains and --no-contains");
             return Result.Error;
@@ -103,7 +104,7 @@ public class Validate
 
     private static Result ValidateAllRemote(Dictionary<string, string> options)
     {
-        if (options.ContainsKey("all") && options.ContainsKey("remote"))
+        if (options.ContainsKey(Flag.All) && options.ContainsKey(Flag.Remote))
         {
             Error.Register("You cannot use both --all and --remote");
             return Result.Error;
@@ -112,14 +113,78 @@ public class Validate
         return Result.Success;
     }
 
-    private static Result ValidateTrackFlag(Dictionary<string, string> options)
+    private static Result ValidateTrackQuiteFlags(Dictionary<string, string> options)
     {
-        if (!options.ContainsKey("track") || !options.ContainsKey("t"))
-            return Result.Success;
+        bool quiet = (
+            (options.ContainsKey(Flag.Quiet) || options.ContainsKey(Flag.Q))
+            && (options.ContainsKey(Flag.Track) || options.ContainsKey(Flag.T))
+        );
 
-        if (options.ContainsKey("quite") || options.ContainsKey("q"))
+        if (quiet)
         {
-            Error.Register("You cannot use --track with --quiet");
+            Error.Register("You cannot use both --quiet and --track");
+            return Result.Error;
+        }
+
+        return Result.Success;
+    }
+
+    private static Result ValidateTrackValue(Dictionary<string, string> options)
+    {
+        if (options.ContainsKey(Flag.Track))
+        {
+            if (options[Flag.Track] != string.Empty)
+                return Result.Success;
+
+            Error.Register("You must provide a value for --track");
+            return Result.Error;
+        }
+
+        if (options.ContainsKey(Flag.T))
+        {
+            if (options[Flag.T] != string.Empty)
+                return Result.Success;
+
+            Error.Register("You must provide a value for -t");
+            return Result.Error;
+        }
+
+        return Result.Success;
+    }
+
+    private static Result ValidateSortValue(Dictionary<string, string> options)
+    {
+        if (options.ContainsKey(Flag.Sort))
+        {
+            if (
+                options[Flag.Sort] == "date"
+                || options[Flag.Sort] == "name"
+                || options[Flag.Sort] == "ahead"
+                || options[Flag.Sort] == "behind"
+            )
+            {
+                return Result.Success;
+            }
+
+            Error.Register(
+                "Value for --sort is missing. Valid values are: date, name, ahead, behind"
+            );
+            return Result.Error;
+        }
+
+        if (options.ContainsKey(Flag.S))
+        {
+            if (
+                options[Flag.S] == "date"
+                || options[Flag.S] == "name"
+                || options[Flag.S] == "ahead"
+                || options[Flag.S] == "behind"
+            )
+            {
+                return Result.Success;
+            }
+
+            Error.Register("Value for -s is missing. Valid values are: date, name, ahead, behind");
             return Result.Error;
         }
 
