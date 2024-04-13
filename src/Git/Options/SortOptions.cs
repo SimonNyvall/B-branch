@@ -1,34 +1,49 @@
 using Git.Base;
 using TableData;
 
-namespace Git.Options
+namespace Git.Options;
+
+public class SortOptions : GitBase
 {
-    public class SortOptions : GitBase
+    public static void GetBranches(
+        List<BranchTableRow> branches,
+        Dictionary<string, string> options,
+        ref List<BranchTableRow> branchTable
+    )
     {
-        public static void GetBranches(
-            List<BranchTableRow> branches,
-            Dictionary<string, string> options,
-            ref List<BranchTableRow> branchTable
-        )
+        if (!(options.ContainsKey("sort") || options.ContainsKey("s")))
         {
-            if (!(options.ContainsKey("sort") || options.ContainsKey("s")))
-            {
-                return;
-            }
-
-            IOrderedEnumerable<BranchTableRow> sortedList = string.Compare(
-                options["sort"],
-                "name",
-                StringComparison.OrdinalIgnoreCase
-            ) switch
-            {
-                0 => branches.OrderBy(branch => branch.BranchName),
-                1 => branches.OrderByDescending(branch => branch.Ahead),
-                2 => branches.OrderByDescending(branch => branch.Behind),
-                _ => branches.OrderByDescending(branch => branch.LastCommit),
-            };
-
-            branchTable = sortedList.Cast<BranchTableRow>().ToList();
+            return;
         }
+
+        List<BranchTableRow> sortedList = [];
+
+        if (options.ContainsKey("sort"))
+        {
+            sortedList = GetSortedBranches(branches, ref branchTable, options, "sort");
+        }
+        else if (options.ContainsKey("s"))
+        {
+            sortedList = GetSortedBranches(branches, ref branchTable, options, "s");
+        }
+
+        branchTable = sortedList;
+    }
+
+    private static List<BranchTableRow> GetSortedBranches(
+        List<BranchTableRow> branches,
+        ref List<BranchTableRow> branchTable,
+        Dictionary<string, string> options,
+        string optionKey
+    )
+    {
+        return (options[optionKey].ToLower()) switch
+        {
+            "name" => branches.OrderBy(branch => branch.BranchName).ToList(),
+            "ahead" => branches.OrderByDescending(branch => branch.Ahead).ToList(),
+            "behind" => branches.OrderByDescending(branch => branch.Behind).ToList(),
+            "lastcommit" => branches.OrderByDescending(branch => branch.LastCommit).ToList(),
+            _ => branches.OrderByDescending(branch => branch.BranchName).ToList(),
+        };
     }
 }
