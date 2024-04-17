@@ -8,6 +8,8 @@
     <PublishAot>true</PublishAot>
     <IsAotCompatible>true</IsAotCompatible>
     <StripSymbols>false</StripSymbols>
+
+    <NoWarn>0160</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
