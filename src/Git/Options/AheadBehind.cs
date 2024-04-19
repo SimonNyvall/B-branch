@@ -39,8 +39,8 @@ public partial class AheadBehindOptions : GitBase
         string checkRemoteBranchCommand = $"rev-parse --verify origin/{remoteBranchName}";
 
         if (
-            await ExecuteGitCommand(GitPath, checkLocalBranchCommand)
-            || await ExecuteGitCommand(GitPath, checkRemoteBranchCommand)
+            await ExecuteGitCommand(_gitPath, checkLocalBranchCommand)
+            || await ExecuteGitCommand(_gitPath, checkRemoteBranchCommand)
         )
         {
             return new AheadBehind(ahead, behind);
@@ -55,7 +55,7 @@ public partial class AheadBehindOptions : GitBase
             .WithArguments(arguments)
             .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
             .WithValidation(CommandResultValidation.None)
-            .WithWorkingDirectory(GitPath)
+            .WithWorkingDirectory(_gitPath)
             .ExecuteAsync();
 
         string stdOut = stdOutBuffer.ToString();

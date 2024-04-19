@@ -4,16 +4,78 @@ using Git.Options;
 
 namespace TableData;
 
-public record GitBranch(string Name, DateTime LastCommit);
+public struct Branch
+{
+    public string Name { get; set; }
+    public bool IsWorkingBranch { get; set; }
+}
 
-public record BranchTableRow(
-    int Ahead,
-    int Behind,
-    string BranchName,
-    (string, string) LastCommit,
-    bool IsWorkingBranch,
-    string Description
-);
+public struct AheadBehind
+{
+    public int Ahead { get; set; }
+    public int Behind { get; set; }
+}
+
+public class GitBranch
+{
+    public AheadBehind AheadBehind { get; private set; }
+    public Branch Branch { get; private set; }
+    public DateTime LastCommit { get; private set; }
+    public string? Description { get; private set; }
+
+    public GitBranch(
+        AheadBehind aheadBehind,
+        Branch branch,
+        DateTime lastCommit,
+        string description
+    )
+    {
+        SetAheadBehind(aheadBehind);
+        SetBranch(branch);
+        SetLastCommit(lastCommit);
+        SetDescription(description);
+    }
+
+    public void SetAheadBehind(AheadBehind aheadBehind)
+    {
+        if (aheadBehind.Ahead < 0 || aheadBehind.Behind < 0)
+        {
+            throw new ArgumentException("Ahead and Behind should be positive integers");
+        }
+
+        AheadBehind = aheadBehind;
+    }
+
+    public void SetBranch(Branch branch)
+    {
+        if (string.IsNullOrEmpty(branch.Name))
+        {
+            throw new ArgumentException("Branch name should not be empty");
+        }
+
+        Branch = branch;
+    }
+
+    public void SetLastCommit(DateTime lastCommit)
+    {
+        if (lastCommit == DateTime.MinValue)
+        {
+            throw new ArgumentException("Last commit should not be empty");
+        }
+
+        LastCommit = lastCommit;
+    }
+
+    public void SetDescription(string description)
+    {
+        if (description == null)
+        {
+            throw new ArgumentException("Description should not be empty");
+        }
+
+        Description = description;
+    }
+}
 
 public class Project
 {

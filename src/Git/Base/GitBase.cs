@@ -6,47 +6,79 @@ namespace Git.Base;
 
 public class GitBase
 {
-    protected static string GitPath { get; private set; } = string.Empty;
+    private static GitBase? _instance;
 
-    public static async Task Initialize()
+    private string _gitPath = string.Empty;
+
+    private GitBase()
     {
-        await TrySetGitPath();
+        SetGitPath();
     }
 
-    public static async Task<string> TryGetWorkingBranch()
+    public static GitBase GetInstance()
     {
-        try
+        if (_instance is not null)
         {
-            return await GetWorkingBranch();
+            return _instance;
         }
-        catch
+
+        lock (typeof(GitBase))
         {
-            return string.Empty;
+            _instance = _instance is null ? new GitBase() : _instance;
         }
+
+        return _instance;
     }
 
-    private static async Task<string> GetWorkingBranch()
+    private void SetGitPath()
     {
-        string HEADFile = await File.ReadAllTextAsync(Path.Combine(GitPath, "HEAD"));
+        Execute execute = Execute.GetInstance();
 
-        if (HEADFile.Trim().StartsWith("ref:", StringComparison.Ordinal))
+        const string arguments = "rev-parse --git-dir";
+
+        string stdOut = execute.ExecuteCommand(arguments);
+
+        _gitPath = stdOut.Trim();
+    }
+
+    public string GetWorkingBranch()
+    {
+        string headFilePath = Path.Combine(_gitPath, "HEAD");
+        string headFileContent = File.ReadAllText(headFilePath).Trim();
+
+        if (headFileContent.StartsWith("ref:", StringComparison.Ordinal))
         {
-            string[] branchNameComponents = HEADFile.Split('/');
+            const int branchNameIndex = 2;
+            string[] branchNameComponents = headFileContent.Split('/');
 
-            string branchName = string.Join("/", branchNameComponents.Skip(2));
-
-            return branchName;
+            string currentWorkingBranchName = string.Join(
+                "/",
+                branchNameComponents.Skip(branchNameIndex)
+            );
+            return currentWorkingBranchName;
         }
 
         return string.Empty;
+    }
+
+    public List<GitBranch> GetBranchNames(bool all, bool remote) { }
+
+    private List<GitBranch> GetLocalBranchNames()
+    {
+        const string localBranchPath = Path.Combine(_gitPath, "refs", "heads");
+    }
+
+    private List<GitBranch> GetRemoteBranchNames()
+    {
+        const string remoteBranchPath = Path.Combine(_gitPath, "refs", "remotes");
     }
 
     protected static List<GitBranch> GetNamesAndLastWirte(bool all, bool remote)
     {
         Dictionary<string, DateTime> branches = [];
 
-        string localBranchDir = Path.Combine(GitPath, "refs", "heads");
-        string remoteBranchDir = Path.Combine(GitPath, "refs", "remotes");
+        string localBranchDir = Path.Combine(_gitPath, "refs", "heads");
+        string remoteBranchDir = Path.Combine(_gitPath, "refs", "remotes");
 
         if (!remote)
         {
@@ -82,13 +114,13 @@ public class GitBase
 
     public static async Task<string> GetBranchDescription(string branchName)
     {
-        if (!File.Exists(Path.Combine(GitPath, "EDIT_DESCRIPTION")))
+        if (!File.Exists(Path.Combine(_gitPath, "EDIT_DESCRIPTION")))
         {
             return string.Empty;
         }
 
         string descriptionFile = await File.ReadAllTextAsync(
-            Path.Combine(GitPath, "EDIT_DESCRIPTION")
+            Path.Combine(_gitPath, "EDIT_DESCRIPTION")
         );
 
         if (!descriptionFile.Contains(branchName))
@@ -136,35 +168,5 @@ public class GitBase
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);
         Console.ResetColor();
-    }
-
-    private static async Task TrySetGitPath()
-    {
-        try
-        {
-            const string argument = "rev-parse --git-dir";
-            StringBuilder stdOutBuffer = new();
-
-            CommandResult result = await Cli.Wrap("git")
-                .WithArguments(argument)
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
-                .ExecuteAsync();
-
-            string stdOut = stdOutBuffer.ToString().Trim();
-
-            if (string.IsNullOrEmpty(stdOut))
-            {
-                return;
-            }
-
-            GitPath = stdOut;
-        }
-        catch
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("This is not a git repository");
-            Console.ResetColor();
-            Environment.Exit(1);
-        }
     }
 }
