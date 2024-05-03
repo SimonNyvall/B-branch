@@ -1,5 +1,6 @@
 namespace Git.Options;
 
+// This should not implement IOption and should be moved to a different place
 public class HelpOptions
 {
     // long Argument, short argument, description
@@ -36,11 +37,8 @@ public class HelpOptions
             ("version", "v", "Shows the current version of the tool")
         ];
 
-    public static void Handle(Dictionary<string, string> options)
+    public static void Execute()
     {
-        if (!(options.ContainsKey("help") || options.ContainsKey("h")))
-            return;
-
         Console.WriteLine("Usage: bbranch [options]\n");
         Console.WriteLine("Options:");
         foreach ((string longArg, string shortArg, string description) in ValidArgs)

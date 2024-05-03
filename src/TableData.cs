@@ -1,25 +1,33 @@
-using System.Globalization;
-using Git.Base;
-using Git.Options;
-
 namespace TableData;
-
-public struct Branch
-{
-    public string Name { get; set; }
-    public bool IsWorkingBranch { get; set; }
-}
 
 public struct AheadBehind
 {
     public int Ahead { get; set; }
     public int Behind { get; set; }
+
+    public AheadBehind(int ahead, int behind)
+    {
+        Ahead = ahead;
+        Behind = behind;
+    }
+}
+
+public struct Branch
+{
+    public string Name { get; set; }
+    public bool IsWorkingBranch { get; set; }
+
+    public Branch(string name, bool isWorkingBranch)
+    {
+        Name = name;
+        IsWorkingBranch = isWorkingBranch;
+    }
 }
 
 public class GitBranch
 {
-    public AheadBehind AheadBehind { get; private set; }
     public Branch Branch { get; private set; }
+    public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
     public string? Description { get; private set; }
 
@@ -36,7 +44,7 @@ public class GitBranch
         SetDescription(description);
     }
 
-    public void SetAheadBehind(AheadBehind aheadBehind)
+    public GitBranch SetAheadBehind(AheadBehind aheadBehind)
     {
         if (aheadBehind.Ahead < 0 || aheadBehind.Behind < 0)
         {
@@ -44,9 +52,11 @@ public class GitBranch
         }
 
         AheadBehind = aheadBehind;
+
+        return this;
     }
 
-    public void SetBranch(Branch branch)
+    public GitBranch SetBranch(Branch branch)
     {
         if (string.IsNullOrEmpty(branch.Name))
         {
@@ -54,9 +64,11 @@ public class GitBranch
         }
 
         Branch = branch;
+
+        return this;
     }
 
-    public void SetLastCommit(DateTime lastCommit)
+    public GitBranch SetLastCommit(DateTime lastCommit)
     {
         if (lastCommit == DateTime.MinValue)
         {
@@ -64,83 +76,24 @@ public class GitBranch
         }
 
         LastCommit = lastCommit;
+
+        return this;
     }
 
-    public void SetDescription(string description)
+    public GitBranch SetDescription(string description)
     {
-        if (description == null)
-        {
-            throw new ArgumentException("Description should not be empty");
-        }
+        Description = description ?? string.Empty;
 
-        Description = description;
-    }
-}
-
-public class Project
-{
-    public static async Task<List<BranchTableRow>> MapGitBranches(
-        List<GitBranch> branches,
-        string workingBranch,
-        string targetBranch = ""
-    )
-    {
-        List<BranchTableRow> branchTable = [];
-
-        foreach (GitBranch branch in branches)
-        {
-            AheadBehind AheadBehind;
-
-            AheadBehind =
-                (!string.IsNullOrEmpty(targetBranch))
-                    ? await AheadBehindOptions.GetRemoteAheadBehind(branch.Name, targetBranch)
-                    : await AheadBehindOptions.GetRemoteAheadBehind(branch.Name);
-
-            (string commitDate, string timeElapsed) = ParseLastCommit(branch.LastCommit);
-
-            string description = await GitBase.GetBranchDescription(branch.Name);
-
-            if (branch.Name == workingBranch.Trim())
-            {
-                branchTable.Add(
-                    new BranchTableRow(
-                        AheadBehind.Ahead,
-                        AheadBehind.Behind,
-                        branch.Name,
-                        (commitDate, timeElapsed),
-                        true,
-                        description
-                    )
-                );
-                continue;
-            }
-
-            branchTable.Add(
-                new BranchTableRow(
-                    AheadBehind.Ahead,
-                    AheadBehind.Behind,
-                    branch.Name,
-                    (commitDate, timeElapsed),
-                    false,
-                    description
-                )
-            );
-        }
-
-        return branchTable;
+        return this;
     }
 
-    private static (string commitDate, string timeElapsed) ParseLastCommit(DateTime lastCommit)
+    public static GitBranch Default()
     {
-        string timeElapsed;
-        int days = (DateTime.Now - lastCommit).Days;
-
-        if (days == 0)
-        {
-            return (lastCommit.ToString("HH:mm", CultureInfo.InvariantCulture), "Today");
-        }
-
-        timeElapsed = days == 1 ? "Day ago" : "Days ago";
-        return (days.ToString(CultureInfo.InvariantCulture), timeElapsed);
+        return new GitBranch(
+            new AheadBehind { Ahead = 1, Behind = 1 },
+            new Branch { Name = "branchName", IsWorkingBranch = false },
+            DateTime.Now,
+            string.Empty
+        );
     }
 }
