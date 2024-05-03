@@ -1,7 +1,6 @@
-﻿using Bbranch.ParseArguments;
-using Bbranch.TablePrinter;
-using Bbranch.ValidateArguments;
-using Git.Base;
+﻿using Bbranch.Flags;
+using Bbranch.ParseArguments;
+using Bbranch.Output;
 using Git.Options;
 using TableData;
 
@@ -9,47 +8,119 @@ namespace Bbranch;
 
 public class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
-        Dictionary<string, string> options = Parse.Arguments(args);
+        Dictionary<FlagType, string> options = Parse.Arguments(args);
 
-        if (Validate.Arguments(options) == Result.Error)
+        if (options.ContainsKey(FlagType.Help))
         {
-            HelpOptions.Handle(options);
-            Environment.Exit(1);
+            HelpOptions.Execute();
         }
 
-        HelpOptions.Handle(options);
+        if (options.ContainsKey(FlagType.Version))
+        {
+            VersionOptions.Execute();
+        }
 
-        VersionOptions.Handle(options);
+        List<GitBranch> branchTable = AssembleBranchTable(options);
 
-        List<BranchTableRow> branchTable = await AssembleBranchTable(options);
+        if (options.ContainsKey(FlagType.Quiet))
+        {
+            PrintLightTable.Print(branchTable);
+            return;
+        }
 
-        Data.PrintBranchTable(branchTable, options);
+        PrintFullTable.Print(branchTable);
     }
 
-    private static async Task<List<BranchTableRow>> AssembleBranchTable(
-        Dictionary<string, string> options
+    private static List<GitBranch> AssembleBranchTable(
+        Dictionary<FlagType, string> argumetns
     )
     {
-        await GitBase.Initialize();
+        List<IOption> options = [];
+        CompositeOptionStrategy optionStrategies = new(options);
 
-        List<GitBranch> branches = [];
+        if (argumetns.ContainsKey(FlagType.All))
+        {
+            IOption allOption = new BranchAllOptions();
+            optionStrategies.AddStrategyOption(allOption);
+        }
+        else if (argumetns.ContainsKey(FlagType.Remote))
+        {
+            IOption remoteOption = new BranchRemoteOptions();
+            optionStrategies.AddStrategyOption(remoteOption);
+        }
+        else 
+        {
+            IOption localOption = new BranchLocalOptions();
+            optionStrategies.AddStrategyOption(localOption);
+        }
 
-        BranchOptions.GetBranches(options, ref branches);
+        IOption lastCommitOption = new SetLastCommitOptions();
+        optionStrategies.AddStrategyOption(lastCommitOption);
 
-        ContainsOptions.GetBranches(options, ref branches);
+        if (argumetns.ContainsKey(FlagType.Contains))
+        {
+            var value = argumetns[FlagType.Contains];
+            IOption containsOption = new ContainsOption(value);
+            optionStrategies.AddStrategyOption(containsOption);
+        }
+        else if (argumetns.ContainsKey(FlagType.NoContains))
+        {
+            var value = argumetns[FlagType.NoContains];
+            IOption noContainsOption = new NoContainsOption(value);
+            optionStrategies.AddStrategyOption(noContainsOption);
+        }
 
-        string workingBranch = await GitBase.TryGetWorkingBranch();
+        // TODO maybe have the track option call the ahead behind option but have some validation check in this method
+        // TODO add the working branch as a strategy, but make the others a shared strategy
+        if (argumetns.ContainsKey(FlagType.Track))
+        {
+            var value = argumetns[FlagType.Track];
+            IOption trackOption = new TrackAheadBehindOption(value);
+            optionStrategies.AddStrategyOption(trackOption);
+        }
+        else 
+        {
+            IOption aheadBehindOption = new DefaultAheadBehindOption();
+            optionStrategies.AddStrategyOption(aheadBehindOption);
+        }
 
-        List<BranchTableRow> branchTable = await TrackOptions.GetBranches(
-            options,
-            branches,
-            workingBranch
-        );
+        IOption workingBranchOption = new WorkingBranchOption();
+        optionStrategies.AddStrategyOption(workingBranchOption);
 
-        SortOptions.GetBranches(branchTable, options, ref branchTable);
+        IOption sortOption; 
+        if (argumetns.ContainsKey(FlagType.Sort))
+        {
+            var value = argumetns[FlagType.Sort];
 
-        return branchTable;
+            if (value == "name")
+            {
+                sortOption = new SortByNameOptions();
+                optionStrategies.AddStrategyOption(sortOption);
+            }
+            else if (value == "ahead")
+            {
+                sortOption = new SortByAheadOptions();
+                optionStrategies.AddStrategyOption(sortOption);
+            }
+            else if (value == "behind")
+            {
+                sortOption = new SortByBehindOptions();
+                optionStrategies.AddStrategyOption(sortOption);
+            }
+        }
+        else 
+        {
+            sortOption = new SortByLastEditedOptions();
+            optionStrategies.AddStrategyOption(sortOption);
+        }
+        
+
+        IOption descriptionOption = new DescriptionOption();
+        optionStrategies.AddStrategyOption(descriptionOption);
+
+        List<GitBranch> gitBranches = [];
+        return optionStrategies.Execute(gitBranches);
     }
 }

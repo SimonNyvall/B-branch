@@ -1,170 +1,165 @@
-using System.Text;
-using CliWrap;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using TableData;
 
 namespace Git.Base;
 
-public class GitBase
+public class GitBase : IGitBase
 {
-    protected static string GitPath { get; private set; } = string.Empty;
+    private static GitBase? _instance;
 
-    public static async Task Initialize()
+    private string _gitPath = string.Empty;
+
+    private GitBase()
     {
-        await TrySetGitPath();
+        SetGitPath();
     }
 
-    public static async Task<string> TryGetWorkingBranch()
+    public static GitBase GetInstance()
     {
-        try
+        if (_instance is not null)
         {
-            return await GetWorkingBranch();
+            return _instance;
         }
-        catch
+
+        lock (typeof(GitBase))
         {
-            return string.Empty;
+            _instance = _instance is null ? new GitBase() : _instance;
         }
+
+        return _instance;
     }
 
-    private static async Task<string> GetWorkingBranch()
+    private void SetGitPath()
     {
-        string HEADFile = await File.ReadAllTextAsync(Path.Combine(GitPath, "HEAD"));
+        Execute execute = Execute.GetInstance();
 
-        if (HEADFile.Trim().StartsWith("ref:", StringComparison.Ordinal))
+        const string arguments = "rev-parse --git-dir";
+
+        string stdOut = execute.ExecuteCommand(arguments);
+
+        _gitPath = stdOut.Trim();
+    }
+
+    public string GetWorkingBranch()
+    {
+        string headFilePath = Path.Combine(_gitPath, "HEAD");
+        string headFileContent = File.ReadAllText(headFilePath).Trim();
+
+        if (headFileContent.StartsWith("ref:", StringComparison.Ordinal))
         {
-            string[] branchNameComponents = HEADFile.Split('/');
+            const int branchNameIndex = 2;
+            string[] branchNameComponents = headFileContent.Split('/');
 
-            string branchName = string.Join("/", branchNameComponents.Skip(2));
-
-            return branchName;
+            string currentWorkingBranchName = string.Join(
+                "/",
+                branchNameComponents.Skip(branchNameIndex)
+            );
+            return currentWorkingBranchName;
         }
 
         return string.Empty;
     }
 
-    protected static List<GitBranch> GetNamesAndLastWirte(bool all, bool remote)
+    public DateTime GetLastCommitDate(string branchName)
     {
-        Dictionary<string, DateTime> branches = [];
-
-        string localBranchDir = Path.Combine(GitPath, "refs", "heads");
-        string remoteBranchDir = Path.Combine(GitPath, "refs", "remotes");
-
-        if (!remote)
-        {
-            CollectBranches(localBranchDir, ref branches);
-        }
-
-        if (all || remote)
-        {
-            CollectBranches(remoteBranchDir, ref branches);
-        }
-
-        IEnumerable<GitBranch> result = branches.Select(x => new GitBranch(x.Key, x.Value));
-
-        result = result.OrderByDescending(x => x.LastCommit);
-
-        return result.ToList();
-    }
-
-    private static void CollectBranches(string directory, ref Dictionary<string, DateTime> branches)
-    {
-        if (!Directory.Exists(directory))
-        {
-            throw new DirectoryNotFoundException($"Branch directory does not exist at {directory}");
-        }
-
-        foreach (string file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
-        {
-            string relativePath = Path.GetRelativePath(directory, file);
-            string branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
-            branches[branchName] = File.GetLastWriteTime(file);
-        }
-    }
-
-    public static async Task<string> GetBranchDescription(string branchName)
-    {
-        if (!File.Exists(Path.Combine(GitPath, "EDIT_DESCRIPTION")))
-        {
-            return string.Empty;
-        }
-
-        string descriptionFile = await File.ReadAllTextAsync(
-            Path.Combine(GitPath, "EDIT_DESCRIPTION")
+        string lastCommitDate = Execute.GetInstance().ExecuteCommand(
+            $"log -1 --format=%cd --date=iso {branchName}"
         );
 
-        if (!descriptionFile.Contains(branchName))
+        return DateTime.Parse(lastCommitDate);
+    }
+
+    public AheadBehind GetAheadBehind(string argument)
+    {
+        string response = Execute.GetInstance().ExecuteCommand(argument);
+
+        if (string.IsNullOrWhiteSpace(response))
         {
-            return string.Empty;
+            return new AheadBehind(0, 0);
         }
 
-        string[] lines = descriptionFile.Split('\n');
+        Match match = Regex.Match(response, @"(\d+)\s+(\d+)", RegexOptions.Compiled);
 
-        IEnumerable<string> linesWithoutComments = lines.Where(x => !x.StartsWith('#'));
-
-        string description = string.Join(" ", linesWithoutComments);
-
-        return description;
-    }
-
-    protected static async Task<bool> ExecuteGitCommand(string gitPath, string arguments)
-    {
-        CommandResult result = await Cli.Wrap("git")
-            .WithWorkingDirectory(gitPath)
-            .WithArguments(arguments)
-            .WithValidation(CommandResultValidation.None)
-            .ExecuteAsync();
-
-        return result.ExitCode == 0;
-    }
-
-    protected static string? GetOption(Dictionary<string, string> options, params string[] keys)
-    {
-        foreach (string key in keys)
+        if (match.Success)
         {
-            bool found = options.TryGetValue(key, out string? value);
+            int ahead = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+            int behind = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
 
-            if (found)
+            return new AheadBehind(ahead, behind);
+        }
+
+        return new AheadBehind(0, 0);
+    }
+
+    public List<GitBranch> GetLocalBranchNames()
+    {
+        string localBranchPath = Path.Combine(_gitPath, "refs", "heads");
+
+        List<GitBranch> updatedBranches = CollectBrancheNames(localBranchPath);
+
+        return updatedBranches;
+    }
+
+    public List<GitBranch> GetRemoteBranchNames()
+    {
+        string remoteBranchPath = Path.Combine(_gitPath, "refs", "remotes");
+
+        List<GitBranch> updatedBranches = CollectBrancheNames(remoteBranchPath);
+        return updatedBranches;
+    }
+
+    private static List<GitBranch> CollectBrancheNames(string directoryPath)
+    {
+        List<GitBranch> branches = [];
+        var files = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+
+        foreach (string file in files)
+        {
+            string relativePath = Path.GetRelativePath(directoryPath, file);
+            string branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+
+            Branch branch = new() { Name = branchName, IsWorkingBranch = false };
+
+            branches.Add(GitBranch.Default().SetBranch(branch));
+        }
+
+        return branches;
+    }
+
+    public List<GitBranch> GetBranchDescription(List<GitBranch> branches)
+    {
+        if (!File.Exists(Path.Combine(_gitPath, "EDIT_DESCRIPTION")))
+        {
+            throw new Exception("No description file found");
+        }
+
+        string descriptionFile = File.ReadAllText(Path.Combine(_gitPath, "EDIT_DESCRIPTION"));
+
+        foreach (GitBranch branch in branches)
+        {
+            if (!descriptionFile.Contains(branch.Branch.Name))
             {
-                return value;
-            }
-        }
-
-        return null;
-    }
-
-    protected static void LogError(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(message);
-        Console.ResetColor();
-    }
-
-    private static async Task TrySetGitPath()
-    {
-        try
-        {
-            const string argument = "rev-parse --git-dir";
-            StringBuilder stdOutBuffer = new();
-
-            CommandResult result = await Cli.Wrap("git")
-                .WithArguments(argument)
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(stdOutBuffer))
-                .ExecuteAsync();
-
-            string stdOut = stdOutBuffer.ToString().Trim();
-
-            if (string.IsNullOrEmpty(stdOut))
-            {
-                return;
+                continue;
             }
 
-            GitPath = stdOut;
+            IEnumerable<string> lines = descriptionFile.Split('\n');
+            lines = lines.Where(line => !line.StartsWith('#'));
+            string description = string.Join(" ", lines);
+            branch.SetDescription(description);
         }
-        catch
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("This is not a git repository");
-            Console.ResetColor();
-            Environment.Exit(1);
-        }
+
+        return branches;
+    }
+
+    public bool DoesBranchExist(string branchName)
+    {
+        var execute = Execute.GetInstance();
+
+        string argument = $"rev-parse --verify {branchName}";
+
+        string response = execute.ExecuteCommand(argument);
+
+        return !string.IsNullOrWhiteSpace(response);
     }
 }
