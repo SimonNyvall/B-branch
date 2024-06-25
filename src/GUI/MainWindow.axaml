@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GUI.MainWindow"
+        Title="B-branch"
+        Background="#D6D6D6"
+        CanResize="False"
+        Height="980"
+        Width="1200">
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock Margin="0,80,0,40" FontWeight="Bold" FontSize="64" HorizontalAlignment="Center">B-branch</TextBlock>
+            <TextBlock FontSize="24" Foreground="#828282" >Enhance the way developers interact With Git repositorys</TextBlock>
+            <TextBlock Margin="0,90,0,0" FontWeight="Bold" FontSize="16" Foreground="#000000" HorizontalAlignment="Center">Open a directory to a git repo to get started</TextBlock>
+            <Button 
+                    HorizontalAlignment="Center"
+                    Height="50"
+                    Width="140"
+                    Background="#000000"
+                    Foreground="#FFFFFF">
+                Open Directory
+            </Button>
+        </StackPanel>
+</Window>
