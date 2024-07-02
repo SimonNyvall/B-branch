@@ -46,6 +46,7 @@ B-branch [options]
 - `-c, --contains <String>`: Filters the list to only show branches that contain the specified string.
 - `-r, --remote`: Includes remote branches in the output.
 - `-h, --help`: Displays the help message with information about all available options.
+- `-p, --print-top <Number>`: Prints the top N branches based on the specified sort criterion. Coming soon!
 
 ### Examples
 
