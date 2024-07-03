@@ -4,6 +4,8 @@ namespace Git.Base;
 
 public class Execute
 {
+    public static string CurrentWorkingDirectory { get; set; } = Directory.GetCurrentDirectory();
+
     private static Execute? _instance;
 
     private Execute() { }
@@ -45,6 +47,10 @@ public class Execute
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.CreateNoWindow = true;
+
+        if (!Directory.Exists(CurrentWorkingDirectory)) throw new DirectoryNotFoundException();
+
+        process.StartInfo.WorkingDirectory = CurrentWorkingDirectory;
 
         return process;
     }
