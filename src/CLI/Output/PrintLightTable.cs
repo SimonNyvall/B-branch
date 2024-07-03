@@ -1,6 +1,6 @@
 using Shared.TableData;
 
-namespace Bbranch.Output;
+namespace CLI.Output;
 
 public class PrintLightTable
 {

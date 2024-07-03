@@ -1,7 +1,7 @@
-using Bbranch.Flags;
-using Bbranch.ErrorHandler;
+using CLI.Flags;
+using CLI.ErrorHandler;
 
-namespace Bbranch.ParseArguments;
+namespace CLI.ParseArguments;
 
 // TODO fix bug where I count the number of "-"
 public class Parse

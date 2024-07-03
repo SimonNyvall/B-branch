@@ -1,4 +1,4 @@
-namespace Bbranch.Flags;
+namespace CLI.Flags;
 
 public enum FlagType
 {

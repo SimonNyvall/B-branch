@@ -1,7 +1,7 @@
-using Bbranch.ErrorHandler;
-using Bbranch.Flags;
+using CLI.ErrorHandler;
+using CLI.Flags;
 
-namespace Bbranch.ValidateArguments;
+namespace CLI.ValidateArguments;
 
 public enum Result
 {
