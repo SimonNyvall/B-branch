@@ -1,6 +1,5 @@
-namespace Git.Options;
+namespace CLI.Options;
 
-// This should not implement IOption and should be moved to a different place
 public class VersionOptions
 {
     public static void Execute()

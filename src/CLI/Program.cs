@@ -2,6 +2,7 @@
 using Bbranch.ParseArguments;
 using Bbranch.Output;
 using Git.Options;
+using CLI.Options;
 using Shared.TableData;
 
 namespace Bbranch;
