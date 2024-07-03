@@ -91,6 +91,13 @@ public class BranchTableAssembler
         IOption descriptionOption = new DescriptionOption();
         optionStrategies.AddStrategyOption(descriptionOption);
 
+        if (argumetns.ContainsKey(FlagType.PrintTop))
+        {
+            var topValue = Convert.ToInt32(argumetns[FlagType.PrintTop]);
+            IOption printTopOption = new TopOption(topValue);
+            optionStrategies.AddStrategyOption(printTopOption);
+        }
+
         List<GitBranch> gitBranches = [];
         return optionStrategies.Execute(gitBranches);
     }

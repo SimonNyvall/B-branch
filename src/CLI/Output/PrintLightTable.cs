@@ -4,7 +4,7 @@ namespace CLI.Output;
 
 public class PrintLightTable
 {
-    public static void Print(List<GitBranch> branches, int? top)
+    public static void Print(List<GitBranch> branches)
     {
         if (branches.Count == 0)
         {
@@ -12,17 +12,8 @@ public class PrintLightTable
             return;
         }
 
-        int count = 0;
-
         foreach (var branch in branches)
         {
-            if (top.HasValue && count == top)
-            {
-                break;
-            }
-
-            count++;
-
             if (branch.Branch.IsWorkingBranch)
             {
                 PrintWorkingBranch(branch);

@@ -5,8 +5,7 @@ namespace CLI.Output;
 
 public class PrintFullTable
 {
-
-    public static void Print(List<GitBranch> branches, int? top)
+    public static void Print(List<GitBranch> branches)
     {
         const int minimumBranchNameWidth = 14;
 
@@ -22,7 +21,7 @@ public class PrintFullTable
         );
 
         PrintHeaders(longestBranchName);
-        PrintBranchRows(branches, longestBranchName, top);
+        PrintBranchRows(branches, longestBranchName);
     }
 
     private static void PrintHeaders(int longestBranchName)
@@ -38,31 +37,15 @@ public class PrintFullTable
         );
     }
 
-    private static void PrintBranchRows(
-        List<GitBranch> branchTable,
-        int longestBranchName,
-        int? top
-    )
+    private static void PrintBranchRows(List<GitBranch> branchTable, int longestBranchName)
     {
-        int count = 0;
-
         foreach (var branch in branchTable)
         {
-            if (top.HasValue && count == top)
-            {
-                break;
-            }
-
-            count++;
-
             PrintBranchRow(branch, longestBranchName);
         }
     }
 
-    private static void PrintBranchRow(
-        GitBranch branch,
-        int longestBranchName
-    )
+    private static void PrintBranchRow(GitBranch branch, int longestBranchName)
     {
         var aHead = branch.AheadBehind.Ahead.ToString().PadRight(8);
         var behind = branch.AheadBehind.Behind.ToString().PadRight(9);

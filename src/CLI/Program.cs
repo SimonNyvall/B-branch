@@ -26,23 +26,11 @@ public class Program
 
         if (options.ContainsKey(FlagType.Quiet))
         {
-            if (options.ContainsKey(FlagType.PrintTop))
-            {
-                PrintLightTable.Print(branchTable, int.Parse(options[FlagType.PrintTop]));
-                return;
-            }
-
-            PrintLightTable.Print(branchTable, null);
+            PrintLightTable.Print(branchTable);
 
             return;
         }
-
-        if (options.ContainsKey(FlagType.PrintTop))
-        {
-            PrintFullTable.Print(branchTable, int.Parse(options[FlagType.PrintTop]));
-            return;
-        }
-
-        PrintFullTable.Print(branchTable, null);
+ 
+        PrintFullTable.Print(branchTable);
     }
 }
