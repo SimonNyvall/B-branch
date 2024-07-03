@@ -10,7 +10,8 @@ public enum FlagType
     NoContains,
     Remote,
     Track,
-    Version
+    Version,
+    PrintTop
 }
 
 /// <summary>
@@ -26,5 +27,6 @@ public enum ShortFlagType
     nc,
     r,
     t,
-    v
+    v,
+    p
 }

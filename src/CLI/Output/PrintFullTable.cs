@@ -6,9 +6,7 @@ namespace Bbranch.Output;
 public class PrintFullTable
 {
 
-    public static void Print(
-        List<GitBranch> branches
-    )
+    public static void Print(List<GitBranch> branches, int? top)
     {
         const int minimumBranchNameWidth = 14;
 
@@ -18,7 +16,7 @@ public class PrintFullTable
         );
 
         PrintHeaders(longestBranchName);
-        PrintBranchRows(branches, longestBranchName);
+        PrintBranchRows(branches, longestBranchName, top);
     }
 
     private static void PrintHeaders(int longestBranchName)
@@ -36,11 +34,21 @@ public class PrintFullTable
 
     private static void PrintBranchRows(
         List<GitBranch> branchTable,
-        int longestBranchName
+        int longestBranchName,
+        int? top
     )
     {
+        int count = 0;
+
         foreach (var branch in branchTable)
         {
+            if (top.HasValue && count == top)
+            {
+                break;
+            }
+
+            count++;
+
             PrintBranchRow(branch, longestBranchName);
         }
     }
@@ -61,6 +69,7 @@ public class PrintFullTable
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
         }
+
         Console.Write($"{branchName}");
         Console.ResetColor();
 

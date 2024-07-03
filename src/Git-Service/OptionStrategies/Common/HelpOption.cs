@@ -34,6 +34,7 @@ public class HelpOptions
                 "q",
                 "Only displays the names of the branches without any additional information or formatting"
             ),
+            ("print-top", "p", "Prints the top N branches based on the specified sort criterion"),
             ("version", "v", "Shows the current version of the tool")
         ];
 

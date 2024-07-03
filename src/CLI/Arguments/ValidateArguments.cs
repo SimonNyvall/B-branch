@@ -15,7 +15,7 @@ public class Validate
     {
         foreach (var option in options)
         {
-            System.Console.WriteLine(option.Key);
+            Console.WriteLine(option.Key);
         }
 
         var validators = new Func<Dictionary<FlagType, string>, Result>[]
@@ -24,6 +24,7 @@ public class Validate
             ValidateContains,
             ValidateAllRemote,
             ValidateSortValue,
+            ValidatePrintTopValue,
         };
 
         foreach (var validator in validators)
@@ -98,5 +99,28 @@ public class Validate
         }
 
         return Result.Success;
+    }
+
+    private static Result ValidatePrintTopValue(Dictionary<FlagType, string> options)
+    {
+        if (options.TryGetValue(FlagType.PrintTop, out string? value))
+        {
+            if (int.TryParse(value, out int numberValue))
+            {
+                if (numberValue < 1)
+                {
+                    Error.Register("Value for --print-top must be greater than 0");
+                    return Result.Error;
+                }
+
+                return Result.Success;
+            }
+
+            Error.Register("Value for --print-top is missing or not a number");
+
+            return Result.Error;
+        }
+
+        return Result.Error;
     }
 }

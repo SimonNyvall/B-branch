@@ -101,6 +101,7 @@ public class Parse
             ShortFlagType.r => FlagType.Remote,
             ShortFlagType.t => FlagType.Track,
             ShortFlagType.v => FlagType.Version,
+            ShortFlagType.p => FlagType.PrintTop,
             _ => FlagType.All
         };
     }

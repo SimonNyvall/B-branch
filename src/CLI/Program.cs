@@ -26,11 +26,24 @@ public class Program
 
         if (options.ContainsKey(FlagType.Quiet))
         {
-            PrintLightTable.Print(branchTable);
+            if (options.ContainsKey(FlagType.PrintTop))
+            {
+                PrintLightTable.Print(branchTable, int.Parse(options[FlagType.PrintTop]));
+                return;
+            }
+
+            PrintLightTable.Print(branchTable, null);
+
             return;
         }
 
-        PrintFullTable.Print(branchTable);
+        if (options.ContainsKey(FlagType.PrintTop))
+        {
+            PrintFullTable.Print(branchTable, int.Parse(options[FlagType.PrintTop]));
+            return;
+        }
+
+        PrintFullTable.Print(branchTable, null);
     }
 
     private static List<GitBranch> AssembleBranchTable(

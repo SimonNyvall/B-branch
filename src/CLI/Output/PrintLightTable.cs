@@ -4,10 +4,19 @@ namespace Bbranch.Output;
 
 public class PrintLightTable
 {
-    public static void Print(List<GitBranch> branches)
+    public static void Print(List<GitBranch> branches, int? top)
     {
+        int count = 0;
+
         foreach (var branch in branches)
         {
+            if (top.HasValue && count == top)
+            {
+                break;
+            }
+
+            count++;
+
             if (branch.Branch.IsWorkingBranch)
             {
                 PrintWorkingBranch(branch);
