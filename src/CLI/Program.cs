@@ -75,12 +75,14 @@ public class Program
         if (argumetns.ContainsKey(FlagType.Contains))
         {
             var value = argumetns[FlagType.Contains];
+
             IOption containsOption = new ContainsOption(value);
             optionStrategies.AddStrategyOption(containsOption);
         }
         else if (argumetns.ContainsKey(FlagType.NoContains))
         {
             var value = argumetns[FlagType.NoContains];
+
             IOption noContainsOption = new NoContainsOption(value);
             optionStrategies.AddStrategyOption(noContainsOption);
         }

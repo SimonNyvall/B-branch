@@ -10,6 +10,12 @@ public class PrintFullTable
     {
         const int minimumBranchNameWidth = 14;
 
+        if (branches.Count == 0)
+        {
+            Console.WriteLine("No branches found");
+            return;
+        }
+
         int longestBranchName = Math.Max(
             minimumBranchNameWidth,
             branches.Max(x => x.Branch.Name.Length + 1)

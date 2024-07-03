@@ -42,8 +42,8 @@ B-branch [options]
 - `-v, --version`: Shows the current version of the `B-branch` tool.
 - `-s, --sort <String>`: Sorts the branches based on the specified criterion. Valid options are `[date]`, `[name]`, `[ahead]`, or `[behind]`.
 - `-a, --all`: Displays all branches, both local and remote.
-- `-n, --no-contains <String>`: Filters the list to only show branches that do not contain the specified string.
-- `-c, --contains <String>`: Filters the list to only show branches that contain the specified string.
+- `-n, --no-contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that do not contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
+- `-c, --contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
 - `-r, --remote`: Includes remote branches in the output.
 - `-h, --help`: Displays the help message with information about all available options.
 - `-p, --print-top <Number>`: Prints the top N branches based on the specified sort criterion.

@@ -6,6 +6,12 @@ public class PrintLightTable
 {
     public static void Print(List<GitBranch> branches, int? top)
     {
+        if (branches.Count == 0)
+        {
+            Console.WriteLine("No branches found");
+            return;
+        }
+
         int count = 0;
 
         foreach (var branch in branches)
