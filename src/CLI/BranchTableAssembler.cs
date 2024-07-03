@@ -6,17 +6,17 @@ using CLI.Flags;
 
 public class BranchTableAssembler
 {
-    internal static List<GitBranch> AssembleBranchTable(Dictionary<FlagType, string> argumetns)
+    internal static List<GitBranch> AssembleBranchTable(Dictionary<FlagType, string> arguments)
     {
         List<IOption> options = [];
         CompositeOptionStrategy optionStrategies = new(options);
 
-        if (argumetns.ContainsKey(FlagType.All))
+        if (arguments.ContainsKey(FlagType.All))
         {
             IOption allOption = new BranchAllOptions();
             optionStrategies.AddStrategyOption(allOption);
         }
-        else if (argumetns.ContainsKey(FlagType.Remote))
+        else if (arguments.ContainsKey(FlagType.Remote))
         {
             IOption remoteOption = new BranchRemoteOptions();
             optionStrategies.AddStrategyOption(remoteOption);
@@ -30,24 +30,24 @@ public class BranchTableAssembler
         IOption lastCommitOption = new SetLastCommitOptions();
         optionStrategies.AddStrategyOption(lastCommitOption);
 
-        if (argumetns.ContainsKey(FlagType.Contains))
+        if (arguments.ContainsKey(FlagType.Contains))
         {
-            var value = argumetns[FlagType.Contains];
+            var value = arguments[FlagType.Contains];
 
             IOption containsOption = new ContainsOption(value);
             optionStrategies.AddStrategyOption(containsOption);
         }
-        else if (argumetns.ContainsKey(FlagType.NoContains))
+        else if (arguments.ContainsKey(FlagType.NoContains))
         {
-            var value = argumetns[FlagType.NoContains];
+            var value = arguments[FlagType.NoContains];
 
             IOption noContainsOption = new NoContainsOption(value);
             optionStrategies.AddStrategyOption(noContainsOption);
         }
 
-        if (argumetns.ContainsKey(FlagType.Track))
+        if (arguments.ContainsKey(FlagType.Track))
         {
-            var value = argumetns[FlagType.Track];
+            var value = arguments[FlagType.Track];
             IOption trackOption = new TrackAheadBehindOption(value);
             optionStrategies.AddStrategyOption(trackOption);
         }
@@ -61,9 +61,9 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(workingBranchOption);
 
         IOption sortOption; 
-        if (argumetns.ContainsKey(FlagType.Sort))
+        if (arguments.ContainsKey(FlagType.Sort))
         {
-            var value = argumetns[FlagType.Sort];
+            var value = arguments[FlagType.Sort];
 
             if (value == "name")
             {
@@ -91,9 +91,9 @@ public class BranchTableAssembler
         IOption descriptionOption = new DescriptionOption();
         optionStrategies.AddStrategyOption(descriptionOption);
 
-        if (argumetns.ContainsKey(FlagType.PrintTop))
+        if (arguments.ContainsKey(FlagType.PrintTop))
         {
-            var topValue = Convert.ToInt32(argumetns[FlagType.PrintTop]);
+            var topValue = Convert.ToInt32(arguments[FlagType.PrintTop]);
             IOption printTopOption = new TopOption(topValue);
             optionStrategies.AddStrategyOption(printTopOption);
         }
