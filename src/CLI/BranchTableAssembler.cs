@@ -11,7 +11,6 @@ public class BranchTableAssembler
         List<IOption> options = CreateOptions(arguments);
         CompositeOptionStrategy optionStrategies = new(options);
 
-        AddBranchOptions(arguments, optionStrategies);
         AddLastCommitOption(optionStrategies);
         AddContainsOptions(arguments, optionStrategies);
         AddTrackOption(arguments, optionStrategies);
@@ -20,8 +19,7 @@ public class BranchTableAssembler
         AddDescriptionOption(optionStrategies);
         AddPrintTopOption(arguments, optionStrategies);
 
-        List<GitBranch> gitBranches = [];
-        return optionStrategies.Execute(gitBranches);
+        return optionStrategies.Execute([]);
     }
 
     private static List<IOption> CreateOptions(Dictionary<FlagType, string> arguments)
@@ -48,28 +46,6 @@ public class BranchTableAssembler
         options.Add(localOption);
 
         return options;
-    }
-
-    private static void AddBranchOptions(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
-    {
-        if (arguments.ContainsKey(FlagType.All))
-        {
-            IOption allOption = new BranchAllOptions();
-            optionStrategies.AddStrategyOption(allOption);
-
-            return;
-        }
-        
-        if (arguments.ContainsKey(FlagType.Remote))
-        {
-            IOption remoteOption = new BranchRemoteOptions();
-            optionStrategies.AddStrategyOption(remoteOption);
-
-            return;
-        }
-
-        IOption localOption = new BranchLocalOptions();
-        optionStrategies.AddStrategyOption(localOption);
     }
 
     private static void AddLastCommitOption(CompositeOptionStrategy optionStrategies)
