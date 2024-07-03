@@ -1,5 +1,0 @@
-- [ ] Make the flags only take one or two -. Now they can take n amount.
-- [ ] Then printing the branches with the --all flag needs a rework. Now it just prints everything, but if there is too many branches it should only print the max length of the terminal. Same for the other flags I guess.
-- [ ] See if I can remove the CliWrap package. Maybe use the process class from dotnet and make it async mysself with a wrapper.
-- [ ] Update the readme
-- [ ] Add a (-p ; --print-top) flag. To only print the top branches.
