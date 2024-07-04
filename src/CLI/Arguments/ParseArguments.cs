@@ -3,9 +3,21 @@ using CLI.ErrorHandler;
 
 namespace CLI.ParseArguments;
 
-// TODO fix bug where I count the number of "-"
 public class Parse
 {
+    private static readonly string[] flags = [
+        "--help", "-h",
+        "--track", "-t",
+        "--sort", "-s",
+        "--contains", "-c",
+        "--no-contains", "-n",
+        "--all", "-a",
+        "--remote", "-r",       
+        "--quite", "-q",
+        "--print-top", "-p",
+        "--version", "-v",
+    ];
+
     public static Dictionary<FlagType, string> Arguments(string[] arguments)
     {
         Dictionary<string, string> options = PopulateInput(arguments);
@@ -24,7 +36,14 @@ public class Parse
                 continue;
             }
 
-            string option = arguments[i].TrimStart('-');
+            if (!flags.Contains(arguments[i].ToLower()))
+            {
+                Error.Register($"Invalid option: {arguments[i]}");
+                Error.Log();
+                Environment.Exit(1);
+            }
+
+            string option = arguments[i].Replace("-", string.Empty);
 
             if (
                 (i + 1) < arguments.Length
@@ -70,7 +89,7 @@ public class Parse
 
         foreach (KeyValuePair<string, string> option in options)
         {
-            if (Enum.TryParse(option.Key, out FlagType flag))
+            if (Enum.TryParse(ToTitle(option.Key), out FlagType flag))
             {
                 flags[flag] = option.Value;
             }
@@ -88,6 +107,11 @@ public class Parse
         return flags;
     }
 
+    private static string ToTitle(string input)
+    {
+        return input.Substring(0, 1).ToUpper() + input.Substring(1);
+    }
+
     private static FlagType GetLongFlag(ShortFlagType shortFlag)
     {
         return shortFlag switch
@@ -97,11 +121,11 @@ public class Parse
             ShortFlagType.q => FlagType.Quiet,
             ShortFlagType.s => FlagType.Sort,
             ShortFlagType.c => FlagType.Contains,
-            ShortFlagType.nc => FlagType.NoContains,
+            ShortFlagType.nc => FlagType.Nocontains,
             ShortFlagType.r => FlagType.Remote,
             ShortFlagType.t => FlagType.Track,
             ShortFlagType.v => FlagType.Version,
-            ShortFlagType.p => FlagType.PrintTop,
+            ShortFlagType.p => FlagType.Printtop,
             _ => FlagType.All
         };
     }

@@ -7,11 +7,11 @@ public enum FlagType
     Quiet,
     Sort,
     Contains,
-    NoContains,
+    Nocontains,
     Remote,
     Track,
     Version,
-    PrintTop
+    Printtop
 }
 
 /// <summary>

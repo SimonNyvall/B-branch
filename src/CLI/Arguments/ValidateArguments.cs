@@ -55,7 +55,7 @@ public class Validate
     private static Result ValidateContains(Dictionary<FlagType, string> options)
     {
         bool contains = (
-            options.ContainsKey(FlagType.Contains) && options.ContainsKey(FlagType.NoContains)
+            options.ContainsKey(FlagType.Contains) && options.ContainsKey(FlagType.Nocontains)
         );
 
         if (contains)
@@ -103,7 +103,7 @@ public class Validate
 
     private static Result ValidatePrintTopValue(Dictionary<FlagType, string> options)
     {
-        if (options.TryGetValue(FlagType.PrintTop, out string? value))
+        if (options.TryGetValue(FlagType.Printtop, out string? value))
         {
             if (int.TryParse(value, out int numberValue))
             {

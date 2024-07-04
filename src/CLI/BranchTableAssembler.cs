@@ -65,9 +65,9 @@ public class BranchTableAssembler
             return;
         }
 
-        if (arguments.ContainsKey(FlagType.NoContains))
+        if (arguments.ContainsKey(FlagType.Nocontains))
         {
-            var value = arguments[FlagType.NoContains];
+            var value = arguments[FlagType.Nocontains];
             IOption noContainsOption = new NoContainsOption(value);
             optionStrategies.AddStrategyOption(noContainsOption);
         }
@@ -133,9 +133,9 @@ public class BranchTableAssembler
 
     private static void AddPrintTopOption(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
     {
-        if (!arguments.ContainsKey(FlagType.PrintTop)) return;
+        if (!arguments.ContainsKey(FlagType.Printtop)) return;
 
-        var topValue = Convert.ToInt32(arguments[FlagType.PrintTop]);
+        var topValue = Convert.ToInt32(arguments[FlagType.Printtop]);
         IOption printTopOption = new TopOption(topValue);
         optionStrategies.AddStrategyOption(printTopOption);
     }
