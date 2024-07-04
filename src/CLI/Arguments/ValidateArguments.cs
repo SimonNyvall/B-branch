@@ -1,7 +1,7 @@
-using CLI.ErrorHandler;
-using CLI.Flags;
-
 namespace CLI.ValidateArguments;
+
+using ErrorHandler;
+using Flags;
 
 public enum Result
 {
@@ -31,11 +31,7 @@ public class Validate
         {
             Result result = validator(options);
 
-            if (result == Result.Error)
-            {
-                Error.Log();
-                return Result.Error;
-            }
+            if (result != Result.Error) return Result.Success;
         }
 
         return Result.Success;
@@ -80,47 +76,32 @@ public class Validate
 
     private static Result ValidateSortValue(Dictionary<FlagType, string> options)
     {
-        if (options.TryGetValue(FlagType.Sort, out string? value))
-        {
-            if (
-                value == "date"
-                || value == "name"
-                || value == "ahead"
-                || value == "behind"
-            )
-            {
-                return Result.Success;
-            }
+        if (!options.TryGetValue(FlagType.Sort, out string? value)) return Result.Error;
 
-            Error.Register(
-                "Value for --sort is missing. Valid values are: date, name, ahead, behind"
-            );
-            return Result.Error;
+        if (value == "date" || value == "name" || value == "ahead" || value == "behind")
+        {
+            return Result.Success;
         }
 
-        return Result.Success;
+        Error.Register(
+            "Value for --sort is missing. Valid values are: date, name, ahead, behind"
+        );
+
+        return Result.Error;
     }
 
     private static Result ValidatePrintTopValue(Dictionary<FlagType, string> options)
     {
-        if (options.TryGetValue(FlagType.Printtop, out string? value))
+        if (!options.TryGetValue(FlagType.Printtop, out string? value)) return Result.Error;
+
+        if (!int.TryParse(value, out int numberValue)) return Result.Error;
+
+        if (numberValue < 1)
         {
-            if (int.TryParse(value, out int numberValue))
-            {
-                if (numberValue < 1)
-                {
-                    Error.Register("Value for --print-top must be greater than 0");
-                    return Result.Error;
-                }
-
-                return Result.Success;
-            }
-
-            Error.Register("Value for --print-top is missing or not a number");
-
+            Error.Register("Value for --print-top must be greater than 0");
             return Result.Error;
         }
 
-        return Result.Error;
+        return Result.Success;
     }
 }
