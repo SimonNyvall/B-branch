@@ -7,21 +7,42 @@ using System.Threading.Tasks;
 
 public class Repository : IRepository
 {
-    private readonly string _saveFilePath = "home/sn/.local/share/B-branch/paths.data";
-
-    public bool DoesSaveFileExistAsync()
+    private string SaveFilePath
     {
-        return File.Exists(_saveFilePath);
+        get
+        {
+            string userName = Environment.UserName;
+
+            return Environment.OSVersion.Platform switch
+            {
+                PlatformID.Unix => $"/home/{userName}/.local/share/B-branch/paths",
+                PlatformID.Win32NT => $"C:\\Users\\{userName}\\AppData\\Local\\B-branch\\paths",
+                PlatformID.MacOSX => $"/Users/{userName}/Library/Application Support/B-branch/paths",
+                _ => throw new InvalidOperationException("Unsupported OS.")
+            };
+        }
     }
 
-    public void CreateSaveFileAsync()
+    public bool DoesSaveFileExist()
     {
-        File.Create(_saveFilePath);
+        return File.Exists(SaveFilePath);
+    }
+
+    public void CreateSaveFile()
+    {
+        string directoryPath = SaveFilePath.Substring(0, SaveFilePath.LastIndexOf('/'));
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        File.Create(SaveFilePath);
     }
 
     public async Task<string[]> GetPathsAsync()
     {
-        string[] paths = await File.ReadAllLinesAsync(_saveFilePath);
+        string[] paths = await File.ReadAllLinesAsync(SaveFilePath);
 
         return paths;
     }
@@ -32,7 +53,7 @@ public class Repository : IRepository
 
         paths = paths.Where(p => p != path).ToArray();
 
-        await File.WriteAllLinesAsync(_saveFilePath, paths);
+        await File.WriteAllLinesAsync(SaveFilePath, paths);
     }
 
     public async Task SavePathToFileAsync(string path)
@@ -46,6 +67,6 @@ public class Repository : IRepository
 
         paths = paths.Append(path).ToArray();
 
-        await File.WriteAllLinesAsync(_saveFilePath, paths);
+        File.WriteAllLines(SaveFilePath, paths);
     }
 }

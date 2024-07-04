@@ -10,16 +10,77 @@
         Height="980"
         Width="1200">
         <StackPanel HorizontalAlignment="Center">
-            <TextBlock Margin="0,80,0,40" FontWeight="Bold" FontSize="64" HorizontalAlignment="Center">B-branch</TextBlock>
-            <TextBlock FontSize="24" Foreground="#828282" >Enhance the way developers interact With Git repositorys</TextBlock>
-            <TextBlock Margin="0,90,0,0" FontWeight="Bold" FontSize="16" Foreground="#000000" HorizontalAlignment="Center">Open a directory to a git repo to get started</TextBlock>
-            <Button 
-                    HorizontalAlignment="Center"
+
+            <TextBlock Margin="0,80,0,40" 
+                       FontWeight="Bold" 
+                       FontSize="64" 
+                       HorizontalAlignment="Center"
+                       Foreground="#334B68">
+                    Branches
+            </TextBlock>
+
+            <TextBlock FontSize="24" 
+                       Foreground="#626262">
+                    Enhance the way developers interact With Git repositorys
+            </TextBlock>
+
+            <TextBlock Margin="0,90,0,0" 
+                       FontWeight="Bold" 
+                       FontSize="16" 
+                       Foreground="#000000" 
+                       HorizontalAlignment="Center">
+                    Open a directory to a git repo to get started
+            </TextBlock>
+
+            <Button HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Click="OpenDirectory_Click"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     Height="50"
                     Width="140"
                     Background="#000000"
-                    Foreground="#FFFFFF">
-                Open Directory
+                    Foreground="#FFFFFF"
+                    Margin="0,20,0,40"
+                    Content="Open Directory">
             </Button>
+
+            <TextBlock HorizontalAlignment="Center"
+                       Foreground="#626262"
+                       FontSize="16"
+                       FontWeight="Bold">
+                    Or enter full path to a git repo
+            </TextBlock>
+
+            <TextBox Watermark="home/user/Code/my-repo"
+                     HorizontalAlignment="Center"
+                     Width="400"
+                     Margin="0,10,0,5"
+                     x:Name="PathTextBox">
+            </TextBox>
+
+            <Button HorizontalAlignment="Center"
+                    Click="Continue_Click"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="40"
+                    Width="400"
+                    Background="#334B68"
+                    Foreground="#FFFFFF"
+                    Margin="0,10,0,40"
+                    Content="Continue">
+            </Button>
+            
+            <DockPanel VerticalAlignment="Stretch">
+                <TextBlock Foreground="#626262"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Center">
+                        Git repository paths will be saved, but only on the <Span Foreground="#334B68">local</Span> machine
+                </TextBlock>
+            </DockPanel>
+
         </StackPanel>
 </Window>

@@ -1,12 +1,12 @@
-namespace GUI.Storage.Repository;
-
 using System.Threading.Tasks;
+
+namespace GUI.Storage.Repository;
 
 public interface IRepository
 {
-    bool DoesSaveFileExistAsync();
+    bool DoesSaveFileExist();
 
-    void CreateSaveFileAsync();
+    void CreateSaveFile();
 
     Task<string[]> GetPathsAsync();
 
