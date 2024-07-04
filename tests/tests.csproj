@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\B-branch.csproj" />
+    <ProjectReference Include="..\src\CLI\CLI.csproj" />
   </ItemGroup>
 
 </Project>

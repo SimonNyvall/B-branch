@@ -13,11 +13,6 @@ public class Validate
 {
     public static Result Arguments(Dictionary<FlagType, string> options)
     {
-        foreach (var option in options)
-        {
-            Console.WriteLine(option.Key);
-        }
-
         var validators = new Func<Dictionary<FlagType, string>, Result>[]
         {
             ValidateVersion,
@@ -31,7 +26,7 @@ public class Validate
         {
             Result result = validator(options);
 
-            if (result != Result.Error) return Result.Success;
+            if (result == Result.Error) return Result.Error;
         }
 
         return Result.Success;
@@ -76,30 +71,34 @@ public class Validate
 
     private static Result ValidateSortValue(Dictionary<FlagType, string> options)
     {
-        if (!options.TryGetValue(FlagType.Sort, out string? value)) return Result.Error;
-
-        if (value == "date" || value == "name" || value == "ahead" || value == "behind")
+        if (options.TryGetValue(FlagType.Sort, out string? value))
         {
-            return Result.Success;
+            if (value == "date" || value == "name" || value == "ahead" || value == "behind")
+            {
+                return Result.Success;
+            }
+
+            Error.Register(
+                "Value for --sort is missing. Valid values are: date, name, ahead, behind"
+            );
+
+            return Result.Error;
         }
 
-        Error.Register(
-            "Value for --sort is missing. Valid values are: date, name, ahead, behind"
-        );
-
-        return Result.Error;
+        return Result.Success;
     }
 
     private static Result ValidatePrintTopValue(Dictionary<FlagType, string> options)
     {
-        if (!options.TryGetValue(FlagType.Printtop, out string? value)) return Result.Error;
-
-        if (!int.TryParse(value, out int numberValue)) return Result.Error;
-
-        if (numberValue < 1)
+        if (options.TryGetValue(FlagType.Printtop, out string? value))
         {
-            Error.Register("Value for --print-top must be greater than 0");
-            return Result.Error;
+            if (!int.TryParse(value, out int numberValue)) return Result.Error;
+
+            if (numberValue < 1)
+            {
+                Error.Register("Value for --print-top must be greater than 0");
+                return Result.Error;
+            }
         }
 
         return Result.Success;
