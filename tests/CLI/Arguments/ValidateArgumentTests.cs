@@ -3,7 +3,7 @@ namespace Tests.Arguments;
 using CLI.Flags;
 using CLI.ValidateArguments;
 
-public class ValidateValidArgumentTests
+public class ValidateArgumentTests
 {
     [Fact]
     public void ValidateArguments_ShouldReturnSuccess_WithOnlyVersionArgument()

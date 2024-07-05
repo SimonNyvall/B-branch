@@ -10,7 +10,17 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Dictionary<FlagType, string> options = Parse.Arguments(args);
+        Dictionary<FlagType, string> options = [];
+
+        try
+        {
+            options = Parse.Arguments(args);
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine(e.Message);
+            return;
+        }
 
         if (options.ContainsKey(FlagType.Help))
         {

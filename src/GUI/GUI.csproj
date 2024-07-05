@@ -19,6 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\GitService\Git-Service.csproj" />
+    <ProjectReference Include="..\GitService\GitService.csproj" />
   </ItemGroup>
 </Project>

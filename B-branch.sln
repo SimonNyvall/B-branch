@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitService", "src\GitServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{B7B2256D-7209-4CC6-B80A-D1E357E8239A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{E1E7B149-8077-45F8-92C0-044E0A168D8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "tests\Tests.csproj", "{A949A34E-2B31-4958-90C9-98545588FA6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,10 @@ Global
 		{B7B2256D-7209-4CC6-B80A-D1E357E8239A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7B2256D-7209-4CC6-B80A-D1E357E8239A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7B2256D-7209-4CC6-B80A-D1E357E8239A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1E7B149-8077-45F8-92C0-044E0A168D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1E7B149-8077-45F8-92C0-044E0A168D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1E7B149-8077-45F8-92C0-044E0A168D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1E7B149-8077-45F8-92C0-044E0A168D8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A949A34E-2B31-4958-90C9-98545588FA6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A949A34E-2B31-4958-90C9-98545588FA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A949A34E-2B31-4958-90C9-98545588FA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A949A34E-2B31-4958-90C9-98545588FA6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F778C62-E660-401B-AB95-1A41C293C1D5} = {83F8655A-D12E-4FF6-AECE-F62EA492A8E5}

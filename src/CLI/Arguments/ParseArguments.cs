@@ -38,9 +38,7 @@ public class Parse
 
             if (!flags.Contains(arguments[i].ToLower()))
             {
-                Error.Register($"Invalid option: {arguments[i]}");
-                Error.Log();
-                Environment.Exit(1);
+                throw new ArgumentException($"Invalid option: {arguments[i]}");
             }
 
             string option = arguments[i].Replace("-", string.Empty);
@@ -52,8 +50,7 @@ public class Parse
             {
                 if (IsOptionDuplicated(option, options))
                 {
-                    Error.Log();
-                    Environment.Exit(1);
+                    throw new ArgumentException($"Duplicate option: {option}"); 
                 }
 
                 options[option] = arguments[++i];
@@ -62,8 +59,7 @@ public class Parse
 
             if (IsOptionDuplicated(option, options))
             {
-                Error.Log();
-                Environment.Exit(1);
+                throw new ArgumentException($"Duplicate option: {option}");                
             }
 
             options[option] = string.Empty;
