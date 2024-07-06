@@ -3,12 +3,10 @@ using Git.Base;
 
 namespace Git.Options;
 
-public class BranchRemoteOptions : IOption
+public class BranchRemoteOptions(IGitBase gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {
-        var gitBase = GitBase.GetInstance();
-
         return gitBase.GetRemoteBranchNames();
     }
 }

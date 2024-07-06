@@ -3,6 +3,7 @@ namespace CLI;
 using Shared.TableData;
 using Git.Options;
 using CLI.Flags;
+using Git.Base;
 
 public class BranchTableAssembler
 {
@@ -28,7 +29,7 @@ public class BranchTableAssembler
 
         if (arguments.ContainsKey(FlagType.All))
         {
-            IOption allOption = new BranchAllOptions();
+            IOption allOption = new BranchAllOptions(GitBase.GetInstance());
             options.Add(allOption);
 
             return options;
@@ -36,13 +37,13 @@ public class BranchTableAssembler
 
         if (arguments.ContainsKey(FlagType.Remote))
         {
-            IOption remoteOption = new BranchRemoteOptions();
+            IOption remoteOption = new BranchRemoteOptions(GitBase.GetInstance());
             options.Add(remoteOption);
 
             return options;
         }
 
-        IOption localOption = new BranchLocalOptions();
+        IOption localOption = new BranchLocalOptions(GitBase.GetInstance());
         options.Add(localOption);
 
         return options;
