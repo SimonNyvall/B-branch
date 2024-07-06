@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\CLI\CLI.csproj" />
+    <ProjectReference Include="../src/Shared/Shared.csproj" />
   </ItemGroup>
 
 </Project>

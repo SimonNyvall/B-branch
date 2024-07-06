@@ -90,9 +90,9 @@ public class GitBranch
     public static GitBranch Default()
     {
         return new GitBranch(
-            new AheadBehind { Ahead = 1, Behind = 1 },
+            new AheadBehind { Ahead = 0, Behind = 0 },
             new Branch { Name = "branchName", IsWorkingBranch = false },
-            DateTime.Now,
+            DateTime.MaxValue,
             string.Empty
         );
     }
