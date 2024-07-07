@@ -122,7 +122,7 @@ public class BranchTableAssembler
             return;
         }
 
-        sortOption = new SortByLastEditedOptions();
+        sortOption = new SortByLastCommitOptions();
         optionStrategies.AddStrategyOption(sortOption);
     }
 
