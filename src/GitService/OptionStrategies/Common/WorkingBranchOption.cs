@@ -1,31 +1,25 @@
-using Shared.TableData;
 using Git.Base;
+using Shared.TableData;
 
 namespace Git.Options;
 
-public class WorkingBranchOption : IOption
+public class WorkingBranchOption(IGitBase gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {
-        IGitBase gitBase = GitBase.GetInstance();
-
         string workingBranchName = gitBase.GetWorkingBranch();
 
-        return NewMethod(branches, workingBranchName);
+        return UpdateWorkingBranches(branches, workingBranchName);
     }
 
-    private static List<GitBranch> NewMethod(List<GitBranch> branches, string workingBranchName)
+    private static List<GitBranch> UpdateWorkingBranches(List<GitBranch> branches, string workingBranchName)
     {
-        foreach (GitBranch branch in branches)
-        {
-            if (!branch.Branch.Name.Equals(workingBranchName))
-            {
-                continue;
-            }
+        int index = branches.FindIndex(branch => branch.Branch.Name.Equals(workingBranchName));
 
-            Branch workingBranch = new() { Name = branch.Branch.Name, IsWorkingBranch = true };
-            branch.SetBranch(workingBranch);
-        }
+        if (index == -1) return branches; 
+
+        Branch workingBranch = new(name: branches[index].Branch.Name, isWorkingBranch: true);
+        branches[index].SetBranch(workingBranch);
 
         return branches;
     }

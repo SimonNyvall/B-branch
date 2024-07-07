@@ -7,6 +7,8 @@ using Git.Base;
 
 public class BranchTableAssembler
 {
+    private static readonly IGitBase _gitBase = GitBase.GetInstance();
+
     internal static List<GitBranch> AssembleBranchTable(Dictionary<FlagType, string> arguments)
     {
         List<IOption> options = CreateOptions(arguments);
@@ -29,7 +31,7 @@ public class BranchTableAssembler
 
         if (arguments.ContainsKey(FlagType.All))
         {
-            IOption allOption = new BranchAllOptions(GitBase.GetInstance());
+            IOption allOption = new BranchAllOptions(_gitBase);
             options.Add(allOption);
 
             return options;
@@ -37,13 +39,13 @@ public class BranchTableAssembler
 
         if (arguments.ContainsKey(FlagType.Remote))
         {
-            IOption remoteOption = new BranchRemoteOptions(GitBase.GetInstance());
+            IOption remoteOption = new BranchRemoteOptions(_gitBase);
             options.Add(remoteOption);
 
             return options;
         }
 
-        IOption localOption = new BranchLocalOptions(GitBase.GetInstance());
+        IOption localOption = new BranchLocalOptions(_gitBase);
         options.Add(localOption);
 
         return options;
@@ -91,7 +93,7 @@ public class BranchTableAssembler
 
     private static void AddWorkingBranchOption(CompositeOptionStrategy optionStrategies)
     {
-        IOption workingBranchOption = new WorkingBranchOption();
+        IOption workingBranchOption = new WorkingBranchOption(_gitBase);
         optionStrategies.AddStrategyOption(workingBranchOption);
     }
 
