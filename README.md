@@ -21,6 +21,7 @@
   - [Contributing](#contributing)
   - [Acknowledgments](#acknowledgments)
   - [License](#license)
+  - [FQAs](#fqas)
 
 ## Premise
 B-branch is a .NET-based application that enhances Git repository management via  a git alias. Inspired by [**GitButlers**](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s) talk, B-branch provides a structured view of branch information, simplifying workflows for developers.
@@ -48,7 +49,7 @@ $ git bb --edit-description
 
 Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
-<img src="./images/screen.jpg" alt="screen" width="500"/>
+<img align="center" width="100%" src="./images/screen.jpg" alt="screen" width="500"/>
 
 ## Usage
 
@@ -132,4 +133,18 @@ This project was inspired by the innovative ideas shared by **GitButler**. Check
 
 ## License
 
-This project is licensed under the <a src="./LICENSE">MIT License</a> - see the LICENSE.md file for details.
+This project is licensed under the [MIT License](./LICENSE) - see the LICENSE.md file for details.
+
+## FQAs
+
+- **Q**: How do I add a description to a branch?
+  - **A**: Use the following command: `git bb --edit-description`
+
+- **Q**: Can I use this instead of the standard `git branch` command?
+  - **A**: B-branch only helps developers view branch information. It does not replace the standard `git branch` command.
+
+- **Q**: Will B-branch slow down git?
+  - **A**: No, the extension works with an alias and does not affect the performance of git.
+
+- **Q**: What is a common use case for B-branch?
+  - **A**: A common use case I use is to check how many commits I am behind or ahead of the upstream main branch. To see if I need to pull or merge the changes. This can be done by running `git bb -t "origin/main"`.
