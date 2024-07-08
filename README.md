@@ -6,18 +6,17 @@
 <div align="center">
   <hr/>
  <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat&label=test%2Fbuild" alt=".NET">
- <img src ="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat
-" alt="github stars"/>
+ <img src ="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat" alt="github stars"/>
 </div>
 
 
 - [B-branch](#b-branch)
-  - [Features](#features)
+  - [Primise](#premise)
+    - [Example](#example)
   - [Usage](#usage)
   - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-      - [Option 1 (Download the compiled B-branch file)](#option-1-download-the-compiled-B-branch-file)
+      - [Option 1 (Download the compiled B-branch file)](#option-1-download-the-compiled-b-branch-file)
       - [Option 2 (Build from source)](#option-2-build-from-source)
   - [Usage](#usage)
   - [Contributing](#contributing)
@@ -34,7 +33,9 @@ The triditional git branch sorts branches alphabetically, making it difficult to
 Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
 
 ```sh
-$ git bb --no-contains "main;development" -q | awk '{print substr($0, 3)}' | xargs -I {} git branch -D {}
+git bb --no-contains "main;development" -q \
+| awk '{print substr($0, 3)}' \
+| xargs -I {} git branch -D {}
 ```
 `OBS!` This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
 
