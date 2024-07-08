@@ -16,8 +16,7 @@
   - [Usage](#usage)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
-      - [Option 1 (Download the compiled B-branch file)](#option-1-download-the-compiled-b-branch-file)
-      - [Option 2 (Build from source)](#option-2-build-from-source)
+      - [(Build from source)](#build-from-source)
   - [Usage](#usage)
   - [Contributing](#contributing)
   - [Acknowledgments](#acknowledgments)
@@ -98,23 +97,9 @@ Prerequisites
 
     .NET 8.0 SDK installed on your machine.
 
-    OBS! .NET 8.0 SDK only applies if you build from source.
-
 ## Installation
 
-### Option 1 (Download the compiled B-branch file)
-
-1. Download the compiled src file
-2. Run the command below
-
-```sh
-git config --global alias.bb '!bash -c '\"/home/nyvall/Code/B-branch/src/bin/Debug/net8.0/B-branch\" \"$@\"' bash''
-```
-
-This will set a alias in the `.gitconfig` file to point to that executable.
-Run the script by running `git bb`
-
-### Option 2 (Build from source)
+### (Build from source)
 
 Clone the repository:
 
@@ -125,30 +110,17 @@ git clone https://github.com/SimonNyvall/B-branch.git
 Navigate to the project directory:
 
 ```sh
-cd B-branch/src
+cd B-branch/
 ```
 
-Restore the project dependencies:
+Run the following command to install the project:
 
 ```sh
-dotnet restore
+sudo ./install.sh
 ```
 
-Build the project:
-
-```sh
-dotnet build
-```
-
-Make an alias in the bashrc to point at the src executable:
-
-```sh
-.bachrc << "alias 'git bb'=/home/.../path/to/bin/B-branch"
-```
-
-The B-branch file will be under the `bin/debug/net8.0` in the project.
-
-Additional thing is to run
+This will set a alias in the `.gitconfig` file to point to that executable.
+Run the script by running `git bb`
 
 ## Contributing
 
