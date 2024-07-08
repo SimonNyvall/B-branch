@@ -9,7 +9,7 @@ public class TrackAheadBehindOption(IGitBase gitBase, string remoteBranchName) :
     {
         foreach (GitBranch branch in branches)
         {
-            string arguments = $"rev-list --left-right --count {branch.Branch.Name}...origin/{remoteBranchName}";
+            string arguments = $"rev-list --left-right --count {branch.Branch.Name}...{remoteBranchName}";
 
             AheadBehind aheadBehind = gitBase.GetAheadBehind(arguments);
 
