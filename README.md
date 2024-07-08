@@ -104,7 +104,7 @@ Prerequisites
 Clone the repository:
 
 ```sh
-git clone https://github.com/SimonNyvall/B-branch.git
+git clone --depth 1 https://github.com/SimonNyvall/B-branch.git
 ```
 
 Navigate to the project directory:
