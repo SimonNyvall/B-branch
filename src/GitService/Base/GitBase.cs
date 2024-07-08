@@ -34,11 +34,20 @@ public class GitBase : IGitBase
     {
         Execute execute = Execute.GetInstance();
 
-        const string arguments = "rev-parse --git-dir";
+        const string isGitDirectoryArgument = "rev-parse --is-inside-work-tree";
+        const string gitDirectoryArgument = "rev-parse --git-dir";
 
-        string stdOut = execute.ExecuteCommand(arguments);
+        string stdOut = execute.ExecuteCommand(isGitDirectoryArgument).Trim();
 
-        _gitPath = stdOut.Trim();
+        if (stdOut != "true")
+        {
+            Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
+            Environment.Exit(1);
+        }
+
+        stdOut = execute.ExecuteCommand(gitDirectoryArgument).Trim();
+
+        _gitPath = stdOut;
     }
 
     public string GetWorkingBranch()
