@@ -1,7 +1,8 @@
-namespace Tests.Arguments;
-
 using CLI.Flags;
 using CLI.ValidateArguments;
+using E = Tests.Extensions;
+
+namespace Tests.Arguments;
 
 public class ValidateArgumentTests
 {
@@ -13,9 +14,7 @@ public class ValidateArgumentTests
             { FlagType.Version, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -27,9 +26,7 @@ public class ValidateArgumentTests
             { FlagType.Contains, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -40,9 +37,7 @@ public class ValidateArgumentTests
             { FlagType.Contains, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -54,9 +49,7 @@ public class ValidateArgumentTests
             { FlagType.Nocontains, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -67,9 +60,7 @@ public class ValidateArgumentTests
             { FlagType.All, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -80,9 +71,7 @@ public class ValidateArgumentTests
             { FlagType.Remote, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -94,9 +83,7 @@ public class ValidateArgumentTests
             { FlagType.Remote, string.Empty }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -107,9 +94,7 @@ public class ValidateArgumentTests
             { FlagType.Sort, "date" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -120,9 +105,7 @@ public class ValidateArgumentTests
             { FlagType.Sort, "name" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -133,9 +116,7 @@ public class ValidateArgumentTests
             { FlagType.Sort, "ahead" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -146,9 +127,7 @@ public class ValidateArgumentTests
             { FlagType.Sort, "behind" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -159,9 +138,7 @@ public class ValidateArgumentTests
             { FlagType.Sort, "invalid" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -172,9 +149,7 @@ public class ValidateArgumentTests
             { FlagType.Printtop, "5" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Success, result);
+        E.Assert.DoesNotThrow(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -185,9 +160,7 @@ public class ValidateArgumentTests
             { FlagType.Printtop, "invalid" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 
     [Fact]
@@ -198,8 +171,6 @@ public class ValidateArgumentTests
             { FlagType.Printtop, "-5" }
         };
 
-        Result result = Validate.Arguments(options);
-
-        Assert.Equal(Result.Error, result);
+        Assert.Throws<ArgumentException>(() => Validate.Arguments(options));
     }
 }

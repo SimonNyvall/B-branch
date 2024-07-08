@@ -1,5 +1,4 @@
 using CLI.Flags;
-using CLI.ErrorHandler;
 
 namespace CLI.ParseArguments;
 
@@ -70,12 +69,8 @@ public class Parse
 
     private static bool IsOptionDuplicated(string option, Dictionary<string, string> options)
     {
-        if (options.ContainsKey(option))
-        {
-            Error.Register($"Duplicate option: {option}");
-            return true;
-        }
-
+        if (options.ContainsKey(option)) throw new ArgumentException($"Duplicate option: {option}");
+                
         return false;
     }
 
@@ -95,8 +90,7 @@ public class Parse
             }
             else
             {
-                Error.Register($"Invalid option: {option.Key}");
-                Environment.Exit(1);            
+                throw new ArgumentException($"Invalid option: {option.Key}");
             }
         }
 
