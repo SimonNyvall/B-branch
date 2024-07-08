@@ -53,7 +53,7 @@ public class BranchTableAssembler
 
     private static void AddLastCommitOption(CompositeOptionStrategy optionStrategies)
     {
-        IOption lastCommitOption = new SetLastCommitOptions();
+        IOption lastCommitOption = new SetLastCommitOptions(_gitBase);
         optionStrategies.AddStrategyOption(lastCommitOption);
     }
 
@@ -81,13 +81,13 @@ public class BranchTableAssembler
         if (arguments.ContainsKey(FlagType.Track))
         {
             var value = arguments[FlagType.Track];
-            IOption trackOption = new TrackAheadBehindOption(value);
+            IOption trackOption = new TrackAheadBehindOption(_gitBase, value);
             optionStrategies.AddStrategyOption(trackOption);
 
             return;
         }
 
-        IOption aheadBehindOption = new DefaultAheadBehindOption();
+        IOption aheadBehindOption = new DefaultAheadBehindOption(_gitBase);
         optionStrategies.AddStrategyOption(aheadBehindOption);
     }
 
