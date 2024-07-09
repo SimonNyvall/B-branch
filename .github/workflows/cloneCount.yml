@@ -16,7 +16,7 @@ jobs:
 
     - name: Fetch Clone Data
       env:
-        G_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        G_TOKEN: ${{ secrets.G_TOKEN }}
       run: |
         REPO=SimonNyvall/B-branch
         CLONE_COUNT=$(curl -H "Authorization: token $G_TOKEN" \
@@ -27,10 +27,10 @@ jobs:
     - name: Update Gist
       env:
         GIST_ID: ${{ secrets.GIST_ID }}
-        G_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        G_TOKEN: ${{ secrets.G_TOKEN }}
       run: |
         GIST_URL="https://api.github.com/gists/$GIST_ID"
-        curl -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
+        curl -X PATCH -H "Authorization: token $G_TOKEN" \
           -d @- $GIST_URL <<EOF
         {
           "files": {
