@@ -15,19 +15,23 @@
     - [Example](#example)
   - [Usage](#usage)
   - [Getting Started](#getting-started)
-    - [Installation](#installation)
-      - [(Build from source)](#build-from-source)
+  - [Installation](#installation)
+    - [Windows](#windows)
+    - [Linux](#linux)
   - [Usage](#usage)
   - [Contributing](#contributing)
   - [Acknowledgments](#acknowledgments)
   - [License](#license)
   - [FQAs](#fqas)
 
-## Premise
-B-branch is a .NET-based application that enhances Git repository management via  a git alias. Inspired by [**GitButlers**](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s) talk, B-branch provides a structured view of branch information, simplifying workflows for developers.
+## Premise 🚀
+B-branch is a .NET-based application that enhances Git repository management via  a git alias. Inspired by **GitButlers** talk, [**So You Think You Know Git?** by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), B-branch provides a structured view of branch information, simplifying workflows for developers.
 
 The triditional git branch sorts branches alphabetically, making it difficult to identify the most recent branches. B-branch addresses this issue by providing a structured view of branch information, including the date of the last commit and the number of commits ahead or behind the upstream branch.
 
+Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS.
+
+<img align="center" width="100%" src="./images/screen.jpg" alt="screen" width="500"/>
 
 ### Example
 Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
@@ -46,17 +50,13 @@ The ability to see the branch description is also a feature that is not availabl
 ```sh
 $ git bb --edit-description
 ```
-
 Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
-
-<img align="center" width="100%" src="./images/screen.jpg" alt="screen" width="500"/>
 
 ## Usage
 
 ```sh
 $ git bb [options]
 ```
-
 ### Options
 
 - `-t, --track <String>`: Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.
@@ -83,55 +83,61 @@ do not contain the specified string. Valid options are `<String>` OR `"String1;S
 
 ---
 
-Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS.
-
-The output of the B-branch will look like this
-
-## Getting Started
+## Getting Started 🕹️
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 Prerequisites
 
-    git 2.39.2 or later
+- git 2.39.2 or later
 
-    nerd-fonts 2.1.0 or later
+- .NET 8.0 SDK
 
-    .NET 8.0 SDK installed on your machine.
+- nerd-fonts 2.1.0 or later **(optional)**
 
 ## Installation
 
-### (Build from source)
+### Windows 🪟
 
-Clone the repository:
-
+1. Open powershell as an administrator and set the execution policy to `RemoteSigned`:
 ```sh
-git clone --depth 1 https://github.com/SimonNyvall/B-branch.git
+$ Set-ExecutionPolicy RemoteSigned
 ```
 
-Navigate to the project directory:
-
+2. Clone the repository and navigate to the project directory:
 ```sh
-cd B-branch/
+$ git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
 ```
 
-Run the following command to install the project:
-
+3. Run the following command to install the project:
 ```sh
-sudo ./install.sh
+$ .\install.ps1
 ```
 
-This will set a alias in the `.gitconfig` file to point to that executable.
-Run the script by running `git bb`
+4. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
 
-## Contributing
+### Linux 🐧
 
-We welcome contributions to **B-branch**! If you have suggestions or improvements, please fork the repo and create a pull request, or open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!
+1. Clone the repository and navigate to the project directory:
+```sh
+$ git clone --depth 1 https://github.com/SimonNyvall/B-branch.git
+```
+
+2. Run the following command to install the project:
+```sh
+$ ./install.sh
+```
+
+3. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
+
+## Contributing 🖥️
+
+We welcome contributions to **B-branch**! If you have suggestions or improvements, please fork the repo and create a pull request, or open an issue with the tag "enhancement". Don't forget to give the project a **star!** ⭐ Thanks again!
 
 ## Acknowledgments
 
-This project was inspired by the innovative ideas shared by **GitButler**. Check out their video for more insights into enhancing Git workflows.
+This project was inspired by the innovative ideas shared by [**GitButler**](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s). Check out their video for more insights into enhancing Git workflows.
 
-## License
+## License 📖
 
 This project is licensed under the [MIT License](./LICENSE) - see the LICENSE.md file for details.
 

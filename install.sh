@@ -26,4 +26,5 @@ fi
 
 git config --global alias.bb '!bash -c '\''"'"$cli_executable"'" "$@"'\'' bash' || { echo "Failed to set git alias"; exit 1; }
 
+cd "$current_dir"
 echo "CLI installed successfully"

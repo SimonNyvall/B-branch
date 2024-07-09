@@ -10,20 +10,20 @@ To contribute to B-branch, please follow these steps:
     Clone your fork of the repository locally:
 
 ```sh
-git clone https://github.com/your-username/your-project.git
+$ git clone https://github.com/your-username/your-project.git
 
 Create a branch for your changes:
 ```
 
 ```sh
-git checkout -b feature/your-feature-name
+$ git checkout -b feature/your-feature-name
 ```
 Please use a descriptive branch name that reflects the feature or fix you are working on.
 
 Make your changes and commit them to your branch:
 
 ```sh
-git commit -am 'Add some feature'
+$ git commit -am 'Add some feature'
 ```
 
 Please write clear commit messages, more clear then the one above at least.
@@ -31,7 +31,7 @@ Please write clear commit messages, more clear then the one above at least.
 Push your changes to your fork on GitHub:
 
 ```sh
-    git push origin feature/your-feature-name
+$ git push origin feature/your-feature-name
 ```
 
     Submit a Pull Request (PR) to the main branch of the original repository. Make sure to provide a clear description of your changes in the PR.
