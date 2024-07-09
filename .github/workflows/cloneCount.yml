@@ -30,13 +30,8 @@ jobs:
         G_TOKEN: ${{ secrets.G_TOKEN }}
       run: |
         GIST_URL="https://api.github.com/gists/$GIST_ID"
+        PAYLOAD=$(jq -n --arg content "$(cat clone_count.json)" '{"files": {"clone_count.json": {"content": $content}}}')
         curl -X PATCH -H "Authorization: token $G_TOKEN" \
-          -d @- $GIST_URL <<EOF
-        {
-          "files": {
-            "clone_count.json": {
-              "content": "$(cat clone_count.json)"
-            }
-          }
-        }
-        EOF
+             -H "Content-Type: application/json" \
+             -d "$PAYLOAD" \
+             $GIST_URL
