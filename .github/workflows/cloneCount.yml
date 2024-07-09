@@ -25,7 +25,7 @@ jobs:
         echo "API Response: $RESPONSE"  # Log the API response
         CLONE_COUNT=$(echo "$RESPONSE" | jq '.clones | map(.count) | add // 0')
         echo "Clone Count: $CLONE_COUNT"  # Log the clone count
-        echo "$(jq -n --arg message "$CLONE_COUNT" '{"schemaVersion": 1, "label": "Downloads", "message": $message, "color": "blue"}' | jq .)" > clone_count.json
+        echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$CLONE_COUNT\", \"color\": \"blue\"}" > clone_count.json
 
     - name: Update Gist
       env:
@@ -33,7 +33,7 @@ jobs:
         G_TOKEN: ${{ secrets.G_TOKEN }}
       run: |
         GIST_URL="https://api.github.com/gists/$GIST_ID"
-        PAYLOAD=$(jq -n --argfile content clone_count.json '{"files": {"clone_count.json": {"content": $content}}}')
+        PAYLOAD=$(jq -Rs --argfile content clone_count.json '{"files": {"clone_count.json": {"content": $content}}}')
         curl -X PATCH -H "Authorization: token $G_TOKEN" \
              -H "Content-Type: application/json" \
              -d "$PAYLOAD" \
