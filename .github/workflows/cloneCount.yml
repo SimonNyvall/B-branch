@@ -2,7 +2,7 @@ name: Update Clone Count Badge
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
   push:
     branches:
       - main
@@ -33,8 +33,7 @@ jobs:
         G_TOKEN: ${{ secrets.G_TOKEN }}
       run: |
         GIST_URL="https://api.github.com/gists/$GIST_ID"
-        PAYLOAD=$(jq -Rs --argfile content clone_count.json '{"files": {"clone_count.json": {"content": $content}}}')
         curl -X PATCH -H "Authorization: token $G_TOKEN" \
              -H "Content-Type: application/json" \
-             -d "$PAYLOAD" \
+             -d "$(jq -n --arg content "$(cat clone_count.json)" '{"files": {"clone_count.json": {"content": $content}}}')" \
              $GIST_URL
