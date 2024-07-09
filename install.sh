@@ -9,11 +9,10 @@ dotnet build || { echo "Failed to build the CLI"; exit 1; }
 
 echo "Installing CLI"
 
-publish_dir="$HOME/bin/B-branch"
+publish_dir="$HOME/.local/share/B-branch"
 
 if [ ! -d "$publish_dir" ]; then
-  sudo mkdir -p "$publish_dir" || { echo "Failed to create directory $publish_dir"; exit 1; }
-  sudo chown -R "$USER:$USER" "$publish_dir" || { echo "Failed to change ownership of $publish_dir"; exit 1; }
+  mkdir -p "$publish_dir" || { echo "Failed to create directory $publish_dir"; exit 1; }
 fi
 
 dotnet publish -c Release -o "$publish_dir" || { echo "Failed to publish the CLI"; exit 1; }
