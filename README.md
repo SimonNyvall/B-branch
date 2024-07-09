@@ -5,8 +5,9 @@
 
 <div align="center">
   <hr/>
- <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat&label=test%2Fbuild" alt=".NET">
- <img src ="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat" alt="github stars"/>
+ <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat&label=test%2Fbuild" alt=".NET">&nbsp;&nbsp;
+ <img src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat" alt="github stars"/>&nbsp;&nbsp;
+ <img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/SimonNyvall/55abca133507cbeebf5256477924be67/raw/clone_count.json" alt="clone count">
 </div>
 
 
