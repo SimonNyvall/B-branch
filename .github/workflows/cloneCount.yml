@@ -2,7 +2,7 @@ name: Update Clone Count Badge
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs every day at midnight UTC
+    - cron: '0 0 * * *'
   push:
     branches:
       - main
@@ -25,7 +25,7 @@ jobs:
         echo "API Response: $RESPONSE"  # Log the API response
         CLONE_COUNT=$(echo "$RESPONSE" | jq '.clones | map(.count) | add // 0')
         echo "Clone Count: $CLONE_COUNT"  # Log the clone count
-        echo "$(jq -n --arg message "$CLONE_COUNT" '{"schemaVersion": 1, "label": "clones", "message": $message, "color": "blue"}' | jq .)" > clone_count.json
+        echo "$(jq -n --arg message "$CLONE_COUNT" '{"schemaVersion": 1, "label": "Downloads", "message": $message, "color": "blue"}' | jq .)" > clone_count.json
 
     - name: Update Gist
       env:
