@@ -3,7 +3,7 @@ $current_dir = Get-Location
 Set-Location "$current_dir/src/CLI" -ErrorAction Stop
 
 Write-Output "Building CLI"
-dotnet build -ErrorAction Stop
+dotnet build
 
 Write-Output "Installing CLI"
 
@@ -13,7 +13,7 @@ if (-Not (Test-Path -Path $publish_dir -PathType Container)) {
     New-Item -ItemType Directory -Path $publish_dir -Force | Out-Null
 }
 
-dotnet publish -c Release -o $publish_dir -ErrorAction Stop
+dotnet publish -c Release -o $publish_dir
 
 $cli_executable = "$publish_dir\CLI.exe"
 
@@ -22,7 +22,8 @@ if (-Not (Test-Path -Path $cli_executable -PathType Leaf)) {
     exit 1
 }
 
-$alias_command = "!powershell -NoProfile -Command \"& { & '$cli_executable' $([String]::Join(' ', $args)) }\""
+$alias_command = '!f() { /c/Users/' + $env:USERNAME + '/AppData/Local/B-branch/CLI.exe "$@"; }; f'
 git config --global alias.bb $alias_command
 
+Set-Location $current_dir
 Write-Output "CLI installed successfully"
