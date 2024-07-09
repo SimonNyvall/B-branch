@@ -25,7 +25,7 @@ jobs:
         echo "API Response: $RESPONSE"  # Log the API response
         CLONE_COUNT=$(echo "$RESPONSE" | jq '.clones | map(.count) | add // 0')
         echo "Clone Count: $CLONE_COUNT"  # Log the clone count
-        echo "{\"schemaVersion\": 1, \"label\": \"Downloads\", \"message\": \"$CLONE_COUNT\", \"color\": \"blue\"}" > clone_count.json
+        echo "{\"schemaVersion\": 1, \"label\": \"downloads\", \"message\": \"$CLONE_COUNT\", \"color\": \"blue\"}" > clone_count.json
 
     - name: Update Gist
       env:
