@@ -19,9 +19,9 @@ jobs:
         G_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         REPO=SimonNyvall/B-branch
-        CLONE_COUNT=$(curl -H "Authorization: token $GITHUB_TOKEN" \
+        CLONE_COUNT=$(curl -H "Authorization: token $G_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/$REPO/traffic/clones | jq '.clones | map(.count) | add')
+          https://api.github.com/repos/SimonNyvall/B-branch/traffic/clones | jq '.clones | map(.count) | add')
         echo "{\"schemaVersion\": 1, \"label\": \"clones\", \"message\": \"$CLONE_COUNT\", \"color\": \"blue\"}" > clone_count.json
 
     - name: Update Gist
