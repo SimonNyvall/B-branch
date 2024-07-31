@@ -10,7 +10,7 @@ To contribute to B-branch, please follow these steps:
     Clone your fork of the repository locally:
 
 ```sh
-$ git clone https://github.com/your-username/your-project.git
+$ git clone https://github.com/your-username/your-project.git && cd B-branch
 
 Create a branch for your changes:
 ```
@@ -23,10 +23,11 @@ Please use a descriptive branch name that reflects the feature or fix you are wo
 Make your changes and commit them to your branch:
 
 ```sh
-$ git commit -am 'Add some feature'
+$ git commit -m 'Add some feature'
 ```
 
 Please write clear commit messages, more clear then the one above at least.
+The repo typically follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
 
 Push your changes to your fork on GitHub:
 
@@ -46,7 +47,8 @@ Please note that we have a Code of Conduct in place to ensure a friendly and wel
 Help and Support
 
 If you need any help or have questions, feel free to open an issue in the repository. We are here to assist you.
-Reporting Bugs
+
+## Reporting Bugs
 
 If you find a bug, please open an issue and provide as much detail as possible, including the steps to reproduce the issue.
 
