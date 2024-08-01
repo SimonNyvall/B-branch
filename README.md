@@ -59,7 +59,7 @@ git bb --no-contains "main;development" -q \
 The ability to see the branch description is also a feature that is not available in the standard `git branch` command. To add a description to a branch, use the following command:
 
 ```sh
-$ git bb --edit-description
+$ git branch --edit-description
 ```
 Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
@@ -155,7 +155,7 @@ This project is licensed under the [MIT License](./LICENSE) - see the LICENSE.md
 ## FQAs
 
 - **Q**: How do I add a description to a branch?
-  - **A**: Use the following command: `git bb --edit-description`
+  - **A**: Use the following command: `git branch --edit-description`
 
 - **Q**: Can I use this instead of the standard `git branch` command?
   - **A**: B-branch only helps developers view branch information. It does not replace the standard `git branch` command.
