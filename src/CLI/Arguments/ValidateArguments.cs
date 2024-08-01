@@ -4,7 +4,21 @@ using Flags;
 
 public class Validate
 {
-    public static void Arguments(Dictionary<FlagType, string> options)
+    public static bool ValidateOptions(Dictionary<FlagType, string> options)
+    {
+        try
+        {
+            Validate.Arguments(options);
+            return true;
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+    }
+
+    private static void Arguments(Dictionary<FlagType, string> options)
     {
         var validators = new Action<Dictionary<FlagType, string>>[]
         {

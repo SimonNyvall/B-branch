@@ -2,8 +2,8 @@
 using CLI.ParseArguments;
 using CLI.Output;
 using CLI.Options;
-using Shared.TableData;
 using CLI.ValidateArguments;
+using Shared.TableData;
 
 namespace CLI;
 
@@ -13,9 +13,15 @@ public class Program
     {
         Dictionary<FlagType, string> options = [];
 
-        TryParseOptions(args, ref options);
+        if (!Parse.TryParseOptions(args, out options))
+        {
+            return;
+        }
 
-        ValidateOptions(options);
+        if (!Validate.ValidateOptions(options))
+        {
+            return;
+        }
 
         if (options.ContainsKey(FlagType.Help))
         {
@@ -39,29 +45,4 @@ public class Program
         PrintFullTable.Print(branchTable);
     }
 
-    private static void ValidateOptions(Dictionary<FlagType, string> options)
-    {
-        try
-        {
-            Validate.Arguments(options);
-        }
-        catch (ArgumentException e)
-        {
-            Console.WriteLine(e.Message);
-            Environment.Exit(1);
-        }
-    }
-
-    private static void TryParseOptions(string[] args, ref Dictionary<FlagType, string> options)
-    {
-        try
-        {
-            options = Parse.Arguments(args);
-        }
-        catch (ArgumentException e)
-        {
-            Console.WriteLine(e.Message);
-            Environment.Exit(1);
-        }
-    }
 }

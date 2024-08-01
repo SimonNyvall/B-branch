@@ -10,9 +10,12 @@ public class ParseArgumentsTests
     {
         string[] args = ["--version"];
 
-        Dictionary<FlagType, string> options = Parse.Arguments(args);
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
 
         Assert.Equal(FlagType.Version, options.Keys.First());
+        Assert.True(isSuccessful);
     }
 
     [Fact]
@@ -20,9 +23,12 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test"];
 
-        Dictionary<FlagType, string> options = Parse.Arguments(args);
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
 
         Assert.Equal(FlagType.Contains, options.Keys.First());
+        Assert.True(isSuccessful);
     }
 
     [Fact]
@@ -30,9 +36,12 @@ public class ParseArgumentsTests
     {
         string[] args = ["--no-contains", "test"];
 
-        Dictionary<FlagType, string> options = Parse.Arguments(args);
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
 
         Assert.Equal(FlagType.Nocontains, options.Keys.First());
+        Assert.True(isSuccessful);
     }
 
     [Fact]
@@ -40,7 +49,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--invalid"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -48,7 +61,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test", "--contains", "test"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -56,7 +73,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "--invalid"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -64,7 +85,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "--invalid"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -72,7 +97,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "--invalid"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -80,7 +109,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -88,7 +121,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -96,7 +133,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 
     [Fact]
@@ -104,6 +145,10 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t", "test"];
 
-        Assert.Throws<ArgumentException>(() => Parse.Arguments(args));
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
     }
 }
