@@ -17,7 +17,26 @@ public class Parse
         "--version", "-v",
     ];
 
-    public static Dictionary<FlagType, string> Arguments(string[] arguments)
+    public static bool TryParseOptions(string[] args, out Dictionary<FlagType, string> options)
+    {
+        try
+        {
+            options = Parse.Arguments(args);
+
+            return true;
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine(e.Message);
+            Environment.Exit(1);
+
+            options = [];
+
+            return false;
+        }
+    }
+
+    private static Dictionary<FlagType, string> Arguments(string[] arguments)
     {
         Dictionary<string, string> options = PopulateInput(arguments);
 
