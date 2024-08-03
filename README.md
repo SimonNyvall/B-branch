@@ -48,9 +48,9 @@ This is where B-branch comes in handy. By using the `git bb` command, you can so
 Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
 
 ```sh
-git bb --no-contains "main;development" -q \
-| awk '{print substr($0, 3)}' \
-| xargs -I {} git branch -D {}
+$ git bb --no-contains "main;development" -q \
+  | awk '{print substr($0, 3)}' \
+  | xargs -I {} git branch -D {}
 ```
 `OBS!` This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
 
