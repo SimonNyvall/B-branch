@@ -52,21 +52,22 @@ $ git bb --no-contains "main;development" -q \
   | awk '{print substr($0, 3)}' \
   | xargs -I {} git branch -D {}
 ```
-`OBS!` This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
+> [!IMPORTANT]
+> This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
 
 ---
 
 The ability to see the branch description is also a feature that is not available in the standard `git branch` command. To add a description to a branch, use the following command:
 
 ```sh
-$ git branch --edit-description
+git branch --edit-description
 ```
 Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
 ## Usage
 
 ```sh
-$ git bb [options]
+git bb [options]
 ```
 ### Options
 
@@ -107,21 +108,24 @@ Prerequisites
 
 ## Installation
 
+> [!NOTE]
+> An AOT compiled executable will soon be available for download. This will remove the need to install the project manually and pependencies, such as .NET, will be included in the executable.
+
 ### Windows 🪟
 
 1. Open powershell as an administrator and set the execution policy to `RemoteSigned`:
 ```sh
-$ Set-ExecutionPolicy RemoteSigned
+Set-ExecutionPolicy RemoteSigned
 ```
 
 2. Clone the repository and navigate to the project directory:
 ```sh
-$ git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
+git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
 ```
 
 3. Run the following command to install the project:
 ```sh
-$ .\install.ps1
+.\install.ps1
 ```
 
 4. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
@@ -130,12 +134,12 @@ $ .\install.ps1
 
 1. Clone the repository and navigate to the project directory:
 ```sh
-$ git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
+git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
 ```
 
 2. Run the following command to install the project:
 ```sh
-$ ./install.sh
+./install.sh
 ```
 
 3. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
