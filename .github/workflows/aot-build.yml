@@ -35,21 +35,7 @@ jobs:
       run: dotnet restore
 
     - name: Publish AOT Build
-      run: dotnet publish -r ${{ matrix.rid }} -c Release
-      env:
-        DOTNET_ROOT: ${{ runner.tool_cache }}/dncs
-        DOTNET_CLI_HOME: ${{ runner.temp }}/cli_home
-
-    - name: Create release directory
-      run: mkdir -p release
-          
-    - name: Copy AOT output (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
-
-    - name: Copy AOT output (Windows)
-      if: matrix.os == 'windows-latest'
-      run: powershell Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
+      run: dotnet publish -r ${{ matrix.rid }} -c Release -o ./release
       
     - name: Archive AOT Build
       run: |
