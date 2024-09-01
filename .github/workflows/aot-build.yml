@@ -50,7 +50,7 @@ jobs:
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
         elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
+          powershell Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
         else
           cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
       
