@@ -37,7 +37,7 @@ jobs:
       run: dotnet restore
 
     - name: Publish AOT Build
-      run: dotnet publish -r ${{ matrix.rid }} -c Release --self-contained --aot
+      run: dotnet publish -r ${{ matrix.rid }} -c Release
       env:
         DOTNET_ROOT: ${{ runner.tool_cache }}/dncs
         DOTNET_CLI_HOME: ${{ runner.temp }}/cli_home
