@@ -31,11 +31,11 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: ${{ matrix.dependencies }}
 
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Restore dependencies for CLI project only
+      run: dotnet restore src/CLI/CLI.csproj
 
-    - name: Publish AOT Build
-      run: dotnet publish -r ${{ matrix.rid }} -c Release -o ./release
+    - name: Publish AOT Build for CLI project
+      run: dotnet publish src/CLI/CLI.csproj -r ${{ matrix.rid }} -c Release -o ./release
       
     - name: Archive AOT Build
       run: |
