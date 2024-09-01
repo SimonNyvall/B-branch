@@ -1,0 +1,79 @@
+name: AOT Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build AOT
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            dependencies: sudo apt-get install -y clang zlib1g-dev
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install dependencies (Linux only)
+      if: matrix.os == 'ubuntu-latest'
+      run: ${{ matrix.dependencies }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Publish AOT Build
+      run: dotnet publish -r ${{ matrix.rid }} -c Release --self-contained --aot
+      env:
+        DOTNET_ROOT: ${{ runner.tool_cache }}/dncs
+        DOTNET_CLI_HOME: ${{ runner.temp }}/cli_home
+
+    - name: Create release directory
+      run: mkdir -p release
+          
+    - name: Copy AOT output
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
+        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+          Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
+        else
+          cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
+      
+    - name: Archive AOT Build
+      run: |
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          Compress-Archive -Path release\* -DestinationPath aot-build-${{ matrix.rid }}.zip
+        else
+          zip -r aot-build-${{ matrix.rid }}.zip ./release/*
+          
+    - name: Upload AOT Build to GitHub Release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./aot-build-${{ matrix.rid }}.zip
+        asset_name: aot-build-${{ matrix.rid }}.zip
+        asset_content_type: application/zip
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: "AOT Build - ${{ github.ref }} for ${{ matrix.rid }}"
+        draft: false
+        prerelease: false
