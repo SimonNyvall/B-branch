@@ -10,15 +10,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
             rid: linux-x64
             dependencies: sudo apt-get install -y clang zlib1g-dev
           - os: windows-latest
             rid: win-x64
-          - os: macos-latest
-            rid: osx-x64
 
     steps:
     - name: Checkout repository
@@ -51,13 +49,11 @@ jobs:
           cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
         elif [ "${{ matrix.os }}" == "windows-latest" ]; then
           powershell Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
-        else
-          cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
       
     - name: Archive AOT Build
       run: |
         if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          Compress-Archive -Path release\* -DestinationPath aot-build-${{ matrix.rid }}.zip
+          powershell Compress-Archive -Path release\* -DestinationPath aot-build-${{ matrix.rid }}.zip
         else
           zip -r aot-build-${{ matrix.rid }}.zip ./release/*
           
