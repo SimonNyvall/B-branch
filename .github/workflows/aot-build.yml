@@ -43,12 +43,13 @@ jobs:
     - name: Create release directory
       run: mkdir -p release
           
-    - name: Copy AOT output
-      run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
-        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          powershell Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
+    - name: Copy AOT output (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: cp -r ./bin/Release/net8.0/${{ matrix.rid }}/publish/* ./release/
+
+    - name: Copy AOT output (Windows)
+      if: matrix.os == 'windows-latest'
+      run: powershell Copy-Item -Recurse -Path .\bin\Release\net8.0\${{ matrix.rid }}\publish\* -Destination .\release\
       
     - name: Archive AOT Build
       run: |
