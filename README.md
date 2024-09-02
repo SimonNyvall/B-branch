@@ -10,33 +10,31 @@
  <img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/SimonNyvall/55abca133507cbeebf5256477924be67/raw/clone_count.json" alt="clone count">
 </div>
 
+- [Premise](#premise-rocket)
+  - [Why B-branch?](#why-b-branch)
+  - [Features](#features)
+  - [Example](#example)
+- [Usage](#usage)
+  - [Options](#options)
+- [Download](#download-computer)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments-mega)
+- [License](#license-book)
+- [FQAs](#fqas)
 
-- [B-branch](#b-branch)
-  - [Primise](#premise)
-    - [Example](#example)
-    - [Why B-branch?](#why-b-branch)
-  - [Usage](#usage)
-  - [Getting Started](#getting-started)
-  - [Installation](#installation)
-    - [Windows](#windows)
-    - [Linux](#linux)
-  - [Usage](#usage)
-  - [Contributing](#contributing)
-  - [Acknowledgments](#acknowledgments)
-  - [License](#license)
-  - [FQAs](#fqas)
+## Premise :rocket:
 
-## Premise 🚀
 B-branch is a .NET-based application that enhances Git repository management via a git alias. Inspired by **GitButlers** talk, [**So You Think You Know Git?** by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), B-branch provides a structured view of branch information, simplifying workflows for developers.
 
 The triditional git branch sorts branches alphabetically, making it difficult to identify the most recent branches. B-branch addresses this issue by providing a structured view of branch information, including the date of the last commit and the number of commits ahead or behind the upstream branch.
 
-Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS.
+Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS. [Download](#download) the latest release for free! No need for dependencies when using the AOT compiled executable.
 
 <img align="center" width="100%" src="./images/screen.jpg" alt="screen" width="500"/>
 
 ### Why B-branch?
-Imagine you are working in your feature branch, but suddenly you need to switch branch due to a critical bug. You stash your files, switch branch and fix the issue at hand. When you return to your feature branch, you realize that you have forgotten the name of the branch. You could use the `git branch` command to list all the branches, but this command does not provide any additional information about the branches. 
+
+Imagine you are working in your feature branch, but suddenly you need to switch branch due to a critical bug. You stash your files, switch branch and fix the issue at hand. When you return to your feature branch, you realize that you have forgotten the name of the branch. You could use the `git branch` command to list all the branches, but this command does not provide any additional information about the branches.
 
 This is where B-branch comes in handy. By using the `git bb` command, you can sort the branches on the date of the last commit, the number of commits ahead or behind the upstream branch, or the name of the branch. This makes it easier to identify the branch you are looking for.
 
@@ -44,7 +42,25 @@ This is where B-branch comes in handy. By using the `git bb` command, you can so
 2. See additional information about the branches, that is not available in the standard `git branch` command.
 3. Reliability and performance + cross-platform support.
 
+### Features
+
+- **Branch information**: Displays the branch name, the date of the last commit, the number of commits ahead or behind the upstream branch, and the branch description.
+
+- **Branch description**: Git offers the ability to add a description to a branch. B-branch displays this description in the output.
+
+- **Pager interface**: If the output is too large to fit on the screen, the output will be displayed in a pager interface. While in the pager interface.
+  - `q`: Quit the pager interface.
+  - `j` OR `Down Arrow`: Move down one line.
+  - `k` OR `Up Arrow`: Move up one line.
+  - `f` OR `Space`: Move down one page.
+  - `b`: Move up one page.
+  - `g` OR `HOME`: Move to the top of the output.
+  - `G` OR `END`: Move to the bottom of the output.
+  - `/`: Search for a string in the output.
+  - `Escape`: Clear the search.
+
 ### Example
+
 Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
 
 ```sh
@@ -52,6 +68,7 @@ $ git bb --no-contains "main;development" -q \
   | awk '{print substr($0, 3)}' \
   | xargs -I {} git branch -D {}
 ```
+
 > [!IMPORTANT]
 > This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
 
@@ -62,97 +79,47 @@ The ability to see the branch description is also a feature that is not availabl
 ```sh
 git branch --edit-description
 ```
-Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
+
+> [!NOTE]
+> Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
 
 ## Usage
 
 ```sh
 git bb [options]
 ```
+
 ### Options
 
 - `-t, --track <String>`: Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.
-
-- `-q, --quiet`: Only displays the names of the branches without any additional information or 
-formatting.
-
+- `-q, --quiet`: Only displays the names of the branches without any additional information or formatting.
 - `-v, --version`: Shows the current version of the `B-branch` tool.
-
 - `-s, --sort <String>`: Sorts the branches based on the specified criterion. Valid options are `[date]`, `[name]`, `[ahead]`, or `[behind]`.
-
 - `-a, --all`: Displays all branches, both local and remote.
-
-- `-n, --no-contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that 
-do not contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
-
+- `-n, --no-contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that do not contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
 - `-c, --contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
-
 - `-r, --remote`: Includes remote branches in the output.
-
 - `-h, --help`: Displays the help message with information about all available options.
-
 - `-p, --print-top <Number>`: Prints the top N branches based on the specified sort criterion.
 
 ---
 
-## Getting Started 🕹️
+## Download :computer:
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-Prerequisites
-
-- git 2.39.2 or later
-
-- .NET 8.0 SDK
-
-- nerd-fonts 2.1.0 or later **(optional)**
-
-## Installation
+[Download](https://github.com/SimonNyvall/B-branch/releases) the latest release for free! In the release, you will find the compiled executable for **Windows**, **Linux**, and **MacOS** with an installation script.
 
 > [!NOTE]
-> An AOT compiled executable will soon be available for download. This will remove the need to install the project manually and pependencies, such as .NET, will be included in the executable.
+> For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
 
-### Windows 🪟
+## Contributing
 
-1. Open powershell as an administrator and set the execution policy to `RemoteSigned`:
-```sh
-Set-ExecutionPolicy RemoteSigned
-```
+We welcome contributions to **B-branch**! If you have suggestions or improvements, please adhere to the following [guidelines](./CONTRIBUTE.md) when contributing to the project. Don't forget to give [the project](https://github.com/SimonNyvall/B-branch) a **star!** ⭐ Thanks again!
 
-2. Clone the repository and navigate to the project directory:
-```sh
-git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
-```
-
-3. Run the following command to install the project:
-```sh
-.\install.ps1
-```
-
-4. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
-
-### Linux 🐧
-
-1. Clone the repository and navigate to the project directory:
-```sh
-git clone --depth 1 https://github.com/SimonNyvall/B-branch.git && cd B-branch/
-```
-
-2. Run the following command to install the project:
-```sh
-./install.sh
-```
-
-3. This will set an alias in the `.gitconfig` file to point to that executable. Run the script by running `git bb`
-
-## Contributing 🖥️
-
-We welcome contributions to **B-branch**! If you have suggestions or improvements, please fork the repo and create a pull request, or open an issue with the tag "enhancement". Don't forget to give the project a **star!** ⭐ Thanks again!
-
-## Acknowledgments
+## Acknowledgments :mega:
 
 This project was inspired by the innovative ideas shared by [**GitButler**](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s). Check out their video for more insights into enhancing Git workflows.
 
-## License 📖
+## License :book:
 
 This project is licensed under the [MIT License](./LICENSE) - see the LICENSE.md file for details.
 

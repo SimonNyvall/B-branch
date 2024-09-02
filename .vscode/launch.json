@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/tests/bin/Debug/net8.0/B-branch.tests.dll",
+            "program": "${workspaceFolder}/src/CLI/bin/Debug/net8.0/CLI",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
