@@ -11,7 +11,6 @@
 </div>
 
 - [Premise](#premise-rocket)
-  - [Why B-branch?](#why-b-branch)
   - [Features](#features)
   - [Example](#example)
 - [Usage](#usage)
@@ -24,23 +23,21 @@
 
 ## Premise :rocket:
 
-B-branch is a .NET-based application that enhances Git repository management via a git alias. Inspired by **GitButlers** talk, [**So You Think You Know Git?** by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), B-branch provides a structured view of branch information, simplifying workflows for developers.
+B-branch is a tool that enhances Git branch management with a convenient git alias. Inspired by the talk [So You Think You Know Git? by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), B-branch offers a more organized view of your branches, simplifying your workflow.
 
-The triditional git branch sorts branches alphabetically, making it difficult to identify the most recent branches. B-branch addresses this issue by providing a structured view of branch information, including the date of the last commit and the number of commits ahead or behind the upstream branch.
+Traditional git branch commands sort branches alphabetically, making it hard to find recent ones. B-branch solves this by displaying branch information like the last commit date and commit differences with the upstream branch, all in a structured format.
 
-Cross-Platform Support: Built on .NET, **B-branch** runs on any platform supported by .NET 8.0, including Windows, Linux, and macOS. [Download](#download) the latest release for free! No need for dependencies when using the AOT compiled executable.
+Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** with no dependencies required when using the compiled executable. [Download](#download-computer) the latest release for **free**!
 
-<img align="center" width="100%" src="./images/screen.jpg" alt="screen" width="500"/>
+<img align="center" width="100%" src="./images/banner.png" alt="screen" width="500"/>
 
-### Why B-branch?
+---
 
-Imagine you are working in your feature branch, but suddenly you need to switch branch due to a critical bug. You stash your files, switch branch and fix the issue at hand. When you return to your feature branch, you realize that you have forgotten the name of the branch. You could use the `git branch` command to list all the branches, but this command does not provide any additional information about the branches.
+**key benefits**
 
-This is where B-branch comes in handy. By using the `git bb` command, you can sort the branches on the date of the last commit, the number of commits ahead or behind the upstream branch, or the name of the branch. This makes it easier to identify the branch you are looking for.
-
-1. Make it easier to identify the branch you are looking for.
-2. See additional information about the branches, that is not available in the standard `git branch` command.
-3. Reliability and performance + cross-platform support.
+- Quickly identify the branch you need.
+- Access additional branch details not available with git branch.
+- Enjoy reliable, high-performance, cross-platform support.
 
 ### Features
 
@@ -64,9 +61,9 @@ This is where B-branch comes in handy. By using the `git bb` command, you can so
 Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
 
 ```sh
-$ git bb --no-contains "main;development" -q \
-  | awk '{print substr($0, 3)}' \
-  | xargs -I {} git branch -D {}
+git bb --no-contains "main;development" -q \
+| awk '{print substr($0, 3)}' \
+| xargs -I {} git branch -D {}
 ```
 
 > [!IMPORTANT]
