@@ -151,4 +151,17 @@ public class ParseArgumentsTests
 
         Assert.False(isSuccessful);
     }
+
+    [Fact]
+    public void ParseArgument_ShouldReturnHelpFlag_WithOnlyHelpArgument()
+    {
+        string[] args = ["--help"];
+
+        Dictionary<FlagType, string> options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.Equal(FlagType.Help, options.Keys.First());
+        Assert.True(isSuccessful);
+    }
 }
