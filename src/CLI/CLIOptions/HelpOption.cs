@@ -3,7 +3,7 @@ namespace CLI.Options;
 public class HelpOptions
 {
     private static string _helpMessage = """
-    Usage: bbranch [options]
+    Usage: git bb [options]
 
     Options:
     --help,        -h                               Displays the help message with information about all available options.
