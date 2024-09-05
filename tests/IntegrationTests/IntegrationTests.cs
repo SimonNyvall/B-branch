@@ -39,7 +39,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithHelpLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-h");
         process.Start();
@@ -63,7 +63,7 @@ public partial class IntegrationTest
         Assert.Contains("--version,     -v", lines[11]);
     }
 
-    private async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--help");
         process.Start();
@@ -96,7 +96,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithVersionLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-v");
         process.Start();
@@ -113,7 +113,7 @@ public partial class IntegrationTest
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    private async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-v");
         process.Start();
@@ -139,7 +139,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithTrackLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-t", "main");
         process.Start();
@@ -164,7 +164,7 @@ public partial class IntegrationTest
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--track", "main");
         process.Start();
@@ -199,7 +199,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithSortLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithSortShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithSortShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-s", "name");
         process.Start();
@@ -230,7 +230,7 @@ public partial class IntegrationTest
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    private async Task IntegrationTest_ValidOutput_WithSortLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithSortLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--sort", "name");
         process.Start();
@@ -271,7 +271,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithContainsLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-c", "main");
         process.Start();
@@ -300,7 +300,7 @@ public partial class IntegrationTest
         Assert.All(branchNames, b => Assert.Contains("main", b, StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--contains", "main");
         process.Start();
@@ -338,7 +338,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithNoContainsLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-n", "main");
         process.Start();
@@ -367,7 +367,7 @@ public partial class IntegrationTest
         Assert.All(branchNames, b => Assert.DoesNotContain("main", b, StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--no-contains", "main");
         process.Start();
@@ -405,7 +405,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithAllLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithAllShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-a");
         process.Start();
@@ -430,7 +430,7 @@ public partial class IntegrationTest
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithAllLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--all");
         process.Start();
@@ -464,7 +464,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithRemoteLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-r");
         process.Start();
@@ -489,7 +489,7 @@ public partial class IntegrationTest
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--remote");
         process.Start();
@@ -524,7 +524,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithQuietLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-q");
         process.Start();
@@ -544,7 +544,7 @@ public partial class IntegrationTest
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    private async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--quiet");
         process.Start();
@@ -574,7 +574,7 @@ public partial class IntegrationTest
         await IntegrationTest_ValidOutput_WithPrintTopLongFlag();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
+    private static async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--print-top", "1");
         process.Start();
@@ -593,7 +593,7 @@ public partial class IntegrationTest
         Assert.True(lines.Length <= 3, "Too many lines printed.");
     }
 
-    private async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
+    private static async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("-p", "1");
         process.Start();
