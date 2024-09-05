@@ -77,7 +77,7 @@ public partial class IntegrationTest
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithTrackFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--track");
+        using var process = ProcessHelper.GetDotnetProcess("--track main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
