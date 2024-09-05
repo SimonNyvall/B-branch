@@ -627,6 +627,19 @@ public partial class IntegrationTest
         Assert.Equal("You cannot use --version with any other option\n", output);
     }
 
+    [Fact]
+    public async Task IntegrationTest_NotValidOutput_WithContainsAndNoContainsFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("-c", "main", "-n", "main");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+        Assert.Equal("You cannot use both --contains and --no-contains\n", output);
+    }
+
     #endregion
 
     private static void AssertHeader(string[] headerLines)
