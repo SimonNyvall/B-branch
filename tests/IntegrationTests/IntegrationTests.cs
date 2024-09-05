@@ -101,7 +101,7 @@ public partial class IntegrationTest
     }
 
     [Fact]
-    public async Task IntegragionTest_ValidOutput_WithSortFlag()
+    public async Task IntegrationTest_ValidOutput_WithSortFlag()
     {
         using var process = ProcessHelper.GetDotnetProcess("--sort name");
         process.Start();
