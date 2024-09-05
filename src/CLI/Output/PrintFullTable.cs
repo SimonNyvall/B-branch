@@ -26,6 +26,12 @@ public class PrintFullTable
 
         PrintHeaders();
 
+        if (Console.IsOutputRedirected || !Console.IsInputRedirected)
+        {
+            PrintBranchRows(branches, null);
+            return;
+        }
+
         if (branches.Count > ConsoleHeight)
         {
             StartPaging(branches);

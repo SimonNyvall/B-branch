@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
@@ -6,58 +5,88 @@ namespace IntegrationTests;
 
 public partial class IntegrationTest
 {
-    private Process GetDotnetProcess()
-    {
-        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
-        Process process = new() 
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = "run --project ./src/CLI/CLI.csproj",
-                WorkingDirectory = repoPath,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            }
-        };
-
-        return process;
-    }
-    
     [Fact]
-    public void IntegrationTest_ValidOutput()
+    public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
-        using var process = GetDotnetProcess();
+        using var process = ProcessHelper.GetDotnetProcess();
         process.Start();
 
-        string output = process.StandardOutput.ReadToEnd();
-        string error = process.StandardError.ReadToEnd();
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
 
         process.WaitForExit();
 
-        Assert.True(string.IsNullOrEmpty(error));
+        Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
     
-        Assert.Contains("Ahead 󰜘", lines[0]);
-        Assert.Contains("Behind 󰜘", lines[0]);
-        Assert.Contains("Branch Name ", lines[0]);
-        Assert.Contains("Last commit ", lines[0]);
-
-        Assert.True(lines[1].All(c => c == '|' || c == '-' || c == ' '));
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0);
-            Assert.True(behind >= 0);
+            Assert.True(ahead >= 0, "ahead was below 0.");
+            Assert.True(behind >= 0, "behind was below 0.");
         }
     }
 
-    private (int ahead, int behind) GetAheadBehindFromString(string line)
+    [Fact]
+    public async Task IntegrationTest_ValidOutput_WithHelpFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("--help");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.Contains("--help,        -h", lines[2]);
+        Assert.Contains("--track,       -t", lines[3]);
+        Assert.Contains("--sort,        -s", lines[4]);
+        Assert.Contains("--contains,    -c", lines[5]);
+        Assert.Contains("--no-contains, -n", lines[6]);
+        Assert.Contains("--all,         -a", lines[7]);
+        Assert.Contains("--remote,      -r", lines[8]);
+        Assert.Contains("--quiet,       -q", lines[9]);
+        Assert.Contains("--print-top,   -p", lines[10]);
+        Assert.Contains("--version,     -v", lines[11]);
+    }
+
+    [Fact]
+    public async Task IntegrationTest_ValidOutput_WithVersionFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("--version");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        const string pattern = @"v(\d+)\.(\d+)\.(\d+)";
+
+        Match match = Regex.Match(output, pattern);
+
+        Assert.True(match.Success, "Failed to match version pattern.");
+    }
+
+    private static void AssertHeader(string[] headerLines)
+    {
+        Assert.True(headerLines.Length >= 2, "Header lines does not contain enought lines for header print.");
+
+        Assert.Contains("Ahead 󰜘", headerLines[0]);
+        Assert.Contains("Behind 󰜘", headerLines[0]);
+        Assert.Contains("Branch Name ", headerLines[0]);
+        Assert.Contains("Last commit ", headerLines[0]);
+
+        Assert.True(headerLines[1].All(c => c == '|' || c == '-' || c == ' '));
+    }
+
+    private static (int ahead, int behind) GetAheadBehindFromString(string line)
     {
         int ahead = 0;
         int behind = 0;
