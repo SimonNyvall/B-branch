@@ -141,7 +141,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-t main");
+        using var process = ProcessHelper.GetDotnetProcess("-t", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -166,7 +166,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--track main");
+        using var process = ProcessHelper.GetDotnetProcess("--track", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -201,7 +201,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithSortShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--sort name");
+        using var process = ProcessHelper.GetDotnetProcess("-s", "name");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -232,7 +232,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithSortLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--sort name");
+        using var process = ProcessHelper.GetDotnetProcess("--sort", "name");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -273,7 +273,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-c main");
+        using var process = ProcessHelper.GetDotnetProcess("-c", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -302,7 +302,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--contains main");
+        using var process = ProcessHelper.GetDotnetProcess("--contains", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -340,7 +340,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-n main");
+        using var process = ProcessHelper.GetDotnetProcess("-n", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -369,7 +369,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--no-contains main");
+        using var process = ProcessHelper.GetDotnetProcess("--no-contains", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -576,7 +576,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--print-top 1");
+        using var process = ProcessHelper.GetDotnetProcess("--print-top", "1");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -595,7 +595,7 @@ public partial class IntegrationTest
 
     private async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-p 1");
+        using var process = ProcessHelper.GetDotnetProcess("-p", "1");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -611,6 +611,22 @@ public partial class IntegrationTest
 
         Assert.True(lines.Length <= 3, "Too many lines printed.");
     }
+    #endregion
+
+    #region ValidationArguments
+    [Fact]
+    public async Task IntegrationTest_NotValidOutput_WithVersionAndOtherFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("-v", "-t", "main");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+        Assert.Equal("You cannot use --version with any other option\n", output);
+    }
+
     #endregion
 
     private static void AssertHeader(string[] headerLines)
