@@ -653,6 +653,18 @@ public partial class IntegrationTest
         Assert.Equal("You cannot use both --all and --remote\n", output);
     }
 
+    [Fact]
+    public async Task IntegrationTest_NotValidOutput_WithPrintTopFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("-p", "0");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+        Assert.Equal("Value for --print-top must be greater than 0\n", output);
+    }
     #endregion
 
     private static void AssertHeader(string[] headerLines)
