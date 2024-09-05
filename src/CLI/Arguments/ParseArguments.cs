@@ -129,12 +129,12 @@ public class Parse
             ShortFlagType.q => FlagType.Quiet,
             ShortFlagType.s => FlagType.Sort,
             ShortFlagType.c => FlagType.Contains,
-            ShortFlagType.nc => FlagType.Nocontains,
+            ShortFlagType.n => FlagType.Nocontains,
             ShortFlagType.r => FlagType.Remote,
             ShortFlagType.t => FlagType.Track,
             ShortFlagType.v => FlagType.Version,
             ShortFlagType.p => FlagType.Printtop,
-            _ => FlagType.All
+            _ => throw new NotImplementedException("Short flag not implemented"),
         };
     }
 }

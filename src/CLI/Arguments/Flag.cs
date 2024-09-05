@@ -24,7 +24,7 @@ public enum ShortFlagType
     q,
     s,
     c,
-    nc,
+    n,
     r,
     t,
     v,
