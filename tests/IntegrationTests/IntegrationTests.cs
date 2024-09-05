@@ -265,6 +265,26 @@ public partial class IntegrationTest
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
+    [Fact]
+    public async Task IntegrationTest_ValidOutput_WithPrintTopFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("--print-top 1");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        process.WaitForExit();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        AssertHeader(lines);
+
+        Assert.True(lines.Length <= 3, "Too many lines printed.");
+    }
+
     private static void AssertHeader(string[] headerLines)
     {
         Assert.True(headerLines.Length >= 2, "Header lines does not contain enought lines for header print.");
