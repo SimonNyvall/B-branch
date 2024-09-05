@@ -192,6 +192,32 @@ public partial class IntegrationTest
         Assert.All(branchNames, b => Assert.DoesNotContain("main", b, StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task IntegrationTest_ValidOutput_WithAllFlag()
+    {
+        using var process = ProcessHelper.GetDotnetProcess("--all");
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        process.WaitForExit();
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        AssertHeader(lines);
+
+        foreach (string line in lines.Skip(2))
+        {
+            var (ahead, behind) = GetAheadBehindFromString(line);
+
+            Assert.True(ahead >= 0, "ahead was below 0.");
+            Assert.True(behind >= 0, "behind was below 0.");
+        }
+    }
+
     private static void AssertHeader(string[] headerLines)
     {
         Assert.True(headerLines.Length >= 2, "Header lines does not contain enought lines for header print.");
