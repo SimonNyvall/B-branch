@@ -26,7 +26,8 @@ public class PrintFullTable
 
         PrintHeaders();
 
-        if (Console.IsOutputRedirected || !Console.IsInputRedirected)
+        // If the call comes from the tests, we don't want to start paging
+        if (ConsoleHeight < 0)
         {
             PrintBranchRows(branches, null);
             return;
@@ -52,10 +53,30 @@ public class PrintFullTable
         PrintHeaders();
         PrintBranchRows(branches.Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
 
+        Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref scrollPosition))
+        {
+            IsBackground = true
+        };
+
+        resizeListenerThread.Start();
+
         while (true)
         {
             Console.SetCursorPosition(0, ConsoleHeight);
-            Console.Write(':');
+
+            if (scrollPosition > Math.Abs(branches.Count - ConsoleHeight + 1) 
+            || branches.Count < ConsoleHeight)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("(END)");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.Write(":    ");
+            }
+
             ConsoleKeyInfo key = Console.ReadKey(true);
 
             switch (key.Key)
@@ -145,6 +166,50 @@ public class PrintFullTable
         }
     }
 
+    private static void ListenForWindowResize(List<GitBranch> branches, ref int scrollPosition)
+    {
+        int previousHeight = Console.WindowHeight;
+
+        while (true)
+        {
+            if (Console.WindowHeight == previousHeight) continue;
+
+            previousHeight = Console.WindowHeight;
+            Console.Clear();
+            PrintHeaders();
+
+            // Update the scroll position to the bottom branch that is visible
+            if (scrollPosition + ConsoleHeight - 2 > branches.Count)
+            {
+                scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
+            }
+
+            UpdateView(branches, scrollPosition);
+
+            if (branches.Count < ConsoleHeight - 1)
+            {
+                for (int i = branches.Count; i < ConsoleHeight - 2; i++)
+                {
+                    Console.SetCursorPosition(0, i + 2);
+                    Console.Write('~');
+                }
+
+                Console.SetCursorPosition(0, ConsoleHeight);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("(END)");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.SetCursorPosition(0, ConsoleHeight);
+                Console.Write(':');
+            }
+
+            Thread.Sleep(50);
+        }
+    }
+
     private static void UpdateView(List<GitBranch> branches, int scrollPosition)
     {
         Console.SetCursorPosition(0, 2);
@@ -154,7 +219,8 @@ public class PrintFullTable
     private static void HandleSearch(List<GitBranch> branches)
     {
         Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write('/');
+        Console.Write("/    ");
+        Console.SetCursorPosition(1, ConsoleHeight);
 
         currentSearchTerm = Console.ReadLine() ?? string.Empty;
 
@@ -165,11 +231,19 @@ public class PrintFullTable
         Console.SetCursorPosition(0, 0);
         PrintHeaders();
 
-        for (int i = 0; i < branches.Count; i++)
+        for (int i = 0; i < branches.Count; i++) //TODO: fix search jumping
         {
             if (i > ConsoleHeight - 3) break;
 
             PrintBranchRowWithHighlight(branches[i], currentSearchTerm);
+        }
+
+        if (branches.Count > ConsoleHeight) return;
+
+        for (int i = branches.Count; i < ConsoleHeight - 1; i++)
+        {
+            Console.SetCursorPosition(0, i + 2);
+            Console.Write('~');
         }
     }
 
