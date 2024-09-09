@@ -1,3 +1,4 @@
+using System.Dynamic;
 using System.Globalization;
 using Shared.TableData;
 
@@ -64,7 +65,7 @@ public class PrintFullTable
         {
             Console.SetCursorPosition(0, ConsoleHeight);
 
-            if (scrollPosition > Math.Abs(branches.Count - ConsoleHeight + 1) 
+            if (scrollPosition > Math.Abs(branches.Count - ConsoleHeight + 1)
             || branches.Count < ConsoleHeight)
             {
                 Console.BackgroundColor = ConsoleColor.White;
@@ -340,15 +341,37 @@ public class PrintFullTable
 
     private static string GetTimePrefix(DateTime lastCommit)
     {
-        int days = (DateTime.Now - lastCommit).Days;
+        DateTime currentTime = DateTime.Now;
+
+        DateTimeFormatInfo dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+
+        int days = (currentTime - lastCommit).Days;
 
         if (days == 0)
         {
-            string time = lastCommit.ToString("HH:mm", CultureInfo.InvariantCulture);
+            string timeFormat;
+
+            // Check if the culture uses 12-hour format
+            if (dateTimeFormat.ShortTimePattern.Contains("tt"))
+            {
+                // Determine format based on hour
+                timeFormat = lastCommit.Hour < 10 ? "h:mm  tt" : "h:mm tt";
+            }
+            else
+            {
+                // Use 24-hour format if not using 12-hour
+                timeFormat = "HH:mm";
+            }
+
+            string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
+
+            // Check if the difference is just one day
+            if (currentTime.Day - lastCommit.Day == 1) return $"{time} Yesterday";
+
             return $"{time} Today";
         }
 
-        string timeElapsed = days == 1 ? "day" : "days";
+        string timeElapsed = days == 1 ? "Day" : "Days";
 
         int padLeft = 5 - days.ToString().Length;
         return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
