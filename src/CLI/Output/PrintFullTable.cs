@@ -351,21 +351,17 @@ public class PrintFullTable
         {
             string timeFormat;
 
-            // Check if the culture uses 12-hour format
             if (dateTimeFormat.ShortTimePattern.Contains("tt"))
             {
-                // Determine format based on hour
-                timeFormat = lastCommit.Hour < 10 ? "h:mm  tt" : "h:mm tt";
+                timeFormat = (lastCommit.Hour > 9 && lastCommit.Hour < 13) ? "h:mm tt" : "h:mm  tt";
             }
             else
             {
-                // Use 24-hour format if not using 12-hour
                 timeFormat = "HH:mm";
             }
 
             string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
 
-            // Check if the difference is just one day
             if (currentTime.Day - lastCommit.Day == 1) return $"{time} Yesterday";
 
             return $"{time} Today";
