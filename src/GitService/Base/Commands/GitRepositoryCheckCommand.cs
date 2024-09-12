@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 namespace Git.Base;
 
-internal class DoesBranchExistCommand(string branchName) : Command<bool>
+internal class GitRepositoryCheckCommand : AbstractCommand<bool>
 {
-    public override string CommandArgument => $"rev-parse --verify {branchName}";
+    public override string CommandArgument => "rev-parse --is-inside-work-tree";
 
     public override bool Execute()
     {
@@ -13,9 +13,10 @@ internal class DoesBranchExistCommand(string branchName) : Command<bool>
         process.Start();
 
         string output = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
 
         process.WaitForExit();
 
-        return !string.IsNullOrWhiteSpace(output);
+        return output.Trim() == "true";
     }
 }

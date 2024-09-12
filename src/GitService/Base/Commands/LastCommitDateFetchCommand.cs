@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Git.Base;
 
-internal class LastCommitDateCommand(string branchName) : Command<DateTime>
+internal class LastCommitDateFetchCommand(string branchName) : AbstractCommand<DateTime>
 {
     public override string CommandArgument => $"log -1 --format=%cd --date=iso {branchName}";
 

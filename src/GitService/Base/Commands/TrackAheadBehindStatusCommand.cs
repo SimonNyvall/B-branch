@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 namespace Git.Base;
 
-internal class DefaultAheadBehindCommand(string localBranchName) : Command<string>
+internal class TrackAheadBehindStatusCommand(string localBranchName, string remoteBranchName) : AbstractCommand<string>
 {
-    public override string CommandArgument => $"rev-list --left-right --count {localBranchName}...origin/{localBranchName}";
+    public override string CommandArgument => $"rev-list --left-right --count {localBranchName}...{remoteBranchName}";
 
     public override string Execute()
     {

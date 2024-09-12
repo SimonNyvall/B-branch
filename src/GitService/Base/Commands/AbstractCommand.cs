@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Git.Base;
 
-internal abstract class Command<T>
+internal abstract class AbstractCommand<T>
 {
     protected string CurrentWorkingDirectory { get; set; } = Directory.GetCurrentDirectory();
     public abstract string CommandArgument { get; }

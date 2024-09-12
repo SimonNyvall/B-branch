@@ -32,7 +32,7 @@ public class GitRepository : IGitRepository
 
     private void SetGitPath()
     {
-        IsGitRepositoryCommand isGitRepositoryCommand = new();
+        GitRepositoryCheckCommand isGitRepositoryCommand = new();
 
         if (!isGitRepositoryCommand.Execute())
         {
@@ -40,7 +40,7 @@ public class GitRepository : IGitRepository
             Environment.Exit(1);
         }
 
-        GitDirectoryLocationCommand gitDirectoryLocationCommand = new();
+        GitRepositoryLocationCommand gitDirectoryLocationCommand = new();
 
         _gitPath = gitDirectoryLocationCommand.Execute();
     }
@@ -67,21 +67,21 @@ public class GitRepository : IGitRepository
 
     public DateTime GetLastCommitDate(string branchName)
     {
-        LastCommitDateCommand lastCommitDateCommand = new(branchName);
+        LastCommitDateFetchCommand lastCommitDateCommand = new(branchName);
 
         return lastCommitDateCommand.Execute();
     }
 
     public AheadBehind GetLocalAheadBehind(string localBranchName)
     {
-        DefaultAheadBehindCommand defaultAheadBehindCommand = new(localBranchName);
+        DefaultAheadBehindStatusCommand defaultAheadBehindCommand = new(localBranchName);
 
         return ParseAheadBehind(defaultAheadBehindCommand.Execute());
     }
 
     public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
     {
-        TrackAheadBehindCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
+        TrackAheadBehindStatusCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
 
         return ParseAheadBehind(trackAheadBehindCommand.Execute());
     }
@@ -170,7 +170,7 @@ public class GitRepository : IGitRepository
 
     public bool DoesBranchExist(string branchName)
     {
-        DoesBranchExistCommand doesBranchExistCommand = new(branchName);
+        BranchExistenceCheckCommand doesBranchExistCommand = new(branchName);
 
         return doesBranchExistCommand.Execute();
     }
