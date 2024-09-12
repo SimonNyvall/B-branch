@@ -4,27 +4,27 @@ using Shared.TableData;
 
 namespace Git.Base;
 
-public class GitBase : IGitBase
+public class GitRepository : IGitRepository
 {
-    private static GitBase? _instance;
+    private static GitRepository? _instance;
 
     private string _gitPath = string.Empty;
 
-    private GitBase()
+    private GitRepository()
     {
         SetGitPath();
     }
 
-    public static GitBase GetInstance()
+    public static GitRepository GetInstance()
     {
         if (_instance is not null)
         {
             return _instance;
         }
 
-        lock (typeof(GitBase))
+        lock (typeof(GitRepository))
         {
-            _instance = _instance is null ? new GitBase() : _instance;
+            _instance = _instance is null ? new GitRepository() : _instance;
         }
 
         return _instance;
@@ -32,22 +32,17 @@ public class GitBase : IGitBase
 
     private void SetGitPath()
     {
-        Execute execute = Execute.GetInstance();
+        IsGitRepositoryCommand isGitRepositoryCommand = new();
 
-        const string isGitDirectoryArgument = "rev-parse --is-inside-work-tree";
-        const string gitDirectoryArgument = "rev-parse --git-dir";
-
-        string stdOut = execute.ExecuteCommand(isGitDirectoryArgument).Trim();
-
-        if (stdOut != "true")
+        if (!isGitRepositoryCommand.Execute())
         {
             Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
             Environment.Exit(1);
         }
 
-        stdOut = execute.ExecuteCommand(gitDirectoryArgument).Trim();
+        GitDirectoryLocationCommand gitDirectoryLocationCommand = new();
 
-        _gitPath = stdOut;
+        _gitPath = gitDirectoryLocationCommand.Execute();
     }
 
     public string GetWorkingBranch()
@@ -72,23 +67,33 @@ public class GitBase : IGitBase
 
     public DateTime GetLastCommitDate(string branchName)
     {
-        string lastCommitDate = Execute.GetInstance().ExecuteCommand(
-            $"log -1 --format=%cd --date=iso {branchName}"
-        );
+        LastCommitDateCommand lastCommitDateCommand = new(branchName);
 
-        return DateTime.Parse(lastCommitDate);
+        return lastCommitDateCommand.Execute();
     }
 
-    public AheadBehind GetAheadBehind(string argument)
+    public AheadBehind GetLocalAheadBehind(string localBranchName)
     {
-        string response = Execute.GetInstance().ExecuteCommand(argument);
+        DefaultAheadBehindCommand defaultAheadBehindCommand = new(localBranchName);
 
-        if (string.IsNullOrWhiteSpace(response))
+        return ParseAheadBehind(defaultAheadBehindCommand.Execute());
+    }
+
+    public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
+    {
+        TrackAheadBehindCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
+
+        return ParseAheadBehind(trackAheadBehindCommand.Execute());
+    }
+
+    private static AheadBehind ParseAheadBehind(string result)
+    {
+        if (string.IsNullOrWhiteSpace(result))
         {
             return new AheadBehind(0, 0);
         }
 
-        Match match = Regex.Match(response, @"(\d+)\s+(\d+)", RegexOptions.Compiled);
+        Match match = Regex.Match(result, @"(\d+)\s+(\d+)", RegexOptions.Compiled);
 
         if (match.Success)
         {
@@ -165,12 +170,8 @@ public class GitBase : IGitBase
 
     public bool DoesBranchExist(string branchName)
     {
-        var execute = Execute.GetInstance();
+        DoesBranchExistCommand doesBranchExistCommand = new(branchName);
 
-        string argument = $"rev-parse --verify {branchName}";
-
-        string response = execute.ExecuteCommand(argument);
-
-        return !string.IsNullOrWhiteSpace(response);
+        return doesBranchExistCommand.Execute();
     }
 }

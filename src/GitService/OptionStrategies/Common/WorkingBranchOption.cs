@@ -3,7 +3,7 @@ using Shared.TableData;
 
 namespace Git.Options;
 
-public class WorkingBranchOption(IGitBase gitBase) : IOption
+public class WorkingBranchOption(IGitRepository gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

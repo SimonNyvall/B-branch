@@ -7,7 +7,7 @@ using Git.Base;
 
 public class BranchTableAssembler
 {
-    private static readonly IGitBase _gitBase = GitBase.GetInstance();
+    private static readonly IGitRepository _gitBase = GitRepository.GetInstance();
 
     internal static List<GitBranch> AssembleBranchTable(Dictionary<FlagType, string> arguments)
     {

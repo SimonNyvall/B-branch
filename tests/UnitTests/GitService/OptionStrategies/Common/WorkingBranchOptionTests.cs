@@ -10,7 +10,7 @@ public class WorkingBranchOptionTests
     [Fact]
     public void Execute_ShouldReturnWorkingBranch_WhenBranchesAreProvided()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
         mockGitBase.GetWorkingBranch().Returns("main");
 
         var branches = new List<GitBranch>
@@ -30,7 +30,7 @@ public class WorkingBranchOptionTests
     [Fact]
     public void Execute_ShouldReturnEmptyList_WhenEmptyBranchListAreProvided()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
         mockGitBase.GetWorkingBranch().Returns("main");
 
         List<GitBranch> branches = [];

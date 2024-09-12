@@ -10,7 +10,7 @@ public class BranchAllOptionTests
     [Fact]
     public void Execute_ShouldReturnAllBranches()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var localBranches = new List<GitBranch>
         {
@@ -38,7 +38,7 @@ public class BranchAllOptionTests
     [Fact]
     public void Execute_ShouldReturnAllBranches_WithEmptyList()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var localBranches = new List<GitBranch>();
 

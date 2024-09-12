@@ -3,7 +3,7 @@ using Git.Base;
 
 namespace Git.Options;
 
-public class SetLastCommitOptions(IGitBase gitBase) : IOption
+public class SetLastCommitOptions(IGitRepository gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {
