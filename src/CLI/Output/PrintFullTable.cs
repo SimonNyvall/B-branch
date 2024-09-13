@@ -26,17 +26,15 @@ public class PrintFullTable
 
         PrintHeaders();
 
-        // If the call comes from the tests, we don't want to start paging
-        if (ConsoleHeight < 0)
+        if (IsTestCaller())
         {
             PrintBranchRows(branches, null);
             return;
         }
 
-        if (branches.Count > ConsoleHeight)
+        if (DoesOutputFitScreen(branches.Count))
         {
             StartPaging(branches);
-
             return;
         }
 
@@ -45,36 +43,29 @@ public class PrintFullTable
 
     private static void StartPaging(List<GitBranch> branches)
     {
-        Console.CursorVisible = false;
         int scrollPosition = 0;
         currentSearchTerm = null;
 
+        Console.CursorVisible = false;
+
         Console.Clear();
+
         PrintHeaders();
         PrintBranchRows(branches.Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
 
-        Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref scrollPosition))
-        {
-            IsBackground = true
-        };
-
-        resizeListenerThread.Start();
+        SpawnWindowListenerThread(branches, ref scrollPosition);
 
         while (true)
         {
             Console.SetCursorPosition(0, ConsoleHeight);
 
-            if (scrollPosition > Math.Abs(branches.Count - ConsoleHeight + 1) 
-            || branches.Count < ConsoleHeight)
+            if (IsScrollAtBottom(scrollPosition, branches.Count))
             {
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write("(END)");
-                Console.ResetColor();
+                PrintEndPromt();
             }
             else
             {
-                Console.Write(":    ");
+                PrintCommandPromt();
             }
 
             ConsoleKeyInfo key = Console.ReadKey(true);
@@ -84,7 +75,7 @@ public class PrintFullTable
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.K:
                     {
-                        if (scrollPosition <= 0) break;
+                        if (!CanScrollUp(scrollPosition)) break;
 
                         scrollPosition--;
                         UpdateView(branches, scrollPosition);
@@ -93,7 +84,7 @@ public class PrintFullTable
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.J:
                     {
-                        if (scrollPosition > Math.Abs(branches.Count - ConsoleHeight + 1)) break;
+                        if (!CanScrollDown(scrollPosition, branches.Count)) break;
 
                         scrollPosition++;
                         UpdateView(branches, scrollPosition);
@@ -124,7 +115,7 @@ public class PrintFullTable
                     {
                         int pageHeight = ConsoleHeight - 2;
 
-                        if (branches.Count - scrollPosition - pageHeight > pageHeight)
+                        if (CanPageDown(scrollPosition, branches.Count))
                         {
                             scrollPosition += pageHeight;
                         }
@@ -138,7 +129,7 @@ public class PrintFullTable
                     }
                 case ConsoleKey.B:
                     {
-                        if (scrollPosition - ConsoleHeight > 0)
+                        if (CanPageUp(scrollPosition))
                         {
                             scrollPosition -= ConsoleHeight;
                         }
@@ -166,44 +157,53 @@ public class PrintFullTable
         }
     }
 
+    private static void SpawnWindowListenerThread(List<GitBranch> branches, ref int scrollPosition)
+    {
+        int currentPosition = scrollPosition;
+        Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref currentPosition))
+        {
+            IsBackground = true
+        };
+
+        resizeListenerThread.Start();
+    }
+
     private static void ListenForWindowResize(List<GitBranch> branches, ref int scrollPosition)
     {
         int previousHeight = Console.WindowHeight;
 
         while (true)
         {
-            if (Console.WindowHeight == previousHeight) continue;
-
-            previousHeight = Console.WindowHeight;
-            Console.Clear();
-            PrintHeaders();
-
-            // Update the scroll position to the bottom branch that is visible
-            if (scrollPosition + ConsoleHeight - 2 > branches.Count)
+            if (Console.WindowHeight != previousHeight)
             {
-                scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
-            }
 
-            UpdateView(branches, scrollPosition);
+                previousHeight = Console.WindowHeight;
 
-            if (branches.Count < ConsoleHeight - 1)
-            {
-                for (int i = branches.Count; i < ConsoleHeight - 2; i++)
+                Console.Clear();
+                PrintHeaders();
+
+                // Update the scroll position to the bottom branch that is visible
+                if (scrollPosition + ConsoleHeight - 2 > branches.Count)
                 {
-                    Console.SetCursorPosition(0, i + 2);
-                    Console.Write('~');
+                    scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
                 }
 
-                Console.SetCursorPosition(0, ConsoleHeight);
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write("(END)");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.SetCursorPosition(0, ConsoleHeight);
-                Console.Write(':');
+                UpdateView(branches, scrollPosition);
+
+                if (branches.Count < ConsoleHeight - 1)
+                {
+                    for (int i = branches.Count; i < ConsoleHeight - 2; i++)
+                    {
+                        Console.SetCursorPosition(0, i + 2);
+                        Console.Write('~');
+                    }
+
+                    PrintEndPromt();
+                }
+                else
+                {
+                    PrintCommandPromt();
+                }
             }
 
             Thread.Sleep(50);
@@ -218,9 +218,7 @@ public class PrintFullTable
 
     private static void HandleSearch(List<GitBranch> branches)
     {
-        Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write("/    ");
-        Console.SetCursorPosition(1, ConsoleHeight);
+        PrintSearchPromt();
 
         currentSearchTerm = Console.ReadLine() ?? string.Empty;
 
@@ -340,17 +338,75 @@ public class PrintFullTable
 
     private static string GetTimePrefix(DateTime lastCommit)
     {
-        int days = (DateTime.Now - lastCommit).Days;
+        DateTime currentTime = DateTime.Now;
+
+        DateTimeFormatInfo dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+
+        int days = (currentTime - lastCommit).Days;
 
         if (days == 0)
         {
-            string time = lastCommit.ToString("HH:mm", CultureInfo.InvariantCulture);
+            string timeFormat;
+
+            if (dateTimeFormat.ShortTimePattern.Contains("tt"))
+            {
+                timeFormat = (lastCommit.Hour > 9 && lastCommit.Hour < 13) ? "h:mm tt" : "h:mm  tt";
+            }
+            else
+            {
+                timeFormat = "HH:mm";
+            }
+
+            string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
+
+            if (currentTime.Day - lastCommit.Day == 1) return $"{time} Yesterday";
+
             return $"{time} Today";
         }
 
-        string timeElapsed = days == 1 ? "day" : "days";
+        string timeElapsed = days == 1 ? "Day" : "Days";
 
         int padLeft = 5 - days.ToString().Length;
         return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
+    }
+
+    // The test caller will have a negative console height
+    private static bool IsTestCaller() => ConsoleHeight < 0;
+
+    private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
+
+    private static bool IsScrollAtBottom(int scrollPosition, int branchCount, int offset = 0) =>
+        scrollPosition > Math.Abs(branchCount - ConsoleHeight + 1) || branchCount < ConsoleHeight - offset;
+
+    private static bool CanScrollUp(int scrollPosition) => scrollPosition > 0;
+
+    private static bool CanScrollDown(int scrollPosition, int branchCount) =>
+        scrollPosition < Math.Abs(branchCount - ConsoleHeight + 1);
+
+    private static bool CanPageDown(int scrollPosition, int branchCount) =>
+        branchCount - scrollPosition - (ConsoleHeight - 2) > (ConsoleHeight - 2);
+
+    private static bool CanPageUp(int scrollPosition) => scrollPosition - ConsoleHeight > 0;
+
+    private static void PrintCommandPromt()
+    {
+        Console.SetCursorPosition(0, ConsoleHeight);
+        Console.Write(":    ");
+    }
+
+    private static void PrintEndPromt()
+    {
+        Console.SetCursorPosition(0, ConsoleHeight);
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.Write("(END)");
+        Console.ResetColor();
+    }
+
+    private static void PrintSearchPromt()
+    {
+        Console.SetCursorPosition(0, ConsoleHeight);
+        Console.Write("/    ");
+        Console.SetCursorPosition(1, ConsoleHeight);
     }
 }
