@@ -22,7 +22,7 @@ public class DefaultAheadBehindOptionTests
     public void Execute_WithBranches_ReturnsEcpectedValue()
     {
         var gitBase = Substitute.For<IGitRepository>();
-        gitBase.GetAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
+        gitBase.GetLocalAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
 
         var strategy = new DefaultAheadBehindOption(gitBase);
 

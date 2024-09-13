@@ -11,7 +11,7 @@ public class TraclAheadBehindOptionTests
     public void Execute_WithNoBranches_ReturnsEmptyList()
     {
         var gitBase = Substitute.For<IGitRepository>();
-        gitBase.GetAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
+        gitBase.GetRemoteAheadBehind("", "").ReturnsForAnyArgs(new AheadBehind(1, 1));
 
         var strategy = new TrackAheadBehindOption(gitBase, "");
 
@@ -24,7 +24,7 @@ public class TraclAheadBehindOptionTests
     public void Execute_WithBranches_ReturnsEcpectedValue()
     {
         var gitBase = Substitute.For<IGitRepository>();
-        gitBase.GetAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
+        gitBase.GetRemoteAheadBehind("", "").ReturnsForAnyArgs(new AheadBehind(1, 1));
 
         var strategy = new TrackAheadBehindOption(gitBase, "");
 
