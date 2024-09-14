@@ -1,7 +1,8 @@
-using CLI.Flags;
-using CLI.ValidateArguments;
+using Bbranch.CLI.Arguments;
+using Bbranch.CLI.Arguments.FlagSystem;
+using Bbranch.CLI.Arguments.FlagSystem.Flags;
 
-namespace Tests.Arguments;
+namespace Bbranch.Tests.CLI.Arguments;
 
 public class ValidateArgumentTests
 {

@@ -1,48 +1,41 @@
-﻿using CLI.Flags;
-using CLI.ParseArguments;
-using CLI.Output;
-using CLI.Options;
-using CLI.ValidateArguments;
-using Shared.TableData;
+﻿using Bbranch.CLI;
+using Bbranch.CLI.Output;
+using Bbranch.CLI.Options;
+using Bbranch.CLI.Arguments;
+using Bbranch.CLI.Arguments.FlagSystem;
+using Bbranch.CLI.Arguments.FlagSystem.Flags;
+using Bbranch.Shared.TableData;
 
-namespace CLI;
+FlagCollection options = [];
 
-public class Program
+if (!Parse.TryParseOptions(args, out options))
 {
-    public static void Main(string[] args)
-    {
-        FlagCollection options = [];
-
-        if (!Parse.TryParseOptions(args, out options))
-        {
-            return;
-        }
-
-        if (!Validate.ValidateOptions(options))
-        {
-            return;
-        }
-
-        if (options.Contains<HelpFlag>())
-        {
-            HelpOptions.Execute();
-        }
-
-        if (options.Contains<VersionFlag>())
-        {
-            VersionOptions.Execute();
-        }
-
-        List<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
-
-        if (options.Contains<QuiteFlag>())
-        {
-            PrintLightTable.Print(branchTable);
-
-            return;
-        }
-
-        PrintFullTable.Print(branchTable);
-    }
-
+    return;
 }
+
+if (!Validate.ValidateOptions(options))
+{
+    return;
+}
+
+if (options.Contains<HelpFlag>())
+{
+    HelpOption.Execute();
+}
+
+if (options.Contains<VersionFlag>())
+{
+    VersionOption.Execute();
+}
+
+List<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
+
+if (options.Contains<QuiteFlag>())
+{
+    PrintLightTable.Print(branchTable);
+
+    return;
+}
+
+PrintFullTable.Print(branchTable);
+

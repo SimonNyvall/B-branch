@@ -1,7 +1,7 @@
-using Shared.TableData;
-using Git.Base;
+using Bbranch.Shared.TableData;
+using Bbranch.GitService.Base;
 
-namespace Git.Options;
+namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
 public class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName) : IOption
 {

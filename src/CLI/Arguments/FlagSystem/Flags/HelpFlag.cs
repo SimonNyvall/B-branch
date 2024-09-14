@@ -1,4 +1,4 @@
-namespace CLI.Flags;
+namespace Bbranch.CLI.Arguments.FlagSystem.Flags;
 
 public class HelpFlag : IFlag<HelpFlag>
 {

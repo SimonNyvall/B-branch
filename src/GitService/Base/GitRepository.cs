@@ -1,8 +1,9 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Shared.TableData;
+using Bbranch.Shared.TableData;
+using Bbranch.GitService.Base.Commands;
 
-namespace Git.Base;
+namespace Bbranch.GitService.Base;
 
 public class GitRepository : IGitRepository
 {

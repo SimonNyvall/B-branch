@@ -1,7 +1,8 @@
-namespace Tests.Arguments;
+using Bbranch.CLI.Arguments;
+using Bbranch.CLI.Arguments.FlagSystem;
+using Bbranch.CLI.Arguments.FlagSystem.Flags;
 
-using CLI.Flags;
-using CLI.ParseArguments;
+namespace Bbranch.Tests.CLI.Arguments;
 
 public class ParseArgumentsTests
 {

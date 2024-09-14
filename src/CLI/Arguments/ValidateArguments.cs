@@ -1,6 +1,7 @@
-namespace CLI.ValidateArguments;
+namespace Bbranch.CLI.Arguments;
 
-using Flags;
+using FlagSystem;
+using FlagSystem.Flags;
 
 public class Validate
 {

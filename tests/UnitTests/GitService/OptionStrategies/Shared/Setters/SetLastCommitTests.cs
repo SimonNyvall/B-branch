@@ -1,9 +1,9 @@
-using Git.Base;
-using Git.Options;
-using Shared.TableData;
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies.Shared.Setters;
+using Bbranch.Shared.TableData;
 using NSubstitute;
 
-namespace Tests.GitService;
+namespace Bbranch.Tests.GitService.Shared.Setters;
 
 public class SetLastCommitTests
 {

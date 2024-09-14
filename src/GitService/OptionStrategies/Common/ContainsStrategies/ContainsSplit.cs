@@ -1,6 +1,6 @@
-namespace Git.Options;
+using Bbranch.Shared.TableData;
 
-using Shared.TableData;
+namespace Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
 
 internal class ContainsSplit
 {

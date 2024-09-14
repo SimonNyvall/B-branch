@@ -1,6 +1,7 @@
-using CLI.Flags;
+namespace Bbranch.CLI.Arguments;
 
-namespace CLI.ParseArguments;
+using FlagSystem;
+using FlagSystem.Flags;
 
 public class Parse
 {

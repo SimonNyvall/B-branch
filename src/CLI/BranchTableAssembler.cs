@@ -1,9 +1,16 @@
-namespace CLI;
+using Bbranch.CLI.Arguments.FlagSystem;
+using Bbranch.CLI.Arguments.FlagSystem.Flags;
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies;
+using Bbranch.GitService.OptionStrategies.Common;
+using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
+using Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
+using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
+using Bbranch.GitService.OptionStrategies.Shared.Setters;
+using Bbranch.GitService.OptionStrategies.Shared.Strategies;
+using Bbranch.Shared.TableData;
 
-using Shared.TableData;
-using Git.Options;
-using CLI.Flags;
-using Git.Base;
+namespace Bbranch.CLI;
 
 public class BranchTableAssembler
 {

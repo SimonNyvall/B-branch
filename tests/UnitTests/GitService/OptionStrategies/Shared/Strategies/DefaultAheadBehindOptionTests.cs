@@ -1,9 +1,9 @@
-using Git.Base;
-using Git.Options;
-using Shared.TableData;
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies.Shared.Strategies;
+using Bbranch.Shared.TableData;
 using NSubstitute;
 
-namespace Tests.GitService;
+namespace Bbranch.Tests.GitService.Shared.Strategies;
 
 public class DefaultAheadBehindOptionTests
 {

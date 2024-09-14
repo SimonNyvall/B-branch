@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 
-namespace IntegrationTests;
+namespace Bbranch.IntegrationTests;
 
 public partial class IntegrationTest
 {

@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace CLI.Flags;
+namespace Bbranch.CLI.Arguments.FlagSystem;
 
 public class FlagCollection : IEnumerable<IFlag>
 {

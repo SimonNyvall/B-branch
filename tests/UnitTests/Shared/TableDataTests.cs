@@ -1,6 +1,6 @@
-using Shared.TableData;
+using Bbranch.Shared.TableData;
 
-namespace Tests.Shared;
+namespace Bbranch.Tests.Shared;
 
 public class TableDataTests
 {

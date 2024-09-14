@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace IntegrationTests;
+namespace Bbranch.IntegrationTests;
 
 public class ProcessHelper
 {

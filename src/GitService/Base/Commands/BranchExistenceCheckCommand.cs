@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Git.Base;
+namespace Bbranch.GitService.Base.Commands;
 
 internal class BranchExistenceCheckCommand(string branchName) : AbstractCommand<bool>
 {
