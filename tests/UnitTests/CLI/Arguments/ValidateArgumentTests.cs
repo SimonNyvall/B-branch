@@ -28,7 +28,7 @@ public class ValidateArgumentTests
     public void ValidateArguments_ShouldReturnSuccess_WithContainsArgument()
     {
         FlagCollection options = new();
-        options.Add(IFlag<ContainsFlag>.Create(null));
+        options.Add(IFlag<ContainsFlag>.Create("main"));
 
         Assert.True(Validate.ValidateOptions(options));
     }
@@ -139,6 +139,51 @@ public class ValidateArgumentTests
     {
         FlagCollection options = new();
         options.Add(IFlag<PrintTopFlag>.Create("-5"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithConstinsNullValueArgument()
+    {
+        FlagCollection options = new();
+        options.Add(IFlag<ContainsFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithNoContainsNullValueArgument()
+    {
+        FlagCollection options = new();
+        options.Add(IFlag<NoContainsFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithTrackNullValueArgument()
+    {
+        FlagCollection options = new();
+        options.Add(IFlag<TrackFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithSortNullValueArgument()
+    {
+        FlagCollection options = new();
+        options.Add(IFlag<SortFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithPrintTopNullValueArgument()
+    {
+        FlagCollection options = new();
+        options.Add(IFlag<PrintTopFlag>.Create(null));
 
         Assert.False(Validate.ValidateOptions(options));
     }

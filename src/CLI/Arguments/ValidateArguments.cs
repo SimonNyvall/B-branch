@@ -4,7 +4,7 @@ using Flags;
 
 public class Validate
 {
-    public static bool ValidateOptions(IFlagCollection options)
+    public static bool ValidateOptions(FlagCollection options)
     {
         try
         {
@@ -13,6 +13,11 @@ public class Validate
             ValidateAllRemote(options);
             ValidateSortValue(options);
             ValidatePrintTopValue(options);
+            ValidateContainsWithNull(options);
+            ValidateNoContainsWithNull(options);
+            ValidateSortWithNull(options);
+            ValidatePrintTopWithNull(options);
+            ValidateTrackWithNull(options);
 
             return true;
         }
@@ -23,7 +28,7 @@ public class Validate
         }
     }
 
-    private static void ValidateVersion(IFlagCollection options)
+    private static void ValidateVersion(FlagCollection options)
     {
         if (options.Contains<VersionFlag>() && options.Count > 1)
         {
@@ -31,7 +36,7 @@ public class Validate
         }
     }
 
-    private static void ValidateContains(IFlagCollection options)
+    private static void ValidateContains(FlagCollection options)
     {
         if (options.Contains<ContainsFlag>() && options.Contains<NoContainsFlag>())
         {
@@ -39,7 +44,7 @@ public class Validate
         }
     }
 
-    private static void ValidateAllRemote(IFlagCollection options)
+    private static void ValidateAllRemote(FlagCollection options)
     {
         if (options.Contains<AllFlag>() && options.Contains<RemoteFlag>())
         {
@@ -47,7 +52,7 @@ public class Validate
         }
     }
 
-    private static void ValidateSortValue(IFlagCollection options)
+    private static void ValidateSortValue(FlagCollection options)
     {
         if (options.Contains<SortFlag>(out var sortFlag))
         {
@@ -62,7 +67,7 @@ public class Validate
         }
     }
 
-    private static void ValidatePrintTopValue(IFlagCollection options)
+    private static void ValidatePrintTopValue(FlagCollection options)
     {
         if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
@@ -76,5 +81,40 @@ public class Validate
                 throw new ArgumentException("Value for --print-top must be greater than 0");
             }
         }
+    }
+
+    private static void ValidateContainsWithNull(FlagCollection options)
+    {
+        if (!options.Contains<ContainsFlag>(out var containsFlag)) return;
+
+        if (containsFlag.Value is null) throw new ArgumentException("Value for --contains is missing");
+    }
+
+    private static void ValidateNoContainsWithNull(FlagCollection options)
+    {
+        if (!options.Contains<NoContainsFlag>(out var noContainsFlag)) return;
+
+        if (noContainsFlag.Value is null) throw new ArgumentException("Value for --no-contains must be null");
+    }
+
+    private static void ValidateSortWithNull(FlagCollection options)
+    {
+        if (!options.Contains<SortFlag>(out var sortFlag)) return;
+
+        if (sortFlag.Value is null) throw new ArgumentException("Value for --sort is missing");
+    }
+
+    private static void ValidatePrintTopWithNull(FlagCollection options)
+    {
+        if (!options.Contains<PrintTopFlag>(out var printTopFlag)) return;
+
+        if (printTopFlag.Value is null) throw new ArgumentException("Value for --print-top is missing");
+    }
+
+    private static void ValidateTrackWithNull(FlagCollection options)
+    {
+        if (!options.Contains<TrackFlag>(out var trackFlag)) return;
+
+        if (trackFlag.Value is null) throw new ArgumentException("Value for --track is missing");
     }
 }

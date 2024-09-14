@@ -9,7 +9,7 @@ public class BranchTableAssembler
 {
     private static readonly IGitRepository _gitBase = GitRepository.GetInstance();
 
-    internal static List<GitBranch> AssembleBranchTable(IFlagCollection arguments)
+    internal static List<GitBranch> AssembleBranchTable(FlagCollection arguments)
     {
         List<IOption> options = CreateOptions(arguments);
         CompositeOptionStrategy optionStrategies = new(options);
@@ -25,7 +25,7 @@ public class BranchTableAssembler
         return optionStrategies.Execute([]);
     }
 
-    private static List<IOption> CreateOptions(IFlagCollection arguments)
+    private static List<IOption> CreateOptions(FlagCollection arguments)
     {
         List<IOption> options = [];
 
@@ -57,11 +57,12 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(lastCommitOption);
     }
 
-    private static void AddContainsOptions(IFlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddContainsOptions(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
         if (arguments.Contains<ContainsFlag>(out var containsFlag))
         {
-            var value = containsFlag.Value;
+            var value = containsFlag.Value!;
+
             IOption containsOption = new ContainsOption(value);
             optionStrategies.AddStrategyOption(containsOption);
 
@@ -71,17 +72,19 @@ public class BranchTableAssembler
         if (arguments.Contains<NoContainsFlag>(out var noContainsFlag))
         {
             var value = noContainsFlag.Value;
-            IOption noContainsOption = new NoContainsOption(value);
+
+            IOption noContainsOption = new NoContainsOption(value!);
             optionStrategies.AddStrategyOption(noContainsOption);
         }
     }
 
-    private static void AddTrackOption(IFlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddTrackOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
         if (arguments.Contains<TrackFlag>(out var trackFlag))
         {
             var value = trackFlag.Value;
-            IOption trackOption = new TrackAheadBehindOption(_gitBase, value);
+
+            IOption trackOption = new TrackAheadBehindOption(_gitBase, value!);
             optionStrategies.AddStrategyOption(trackOption);
 
             return;
@@ -97,7 +100,7 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(workingBranchOption);
     }
 
-    private static void AddSortOption(IFlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddSortOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
         IOption sortOption;
 
@@ -134,7 +137,7 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(descriptionOption);
     }
 
-    private static void AddPrintTopOption(IFlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddPrintTopOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
         if (!arguments.Contains<PrintTopFlag>(out var printTopFlag)) return;
 

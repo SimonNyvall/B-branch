@@ -10,7 +10,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--version"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -23,7 +23,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -36,7 +36,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--no-contains", "test"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -49,7 +49,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--invalid"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -61,7 +61,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test", "--contains", "test"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -73,7 +73,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "--invalid"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -85,7 +85,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "--invalid"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -97,7 +97,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "--invalid"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -109,7 +109,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -121,7 +121,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -133,7 +133,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -145,7 +145,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t", "test"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -157,7 +157,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--help"];
 
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 

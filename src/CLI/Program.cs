@@ -11,7 +11,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        IFlagCollection options = new FlagCollection();
+        FlagCollection options = [];
 
         if (!Parse.TryParseOptions(args, out options))
         {

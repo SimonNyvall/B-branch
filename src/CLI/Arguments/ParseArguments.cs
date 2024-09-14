@@ -4,7 +4,7 @@ namespace CLI.ParseArguments;
 
 public class Parse
 {
-    public static bool TryParseOptions(string[] args, out IFlagCollection options)
+    public static bool TryParseOptions(string[] args, out FlagCollection options)
     {
         try
         {
@@ -16,13 +16,13 @@ public class Parse
         {
             Console.WriteLine(e.Message);
 
-            options = new FlagCollection();
+            options = [];
 
             return false;
         }
     }
 
-    private static IFlagCollection ParseArguments(string[] arguments)
+    private static FlagCollection ParseArguments(string[] arguments)
     {
         Dictionary<string, string?> options = PopulateInput(arguments);
 
@@ -73,9 +73,9 @@ public class Parse
     private static bool IsOptionDuplicated(string option, Dictionary<string, string> options) =>
         options.ContainsKey(option);
 
-    private static IFlagCollection MapOptionsToFlags(Dictionary<string, string?> options)
+    private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> options)
     {
-        IFlagCollection flags = new FlagCollection();
+        FlagCollection flags = [];
 
         foreach (KeyValuePair<string, string?> option in options)
         {
