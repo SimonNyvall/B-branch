@@ -10,7 +10,7 @@ public class BranchLocalOptionTests
     [Fact]
     public void Execute_ShouldReturnLocalBranches()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var localBranches = new List<GitBranch>
         {
@@ -30,7 +30,7 @@ public class BranchLocalOptionTests
     [Fact]
     public void Execute_ShouldReturnLocalBranches_WithEmptyList()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var localBranches = new List<GitBranch>();
 

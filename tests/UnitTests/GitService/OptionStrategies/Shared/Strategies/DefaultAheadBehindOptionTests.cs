@@ -10,7 +10,7 @@ public class DefaultAheadBehindOptionTests
     [Fact]
     public void Execute_WithNoBranches_ReturnsEmptyList()
     {
-        var gitBase = Substitute.For<IGitBase>();
+        var gitBase = Substitute.For<IGitRepository>();
         var strategy = new DefaultAheadBehindOption(gitBase);
 
         var result = strategy.Execute([]);
@@ -21,8 +21,8 @@ public class DefaultAheadBehindOptionTests
     [Fact]
     public void Execute_WithBranches_ReturnsEcpectedValue()
     {
-        var gitBase = Substitute.For<IGitBase>();
-        gitBase.GetAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
+        var gitBase = Substitute.For<IGitRepository>();
+        gitBase.GetLocalAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
 
         var strategy = new DefaultAheadBehindOption(gitBase);
 

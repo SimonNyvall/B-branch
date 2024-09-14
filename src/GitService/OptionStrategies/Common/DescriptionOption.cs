@@ -7,7 +7,7 @@ public class DescriptionOption : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {
-        IGitBase gitBase = GitBase.GetInstance();
+        IGitRepository gitBase = GitRepository.GetInstance();
 
         return gitBase.GetBranchDescription(branches);
     }

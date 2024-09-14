@@ -3,7 +3,7 @@ using Git.Base;
 
 namespace Git.Options;
 
-public class BranchRemoteOptions(IGitBase gitBase) : IOption
+public class BranchRemoteOptions(IGitRepository gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

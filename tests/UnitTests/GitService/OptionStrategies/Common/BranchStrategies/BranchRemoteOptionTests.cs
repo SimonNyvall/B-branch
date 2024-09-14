@@ -10,7 +10,7 @@ public class BranchRemoteOptionTests
     [Fact]
     public void Execute_ShouldReturnRemoteBranches()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var remoteBranches = new List<GitBranch>
         {
@@ -30,7 +30,7 @@ public class BranchRemoteOptionTests
     [Fact]
     public void Execute_ShouldReturnRemoteBranches_WithEmptyList()
     {
-        var mockGitBase = Substitute.For<IGitBase>();
+        var mockGitBase = Substitute.For<IGitRepository>();
 
         var remoteBranches = new List<GitBranch>();
 

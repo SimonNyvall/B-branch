@@ -2,7 +2,7 @@ using Shared.TableData;
 
 namespace Git.Base;
 
-public interface IGitBase
+public interface IGitRepository
 {
     string GetWorkingBranch();
 
@@ -12,7 +12,9 @@ public interface IGitBase
 
     List<GitBranch> GetBranchDescription(List<GitBranch> branches);
 
-    AheadBehind GetAheadBehind(string argument);
+    AheadBehind GetLocalAheadBehind(string localBranchName);
+
+    AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
 
     DateTime GetLastCommitDate(string branchName);
 

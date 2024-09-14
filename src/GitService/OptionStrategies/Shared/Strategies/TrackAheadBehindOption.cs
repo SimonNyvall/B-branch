@@ -3,15 +3,13 @@ using Git.Base;
 
 namespace Git.Options;
 
-public class TrackAheadBehindOption(IGitBase gitBase, string remoteBranchName) : IOption
+public class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {
         foreach (GitBranch branch in branches)
         {
-            string arguments = $"rev-list --left-right --count {branch.Branch.Name}...{remoteBranchName}";
-
-            AheadBehind aheadBehind = gitBase.GetAheadBehind(arguments);
+            AheadBehind aheadBehind = gitBase.GetRemoteAheadBehind(branch.Branch.Name, remoteBranchName);
 
             branch.SetAheadBehind(aheadBehind);            
         }
