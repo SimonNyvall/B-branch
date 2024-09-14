@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace CLI.Flags;
 
-public class FlagCollection : IFlagCollection
+public class FlagCollection : IEnumerable<IFlag>
 {
     private readonly List<IFlag> _flags = [];
 
@@ -21,4 +23,8 @@ public class FlagCollection : IFlagCollection
         flag = default!;
         return false;
     }
+
+    public IEnumerator<IFlag> GetEnumerator() => _flags.GetEnumerator();
+   
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
