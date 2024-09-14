@@ -11,7 +11,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         if (!Parse.TryParseOptions(args, out options))
         {
@@ -23,19 +23,19 @@ public class Program
             return;
         }
 
-        if (options.ContainsKey(FlagType.Help))
+        if (options.Contains<HelpFlag>())
         {
             HelpOptions.Execute();
         }
 
-        if (options.ContainsKey(FlagType.Version))
+        if (options.Contains<VersionFlag>())
         {
             VersionOptions.Execute();
         }
 
         List<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
 
-        if (options.ContainsKey(FlagType.Quiet))
+        if (options.Contains<QuiteFlag>())
         {
             PrintLightTable.Print(branchTable);
 

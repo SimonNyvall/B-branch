@@ -10,11 +10,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--version"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.Equal(FlagType.Version, options.Keys.First());
+        Assert.True(options.Contains<VersionFlag>());
         Assert.True(isSuccessful);
     }
 
@@ -23,11 +23,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.Equal(FlagType.Contains, options.Keys.First());
+        Assert.True(options.Contains<ContainsFlag>());
         Assert.True(isSuccessful);
     }
 
@@ -36,11 +36,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--no-contains", "test"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.Equal(FlagType.Nocontains, options.Keys.First());
+        Assert.True(options.Contains<NoContainsFlag>());
         Assert.True(isSuccessful);
     }
 
@@ -49,7 +49,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--invalid"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -61,7 +61,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "test", "--contains", "test"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -73,7 +73,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["--contains", "--invalid"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -85,7 +85,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "--invalid"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -97,7 +97,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "--invalid"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -109,7 +109,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -121,7 +121,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -133,7 +133,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -145,7 +145,7 @@ public class ParseArgumentsTests
     {
         string[] args = ["-c", "test", "-i", "test", "-t", "test"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
@@ -157,11 +157,11 @@ public class ParseArgumentsTests
     {
         string[] args = ["--help"];
 
-        Dictionary<FlagType, string> options = [];
+        IFlagCollection options = new FlagCollection();
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.Equal(FlagType.Help, options.Keys.First());
+        Assert.True(options.Contains<HelpFlag>());
         Assert.True(isSuccessful);
     }
 }

@@ -4,24 +4,11 @@ namespace CLI.ParseArguments;
 
 public class Parse
 {
-    private static readonly string[] flags = [
-        "--help", "-h",
-        "--track", "-t",
-        "--sort", "-s",
-        "--contains", "-c",
-        "--no-contains", "-n",
-        "--all", "-a",
-        "--remote", "-r",       
-        "--quite", "-q",
-        "--print-top", "-p",
-        "--version", "-v",
-    ];
-
-    public static bool TryParseOptions(string[] args, out Dictionary<FlagType, string> options)
+    public static bool TryParseOptions(string[] args, out IFlagCollection options)
     {
         try
         {
-            options = Parse.Arguments(args);
+            options = ParseArguments(args);
 
             return true;
         }
@@ -29,112 +16,87 @@ public class Parse
         {
             Console.WriteLine(e.Message);
 
-            options = [];
+            options = new FlagCollection();
 
             return false;
         }
     }
 
-    private static Dictionary<FlagType, string> Arguments(string[] arguments)
+    private static IFlagCollection ParseArguments(string[] arguments)
     {
-        Dictionary<string, string> options = PopulateInput(arguments);
+        Dictionary<string, string?> options = PopulateInput(arguments);
 
         return MapOptionsToFlags(options);
     }
 
-    private static Dictionary<string, string> PopulateInput(string[] arguments)
+    private static Dictionary<string, string?> PopulateInput(string[] arguments)
     {
-        Dictionary<string, string> options = [];
+        Dictionary<string, string?> options = [];
 
         for (int i = 0; i < arguments.Length; i++)
         {
-            if (!(arguments[i].StartsWith("--") || arguments[i].StartsWith('-')))
+            if (!DoesFlagStartWithDash(arguments[i]))
             {
                 continue;
             }
 
-            if (!flags.Contains(arguments[i].ToLower()))
-            {
-                throw new ArgumentException($"Invalid option: {arguments[i]}");
-            }
+            string option = arguments[i];
 
-            string option = arguments[i].Replace("-", string.Empty);
-
-            if (
-                (i + 1) < arguments.Length
-                && !(arguments[i + 1].StartsWith("--") || arguments[i + 1].StartsWith("-"))
-            )
+            if (IsNextValueAnOption(arguments, i))
             {
-                if (IsOptionDuplicated(option, options))
+                if (IsOptionDuplicated(option, options!))
                 {
-                    throw new ArgumentException($"Duplicate option: {option}"); 
+                    throw new ArgumentException($"Duplicate option: {option}");
                 }
 
                 options[option] = arguments[++i];
                 continue;
             }
 
-            if (IsOptionDuplicated(option, options))
+            if (IsOptionDuplicated(option, options!))
             {
-                throw new ArgumentException($"Duplicate option: {option}");                
+                throw new ArgumentException($"Duplicate option: {option}");
             }
 
-            options[option] = string.Empty;
+            options[option] = null;
         }
 
         return options;
     }
 
-    private static bool IsOptionDuplicated(string option, Dictionary<string, string> options)
-    {
-        if (options.ContainsKey(option)) throw new ArgumentException($"Duplicate option: {option}");
-                
-        return false;
-    }
+    private static bool DoesFlagStartWithDash(string options) =>
+        options.StartsWith("--") || options.StartsWith("-");
 
-    private static Dictionary<FlagType, string> MapOptionsToFlags(Dictionary<string, string> options)
-    {
-        Dictionary<FlagType, string> flags = [];
+    private static bool IsNextValueAnOption(string[] arguments, int index) =>
+        (index + 1) < arguments.Length && !(arguments[index + 1].StartsWith("--") || arguments[index + 1].StartsWith("-"));
 
-        foreach (KeyValuePair<string, string> option in options)
+    private static bool IsOptionDuplicated(string option, Dictionary<string, string> options) =>
+        options.ContainsKey(option);
+
+    private static IFlagCollection MapOptionsToFlags(Dictionary<string, string?> options)
+    {
+        IFlagCollection flags = new FlagCollection();
+
+        foreach (KeyValuePair<string, string?> option in options)
         {
-            if (Enum.TryParse(ToTitle(option.Key), out FlagType flag))
+            IFlag flag = option.Key switch
             {
-                flags[flag] = option.Value;
-            }
-            else if (Enum.TryParse(option.Key, out ShortFlagType shortFlag))
-            {
-                flags[GetLongFlag(shortFlag)] = option.Value;
-            }
-            else
-            {
-                throw new ArgumentException($"Invalid option: {option.Key}");
-            }
+                "--all" or "-a" => IFlag<AllFlag>.Create(null),
+                "--help" or "-h" => IFlag<HelpFlag>.Create(null),
+                "--contains" or "-c" => IFlag<ContainsFlag>.Create(option.Value),
+                "--no-contains" or "-n" => IFlag<NoContainsFlag>.Create(option.Value),
+                "--print-top" or "-p" => IFlag<PrintTopFlag>.Create(option.Value),
+                "--quite" or "-q" => IFlag<QuiteFlag>.Create(null),
+                "--remote" or "-r" => IFlag<RemoteFlag>.Create(null),
+                "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
+                "--track" or "-t" => IFlag<TrackFlag>.Create(null),
+                "--version" or "-v" => IFlag<VersionFlag>.Create(null),
+                _ => throw new ArgumentException($"Unknown option: {option.Key}")
+            };
+
+            flags.Add(flag);
         }
 
         return flags;
-    }
-
-    private static string ToTitle(string input)
-    {
-        return input.Substring(0, 1).ToUpper() + input.Substring(1);
-    }
-
-    private static FlagType GetLongFlag(ShortFlagType shortFlag)
-    {
-        return shortFlag switch
-        {
-            ShortFlagType.a => FlagType.All,
-            ShortFlagType.h => FlagType.Help,
-            ShortFlagType.q => FlagType.Quiet,
-            ShortFlagType.s => FlagType.Sort,
-            ShortFlagType.c => FlagType.Contains,
-            ShortFlagType.n => FlagType.Nocontains,
-            ShortFlagType.r => FlagType.Remote,
-            ShortFlagType.t => FlagType.Track,
-            ShortFlagType.v => FlagType.Version,
-            ShortFlagType.p => FlagType.Printtop,
-            _ => throw new NotImplementedException("Short flag not implemented"),
-        };
     }
 }

@@ -4,11 +4,16 @@ using Flags;
 
 public class Validate
 {
-    public static bool ValidateOptions(Dictionary<FlagType, string> options)
+    public static bool ValidateOptions(IFlagCollection options)
     {
         try
         {
-            Validate.Arguments(options);
+            ValidateVersion(options);
+            ValidateContains(options);
+            ValidateAllRemote(options);
+            ValidateSortValue(options);
+            ValidatePrintTopValue(options);
+
             return true;
         }
         catch (ArgumentException e)
@@ -18,56 +23,35 @@ public class Validate
         }
     }
 
-    private static void Arguments(Dictionary<FlagType, string> options)
+    private static void ValidateVersion(IFlagCollection options)
     {
-        var validators = new Action<Dictionary<FlagType, string>>[]
-        {
-            ValidateVersion,
-            ValidateContains,
-            ValidateAllRemote,
-            ValidateSortValue,
-            ValidatePrintTopValue,
-        };
-
-        foreach (var validator in validators)
-        {
-            validator(options);
-        }
-    }
-
-    private static void ValidateVersion(Dictionary<FlagType, string> options)
-    {
-        if (options.ContainsKey(FlagType.Version) && options.Count > 1)
+        if (options.Contains<VersionFlag>() && options.Count > 1)
         {
             throw new ArgumentException("You cannot use --version with any other option");
         }
     }
 
-    private static void ValidateContains(Dictionary<FlagType, string> options)
+    private static void ValidateContains(IFlagCollection options)
     {
-        bool contains = (
-            options.ContainsKey(FlagType.Contains) && options.ContainsKey(FlagType.Nocontains)
-        );
-
-        if (contains)
+        if (options.Contains<ContainsFlag>() && options.Contains<NoContainsFlag>())
         {
             throw new ArgumentException("You cannot use both --contains and --no-contains");
         }
     }
 
-    private static void ValidateAllRemote(Dictionary<FlagType, string> options)
+    private static void ValidateAllRemote(IFlagCollection options)
     {
-        if (options.ContainsKey(FlagType.All) && options.ContainsKey(FlagType.Remote))
+        if (options.Contains<AllFlag>() && options.Contains<RemoteFlag>())
         {
             throw new ArgumentException("You cannot use both --all and --remote");
         }
     }
 
-    private static void ValidateSortValue(Dictionary<FlagType, string> options)
+    private static void ValidateSortValue(IFlagCollection options)
     {
-        if (options.TryGetValue(FlagType.Sort, out string? value))
+        if (options.Contains<SortFlag>(out var sortFlag))
         {
-            if (value == "date" || value == "name" || value == "ahead" || value == "behind")
+            if (sortFlag.Value == "date" || sortFlag.Value == "name" || sortFlag.Value == "ahead" || sortFlag.Value == "behind")
             {
                 return;
             }
@@ -78,13 +62,19 @@ public class Validate
         }
     }
 
-    private static void ValidatePrintTopValue(Dictionary<FlagType, string> options)
+    private static void ValidatePrintTopValue(IFlagCollection options)
     {
-        if (options.TryGetValue(FlagType.Printtop, out string? value))
+        if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
-            if (!int.TryParse(value, out int numberValue)) throw new ArgumentException("Invalid value for --print-top");
+            if (!int.TryParse(printTopFlag.Value, out int numberValue))
+            {
+                throw new ArgumentException("Invalid value for --print-top");
+            }
 
-            if (numberValue < 1) throw new ArgumentException("Value for --print-top must be greater than 0");
+            if (numberValue < 1)
+            {
+                throw new ArgumentException("Value for --print-top must be greater than 0");
+            }
         }
     }
 }
