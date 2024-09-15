@@ -1,6 +1,6 @@
-using Shared.TableData;
+using Bbranch.Shared.TableData;
 
-namespace Git.Options;
+namespace Bbranch.GitService.OptionStrategies.Common;
 
 public class TopOption(int takeYeild) : IOption
 {

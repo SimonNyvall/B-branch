@@ -1,6 +1,6 @@
-using Git.Base;
-using Git.Options;
-using Shared.TableData;
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies.Common;
+using Bbranch.Shared.TableData;
 using NSubstitute;
 
 namespace Tests.GitService;

@@ -1,4 +1,4 @@
-namespace Shared.TableData;
+namespace Bbranch.Shared.TableData;
 
 public struct AheadBehind
 {

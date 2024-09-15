@@ -1,15 +1,22 @@
-namespace CLI;
+using Bbranch.CLI.Arguments.FlagSystem;
+using Bbranch.CLI.Arguments.FlagSystem.Flags;
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies;
+using Bbranch.GitService.OptionStrategies.Common;
+using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
+using Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
+using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
+using Bbranch.GitService.OptionStrategies.Shared.Setters;
+using Bbranch.GitService.OptionStrategies.Shared.Strategies;
+using Bbranch.Shared.TableData;
 
-using Shared.TableData;
-using Git.Options;
-using CLI.Flags;
-using Git.Base;
+namespace Bbranch.CLI;
 
 public class BranchTableAssembler
 {
     private static readonly IGitRepository _gitBase = GitRepository.GetInstance();
 
-    internal static List<GitBranch> AssembleBranchTable(Dictionary<FlagType, string> arguments)
+    internal static List<GitBranch> AssembleBranchTable(FlagCollection arguments)
     {
         List<IOption> options = CreateOptions(arguments);
         CompositeOptionStrategy optionStrategies = new(options);
@@ -25,11 +32,11 @@ public class BranchTableAssembler
         return optionStrategies.Execute([]);
     }
 
-    private static List<IOption> CreateOptions(Dictionary<FlagType, string> arguments)
+    private static List<IOption> CreateOptions(FlagCollection arguments)
     {
         List<IOption> options = [];
 
-        if (arguments.ContainsKey(FlagType.All))
+        if (arguments.Contains<AllFlag>())
         {
             IOption allOption = new BranchAllOptions(_gitBase);
             options.Add(allOption);
@@ -37,7 +44,7 @@ public class BranchTableAssembler
             return options;
         }
 
-        if (arguments.ContainsKey(FlagType.Remote))
+        if (arguments.Contains<RemoteFlag>())
         {
             IOption remoteOption = new BranchRemoteOptions(_gitBase);
             options.Add(remoteOption);
@@ -57,31 +64,34 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(lastCommitOption);
     }
 
-    private static void AddContainsOptions(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddContainsOptions(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
-        if (arguments.ContainsKey(FlagType.Contains))
+        if (arguments.Contains<ContainsFlag>(out var containsFlag))
         {
-            var value = arguments[FlagType.Contains];
+            var value = containsFlag.Value!;
+
             IOption containsOption = new ContainsOption(value);
             optionStrategies.AddStrategyOption(containsOption);
 
             return;
         }
 
-        if (arguments.ContainsKey(FlagType.Nocontains))
+        if (arguments.Contains<NoContainsFlag>(out var noContainsFlag))
         {
-            var value = arguments[FlagType.Nocontains];
-            IOption noContainsOption = new NoContainsOption(value);
+            var value = noContainsFlag.Value;
+
+            IOption noContainsOption = new NoContainsOption(value!);
             optionStrategies.AddStrategyOption(noContainsOption);
         }
     }
 
-    private static void AddTrackOption(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddTrackOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
-        if (arguments.ContainsKey(FlagType.Track))
+        if (arguments.Contains<TrackFlag>(out var trackFlag))
         {
-            var value = arguments[FlagType.Track];
-            IOption trackOption = new TrackAheadBehindOption(_gitBase, value);
+            var value = trackFlag.Value;
+
+            IOption trackOption = new TrackAheadBehindOption(_gitBase, value!);
             optionStrategies.AddStrategyOption(trackOption);
 
             return;
@@ -97,13 +107,13 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(workingBranchOption);
     }
 
-    private static void AddSortOption(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddSortOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
         IOption sortOption;
 
-        if (arguments.ContainsKey(FlagType.Sort))
+        if (arguments.Contains<SortFlag>(out var sortFlag))
         {
-            var value = arguments[FlagType.Sort];
+            var value = sortFlag.Value;
 
             if (value == "name")
             {
@@ -134,11 +144,11 @@ public class BranchTableAssembler
         optionStrategies.AddStrategyOption(descriptionOption);
     }
 
-    private static void AddPrintTopOption(Dictionary<FlagType, string> arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddPrintTopOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
     {
-        if (!arguments.ContainsKey(FlagType.Printtop)) return;
+        if (!arguments.Contains<PrintTopFlag>(out var printTopFlag)) return;
 
-        var topValue = Convert.ToInt32(arguments[FlagType.Printtop]);
+        var topValue = Convert.ToInt32(printTopFlag.Value);
         IOption printTopOption = new TopOption(topValue);
         optionStrategies.AddStrategyOption(printTopOption);
     }

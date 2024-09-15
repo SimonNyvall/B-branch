@@ -1,7 +1,7 @@
-using Git.Options;
-using Shared.TableData;
+using Bbranch.GitService.OptionStrategies;
+using Bbranch.Shared.TableData;
 
-namespace Tests.GitService;
+namespace Bbranch.Tests.GitService.OptionStrategies;
 
 public class OptionStrategyTests
 {

@@ -1,6 +1,6 @@
-using Shared.TableData;
+using Bbranch.Shared.TableData;
 
-namespace Git.Base;
+namespace Bbranch.GitService.Base;
 
 public interface IGitRepository
 {

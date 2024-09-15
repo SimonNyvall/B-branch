@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Git.Base;
+namespace Bbranch.GitService.Base.Commands;
 
 internal class TrackAheadBehindStatusCommand(string localBranchName, string remoteBranchName) : AbstractCommand<string>
 {

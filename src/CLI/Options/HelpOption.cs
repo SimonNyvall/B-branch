@@ -1,6 +1,6 @@
-namespace CLI.Options;
+namespace Bbranch.CLI.Options;
 
-public class HelpOptions
+public class HelpOption
 {
     private static string _helpMessage = """
     Usage: git bb [options]

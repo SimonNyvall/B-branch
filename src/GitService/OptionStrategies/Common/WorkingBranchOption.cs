@@ -1,7 +1,7 @@
-using Git.Base;
-using Shared.TableData;
+using Bbranch.GitService.Base;
+using Bbranch.Shared.TableData;
 
-namespace Git.Options;
+namespace Bbranch.GitService.OptionStrategies.Common;
 
 public class WorkingBranchOption(IGitRepository gitBase) : IOption
 {

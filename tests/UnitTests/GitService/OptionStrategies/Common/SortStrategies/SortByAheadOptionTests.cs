@@ -1,7 +1,7 @@
-using Git.Options;
-using Shared.TableData;
+using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
+using Bbranch.Shared.TableData;
 
-namespace Tests.GitService;
+namespace Bbranch.Tests.GitService.Common.SortStrategies;
 
 public class SortByBehindOptionTests
 {
