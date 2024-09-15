@@ -57,7 +57,7 @@ public class Validate
     {
         if (options.Contains<SortFlag>(out var sortFlag))
         {
-            if (sortFlag.Value == "date" || sortFlag.Value == "name" || sortFlag.Value == "ahead" || sortFlag.Value == "behind")
+            if (sortFlag.Value.ToString() == "date" || sortFlag.Value.ToString() == "name" || sortFlag.Value.ToString() == "ahead" || sortFlag.Value.ToString() == "behind")
             {
                 return;
             }
@@ -72,7 +72,7 @@ public class Validate
     {
         if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
-            if (!int.TryParse(printTopFlag.Value, out int numberValue))
+            if (!int.TryParse(printTopFlag.Value.ToString(), out int numberValue))
             {
                 throw new ArgumentException("Invalid value for --print-top");
             }

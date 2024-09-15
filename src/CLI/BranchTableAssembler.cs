@@ -70,7 +70,7 @@ public class BranchTableAssembler
         {
             var value = containsFlag.Value!;
 
-            IOption containsOption = new ContainsOption(value);
+            IOption containsOption = new ContainsOption(value.ToString());
             optionStrategies.AddStrategyOption(containsOption);
 
             return;
@@ -80,7 +80,7 @@ public class BranchTableAssembler
         {
             var value = noContainsFlag.Value;
 
-            IOption noContainsOption = new NoContainsOption(value!);
+            IOption noContainsOption = new NoContainsOption(value.ToString());
             optionStrategies.AddStrategyOption(noContainsOption);
         }
     }
@@ -91,7 +91,7 @@ public class BranchTableAssembler
         {
             var value = trackFlag.Value;
 
-            IOption trackOption = new TrackAheadBehindOption(_gitBase, value!);
+            IOption trackOption = new TrackAheadBehindOption(_gitBase, value.ToString());
             optionStrategies.AddStrategyOption(trackOption);
 
             return;
@@ -115,17 +115,17 @@ public class BranchTableAssembler
         {
             var value = sortFlag.Value;
 
-            if (value == "name")
+            if (value.ToString() == "name")
             {
                 sortOption = new SortByNameOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
-            else if (value == "ahead")
+            else if (value.ToString() == "ahead")
             {
                 sortOption = new SortByAheadOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
-            else if (value == "behind")
+            else if (value.ToString() == "behind")
             {
                 sortOption = new SortByBehindOptions();
                 optionStrategies.AddStrategyOption(sortOption);
