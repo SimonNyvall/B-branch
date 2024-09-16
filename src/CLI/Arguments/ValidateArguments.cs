@@ -57,7 +57,7 @@ public class Validate
     {
         if (options.Contains<SortFlag>(out var sortFlag))
         {
-            if (sortFlag.Value == "date" || sortFlag.Value == "name" || sortFlag.Value == "ahead" || sortFlag.Value == "behind")
+            if (sortFlag.Value.ToString() == "date" || sortFlag.Value.ToString() == "name" || sortFlag.Value.ToString() == "ahead" || sortFlag.Value.ToString() == "behind")
             {
                 return;
             }
@@ -72,7 +72,7 @@ public class Validate
     {
         if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
-            if (!int.TryParse(printTopFlag.Value, out int numberValue))
+            if (!int.TryParse(printTopFlag.Value.ToString(), out int numberValue))
             {
                 throw new ArgumentException("Invalid value for --print-top");
             }
@@ -88,14 +88,14 @@ public class Validate
     {
         if (!options.Contains<ContainsFlag>(out var containsFlag)) return;
 
-        if (containsFlag.Value is null) throw new ArgumentException("Value for --contains is missing");
+        if (containsFlag.Value is null || containsFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --contains is missing");
     }
 
     private static void ValidateNoContainsWithNull(FlagCollection options)
     {
         if (!options.Contains<NoContainsFlag>(out var noContainsFlag)) return;
 
-        if (noContainsFlag.Value is null) throw new ArgumentException("Value for --no-contains must be null");
+        if (noContainsFlag.Value is null || noContainsFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --no-contains must be null");
     }
 
     private static void ValidateSortWithNull(FlagCollection options)
@@ -109,13 +109,13 @@ public class Validate
     {
         if (!options.Contains<PrintTopFlag>(out var printTopFlag)) return;
 
-        if (printTopFlag.Value is null) throw new ArgumentException("Value for --print-top is missing");
+        if (printTopFlag.Value is null || printTopFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --print-top is missing");
     }
 
     private static void ValidateTrackWithNull(FlagCollection options)
     {
         if (!options.Contains<TrackFlag>(out var trackFlag)) return;
 
-        if (trackFlag.Value is null) throw new ArgumentException("Value for --track is missing");
+        if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --track is missing");
     }
 }

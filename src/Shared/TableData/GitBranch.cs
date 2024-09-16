@@ -1,29 +1,5 @@
 namespace Bbranch.Shared.TableData;
 
-public struct AheadBehind
-{
-    public int Ahead { get; set; }
-    public int Behind { get; set; }
-
-    public AheadBehind(int ahead, int behind)
-    {
-        Ahead = ahead;
-        Behind = behind;
-    }
-}
-
-public struct Branch
-{
-    public string Name { get; set; }
-    public bool IsWorkingBranch { get; set; }
-
-    public Branch(string name, bool isWorkingBranch)
-    {
-        Name = name;
-        IsWorkingBranch = isWorkingBranch;
-    }
-}
-
 public class GitBranch
 {
     public Branch Branch { get; private set; }
