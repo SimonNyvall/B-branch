@@ -43,121 +43,20 @@ public class PrintFullTable
 
     private static void StartPaging(List<GitBranch> branches)
     {
-        int scrollPosition = 0;
-        currentSearchTerm = null;
-
-        Console.CursorVisible = false;
-
         Console.Clear();
 
         PrintHeaders();
         PrintBranchRows(branches.Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
 
-        SpawnWindowListenerThread(branches, ref scrollPosition);
-
-        while (true)
-        {
-            Console.SetCursorPosition(0, ConsoleHeight);
-
-            if (IsScrollAtBottom(scrollPosition, branches.Count))
-            {
-                PrintEndPromt();
-            }
-            else
-            {
-                PrintCommandPromt();
-            }
-
-            ConsoleKeyInfo key = Console.ReadKey(true);
-
-            switch (key.Key)
-            {
-                case ConsoleKey.UpArrow:
-                case ConsoleKey.K:
-                    {
-                        if (!CanScrollUp(scrollPosition)) break;
-
-                        scrollPosition--;
-                        UpdateView(branches, scrollPosition);
-                        break;
-                    }
-                case ConsoleKey.DownArrow:
-                case ConsoleKey.J:
-                    {
-                        if (!CanScrollDown(scrollPosition, branches.Count)) break;
-
-                        scrollPosition++;
-                        UpdateView(branches, scrollPosition);
-                        break;
-                    }
-                case ConsoleKey.Home:
-                case ConsoleKey.End:
-                case ConsoleKey.G:
-                    {
-                        if (key.KeyChar == 'G' || key.Key == ConsoleKey.End)
-                        {
-                            scrollPosition = Math.Abs(branches.Count - ConsoleHeight + 2);
-                            UpdateView(branches, scrollPosition);
-                            break;
-                        }
-
-                        if (key.KeyChar == 'g' || key.Key == ConsoleKey.Home)
-                        {
-                            scrollPosition = 0;
-                            UpdateView(branches, scrollPosition);
-                            break;
-                        }
-
-                        break;
-                    }
-                case ConsoleKey.F:
-                case ConsoleKey.Spacebar:
-                    {
-                        int pageHeight = ConsoleHeight - 2;
-
-                        if (CanPageDown(scrollPosition, branches.Count))
-                        {
-                            scrollPosition += pageHeight;
-                        }
-                        else
-                        {
-                            scrollPosition = branches.Count - pageHeight;
-                        }
-
-                        UpdateView(branches, scrollPosition);
-                        break;
-                    }
-                case ConsoleKey.B:
-                    {
-                        if (CanPageUp(scrollPosition))
-                        {
-                            scrollPosition -= ConsoleHeight;
-                        }
-                        else
-                        {
-                            scrollPosition = 0;
-                        }
-
-                        UpdateView(branches, scrollPosition);
-                        break;
-                    }
-                case ConsoleKey.Divide:
-                    HandleSearch(branches);
-                    break;
-                case ConsoleKey.Escape:
-                    {
-                        currentSearchTerm = null;
-                        UpdateView(branches, scrollPosition);
-                        break;
-                    }
-                case ConsoleKey.Q:
-                    Console.CursorVisible = true;
-                    return;
-            }
-        }
+        Pager.Start(
+            SpawnWindowListenerThread,
+            UpdateView,
+            HandleSearch,
+            branches
+        );
     }
 
-    private static void SpawnWindowListenerThread(List<GitBranch> branches, ref int scrollPosition)
+    private static void SpawnWindowListenerThread(List<GitBranch> branches, int scrollPosition)
     {
         int currentPosition = scrollPosition;
         Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref currentPosition))
