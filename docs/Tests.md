@@ -16,7 +16,7 @@ tests/
 
 ### Unit Tests
 - Purpose: Unit tests validate the smallest testable parts of the application, such as individual classes and methods. They ensure that each component behaves as expected in isolation.
-- Framework: The unit tests are built using [xUnit]() and utilize [NSubstitute]() for mocking dependencies.
+- Framework: The unit tests are built using [xUnit](https://xunit.net/) and utilize [NSubstitute](https://nsubstitute.github.io/) for mocking dependencies.
 
 **Example Unit Test Structure**
 ```csharp
