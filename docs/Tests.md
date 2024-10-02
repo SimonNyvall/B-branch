@@ -20,7 +20,7 @@ tests/
 
 **Example Unit Test Structure**
 ```csharp
-Fact]
+[Fact]
 public void ParseArguments_ShouldReturnContainsFlag_WithContainsArgument()
 {
     string[] args = ["--contains", "test"];
