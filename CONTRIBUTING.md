@@ -73,4 +73,4 @@ Bugs can be reported in the projects [issue tracker](https://github.com/SimonNyv
 If you have a feature request, please open an [issue](https://github.com/SimonNyvall/B-branch/issues) and explain the feature you would like to see.
 License.
 
-By contributing to B-branch, you agree that your contributions will be licensed under the [MIT LICENSE](./LICENSE).
+By contributing to B-branch, you agree that your contributions will be licensed under the [GPL-3.0 LICENSE](./LICENSE).

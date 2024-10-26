@@ -118,7 +118,7 @@ This project was inspired by the innovative ideas shared by [**GitButler**](http
 
 ## License :book:
 
-This project is licensed under the [MIT License](./LICENSE) - see the LICENSE.md file for details.
+This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENSE.md file for details.
 
 ## FQAs
 
