@@ -188,6 +188,8 @@ public class PrintFullTable
         var lastCommitText = GetTimePrefix(branch.LastCommit);
         var description = branch.Description ?? string.Empty;
 
+        Console.Write(new string(' ', Console.WindowWidth - 1) + "\r");
+
         Console.Write($" {aHead} |  {behind} |  ");
 
         if (branch.Branch.IsWorkingBranch)
