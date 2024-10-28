@@ -11,7 +11,7 @@ internal class Pager
     public static void Start(
         Action<List<GitBranch>, int> windowResize,
         Action<List<GitBranch>, int> updateView,
-        Action<List<GitBranch>> searchHandler,
+        Func<List<GitBranch>, int, int> searchHandler,
         List<GitBranch> branches)
     {
         Console.CursorVisible = false;
@@ -105,7 +105,9 @@ internal class Pager
                         break;
                     }
                 case ConsoleKey.Divide:
-                    searchHandler(branches);
+                case ConsoleKey.Oem2:
+                case ConsoleKey.D7:
+                    _scrollPosition = searchHandler(branches, _scrollPosition);
                     break;
                 case ConsoleKey.Escape:
                     {
@@ -142,15 +144,13 @@ internal class Pager
         Console.SetCursorPosition(1, ConsoleHeight);
     }
 
-    private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
-
     private static bool IsScrollAtBottom(int scrollPosition, int branchCount, int offset = 0) =>
-        scrollPosition > Math.Abs(branchCount - ConsoleHeight + 1) || branchCount < ConsoleHeight - offset;
+        scrollPosition + ConsoleHeight == branchCount + 2 || branchCount < ConsoleHeight - offset;
 
     private static bool CanScrollUp(int scrollPosition) => scrollPosition > 0;
 
     private static bool CanScrollDown(int scrollPosition, int branchCount) =>
-        scrollPosition < Math.Abs(branchCount - ConsoleHeight + 1);
+        scrollPosition < Math.Abs(branchCount - ConsoleHeight + 2);
 
     private static bool CanPageDown(int scrollPosition, int branchCount) =>
         branchCount - scrollPosition - (ConsoleHeight - 2) > (ConsoleHeight - 2);
