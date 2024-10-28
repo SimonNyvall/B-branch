@@ -109,7 +109,7 @@ public class PrintFullTable
         PrintBranchRows(branches.Skip(scrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
     }
 
-    private static void HandleSearch(List<GitBranch> branches)
+    private static int HandleSearch(List<GitBranch> branches, int scrollPosition)
     {
         PrintSearchPromt();
 
@@ -117,25 +117,41 @@ public class PrintFullTable
 
         Console.Clear();
 
-        if (string.IsNullOrEmpty(currentSearchTerm)) return;
+        if (string.IsNullOrEmpty(currentSearchTerm)) return scrollPosition;
 
         Console.SetCursorPosition(0, 0);
         PrintHeaders();
 
-        for (int i = 0; i < branches.Count; i++) //TODO: fix search jumping
+        int firstMatchIndex = branches.FindIndex(x => x.Branch.Name.Contains(currentSearchTerm, StringComparison.OrdinalIgnoreCase));
+
+        if (firstMatchIndex == -1) return scrollPosition;
+
+        if (Math.Abs(ConsoleHeight - branches.Count - 1) > firstMatchIndex)
         {
-            if (i > ConsoleHeight - 3) break;
+            scrollPosition = firstMatchIndex;
+        }
+        else
+        {
+            scrollPosition = Math.Abs(branches.Count - ConsoleHeight + 2);
+        }
+
+
+        for (int i = scrollPosition; i < branches.Count; i++)
+        {
+            if (i > ConsoleHeight + scrollPosition - 3) break;
 
             PrintBranchRowWithHighlight(branches[i], currentSearchTerm);
         }
 
-        if (branches.Count > ConsoleHeight) return;
+        if (branches.Count > ConsoleHeight) return scrollPosition;
 
         for (int i = branches.Count; i < ConsoleHeight - 1; i++)
         {
             Console.SetCursorPosition(0, i + 2);
             Console.Write('~');
         }
+
+        return scrollPosition;
     }
 
     private static void PrintHeaders()
