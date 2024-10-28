@@ -105,6 +105,8 @@ internal class Pager
                         break;
                     }
                 case ConsoleKey.Divide:
+                case ConsoleKey.Oem2:
+                case ConsoleKey.D7:
                     searchHandler(branches);
                     break;
                 case ConsoleKey.Escape:
