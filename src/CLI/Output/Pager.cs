@@ -144,10 +144,8 @@ internal class Pager
         Console.SetCursorPosition(1, ConsoleHeight);
     }
 
-    private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
-
     private static bool IsScrollAtBottom(int scrollPosition, int branchCount, int offset = 0) =>
-        scrollPosition > Math.Abs(branchCount - ConsoleHeight + 1) || branchCount < ConsoleHeight - offset;
+        scrollPosition + ConsoleHeight == branchCount + 1 || branchCount < ConsoleHeight - offset;
 
     private static bool CanScrollUp(int scrollPosition) => scrollPosition > 0;
 

@@ -26,12 +26,6 @@ public class PrintFullTable
 
         PrintHeaders();
 
-        if (IsTestCaller())
-        {
-            PrintBranchRows(branches, null);
-            return;
-        }
-
         if (DoesOutputFitScreen(branches.Count))
         {
             StartPaging(branches);
@@ -190,7 +184,11 @@ public class PrintFullTable
 
         Console.Write(new string(' ', Console.WindowWidth - 1) + "\r");
 
-        Console.Write($" {aHead} |  {behind} |  ");
+        Console.Write(' ');
+        HighlightText(aHead.ToString(), search);
+        Console.Write(" |  ");
+        HighlightText(behind.ToString(), search);
+        Console.Write(" |  ");
 
         if (branch.Branch.IsWorkingBranch)
         {
@@ -200,7 +198,10 @@ public class PrintFullTable
         HighlightText(branchName, search);
 
         Console.ResetColor();
-        Console.Write($" |  {lastCommitText}     ");
+
+        Console.Write(" |  ");
+        HighlightText(lastCommitText, search);
+        Console.Write("    ");
 
         HighlightText(description, search);
 
@@ -219,6 +220,8 @@ public class PrintFullTable
         {
             matchIndex = text.IndexOf(search, StringComparison.OrdinalIgnoreCase);
         }
+
+        search = search?.Trim();
 
         if (matchIndex >= 0)
         {
@@ -271,23 +274,7 @@ public class PrintFullTable
         return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
     }
 
-    // The test caller will have a negative console height
-    private static bool IsTestCaller() => ConsoleHeight < 0;
-
     private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
-
-    private static bool IsScrollAtBottom(int scrollPosition, int branchCount, int offset = 0) =>
-        scrollPosition > Math.Abs(branchCount - ConsoleHeight + 1) || branchCount < ConsoleHeight - offset;
-
-    private static bool CanScrollUp(int scrollPosition) => scrollPosition > 0;
-
-    private static bool CanScrollDown(int scrollPosition, int branchCount) =>
-        scrollPosition < Math.Abs(branchCount - ConsoleHeight + 1);
-
-    private static bool CanPageDown(int scrollPosition, int branchCount) =>
-        branchCount - scrollPosition - (ConsoleHeight - 2) > (ConsoleHeight - 2);
-
-    private static bool CanPageUp(int scrollPosition) => scrollPosition - ConsoleHeight > 0;
 
     private static void PrintCommandPromt()
     {
