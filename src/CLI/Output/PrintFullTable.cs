@@ -156,7 +156,7 @@ public class PrintFullTable
 
     private static void PrintHeaders()
     {
-        string branchHeader = " Branch Name  ".PadRight(LongestBranchNameLength + 1);
+        string branchHeader = " Branch name  ".PadRight(LongestBranchNameLength + 1);
         string underline = new('-', LongestBranchNameLength + 1);
         string[] headers = [" Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  "];
 
@@ -279,12 +279,12 @@ public class PrintFullTable
 
             string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
 
-            if (currentTime.Day - lastCommit.Day == 1) return $"{time} Yesterday";
+            if (currentTime.Day - lastCommit.Day == 1) return $"{time} yesterday";
 
-            return $"{time} Today";
+            return $"{time} today";
         }
 
-        string timeElapsed = days == 1 ? "Day" : "Days";
+        string timeElapsed = days == 1 ? "day" : "days";
 
         int padLeft = 5 - days.ToString().Length;
         return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
