@@ -5,7 +5,6 @@ namespace Bbranch.CLI.Output;
 internal class Pager
 {
     private static int _scrollPosition = 0;
-    private static string? _currentSearchTerm = null;
     private static int ConsoleHeight => Console.WindowHeight - 1;
 
     public static void Start(
@@ -111,7 +110,6 @@ internal class Pager
                     break;
                 case ConsoleKey.Escape:
                     {
-                        _currentSearchTerm = null;
                         updateView(branches, _scrollPosition);
                         break;
                     }
