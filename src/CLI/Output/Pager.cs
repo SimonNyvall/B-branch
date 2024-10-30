@@ -9,7 +9,7 @@ internal class Pager
 
     public static void Start(
         Action<List<GitBranch>, int> windowResize,
-        Action<List<GitBranch>, int> updateView,
+        Action<List<GitBranch>, int, string?> updateView,
         Func<List<GitBranch>, int, int> searchHandler,
         List<GitBranch> branches)
     {
@@ -40,7 +40,7 @@ internal class Pager
                         if (!CanScrollUp(_scrollPosition)) break;
 
                         _scrollPosition--;
-                        updateView(branches, _scrollPosition);
+                        updateView(branches, _scrollPosition, string.Empty);
                         break;
                     }
                 case ConsoleKey.DownArrow:
@@ -49,7 +49,7 @@ internal class Pager
                         if (!CanScrollDown(_scrollPosition, branches.Count)) break;
 
                         _scrollPosition++;
-                        updateView(branches, _scrollPosition);
+                        updateView(branches, _scrollPosition, string.Empty);
                         break;
                     }
                 case ConsoleKey.Home:
@@ -59,14 +59,14 @@ internal class Pager
                         if (key.KeyChar == 'G' || key.Key == ConsoleKey.End)
                         {
                             _scrollPosition = Math.Abs(branches.Count - ConsoleHeight + 2);
-                            updateView(branches, _scrollPosition);
+                            updateView(branches, _scrollPosition, string.Empty);
                             break;
                         }
 
                         if (key.KeyChar == 'g' || key.Key == ConsoleKey.Home)
                         {
                             _scrollPosition = 0;
-                            updateView(branches, _scrollPosition);
+                            updateView(branches, _scrollPosition, string.Empty);
                             break;
                         }
 
@@ -86,7 +86,7 @@ internal class Pager
                             _scrollPosition = branches.Count - pageHeight;
                         }
 
-                        updateView(branches, _scrollPosition);
+                        updateView(branches, _scrollPosition, string.Empty);
                         break;
                     }
                 case ConsoleKey.B:
@@ -100,7 +100,7 @@ internal class Pager
                             _scrollPosition = 0;
                         }
 
-                        updateView(branches, _scrollPosition);
+                        updateView(branches, _scrollPosition, string.Empty);
                         break;
                     }
                 case ConsoleKey.Divide:
@@ -110,7 +110,7 @@ internal class Pager
                     break;
                 case ConsoleKey.Escape:
                     {
-                        updateView(branches, _scrollPosition);
+                        updateView(branches, _scrollPosition, null);
                         break;
                     }
                 case ConsoleKey.Q:

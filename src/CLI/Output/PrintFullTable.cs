@@ -11,6 +11,8 @@ public class PrintFullTable
 
     public static void Print(List<GitBranch> branches)
     {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+
         const int minimumBranchNameWidth = 14;
 
         if (branches.Count == 0)
@@ -81,7 +83,7 @@ public class PrintFullTable
                     scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
                 }
 
-                UpdateView(branches, scrollPosition);
+                UpdateView(branches, scrollPosition, string.Empty);
 
                 if (branches.Count < ConsoleHeight - 1)
                 {
@@ -103,8 +105,13 @@ public class PrintFullTable
         }
     }
 
-    private static void UpdateView(List<GitBranch> branches, int scrollPosition)
+    private static void UpdateView(List<GitBranch> branches, int scrollPosition, string? searchTerm)
     {
+        if (searchTerm is null)
+        {
+            currentSearchTerm = string.Empty;
+        }
+
         Console.SetCursorPosition(0, 2);
         PrintBranchRows(branches.Skip(scrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
     }
