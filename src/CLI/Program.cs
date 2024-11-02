@@ -30,6 +30,21 @@ if (options.Contains<VersionFlag>())
 
 List<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
 
+PageBehaviour shouldPage;
+
+if (options.Contains<PagerFlag>())
+{
+    shouldPage = PageBehaviour.Paginate;
+}
+else if (options.Contains<NoPagerFlag>())
+{
+    shouldPage = PageBehaviour.None;
+}
+else
+{
+    shouldPage = PageBehaviour.Auto;
+}
+
 if (options.Contains<QuiteFlag>())
 {
     PrintLightTable.Print(branchTable);
@@ -37,5 +52,5 @@ if (options.Contains<QuiteFlag>())
     return;
 }
 
-PrintFullTable.Print(branchTable);
+PrintFullTable.Print(branchTable, shouldPage);
 

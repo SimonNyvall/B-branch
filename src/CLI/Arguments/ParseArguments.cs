@@ -92,6 +92,8 @@ public class Parse
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
                 "--track" or "-t" => IFlag<TrackFlag>.Create(null),
                 "--version" or "-v" => IFlag<VersionFlag>.Create(null),
+                "--pager" => IFlag<PagerFlag>.Create(null),
+                "--no-pager" => IFlag<NoPagerFlag>.Create(null),
                 _ => throw new ArgumentException($"Unknown option: {option.Key}")
             };
 
