@@ -37,5 +37,5 @@ if (options.Contains<QuiteFlag>())
     return;
 }
 
-PrintFullTable.Print(branchTable);
+PrintFullTable.Print(branchTable, options.Contains<PagerFlag>());
 
