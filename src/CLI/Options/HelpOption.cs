@@ -16,6 +16,8 @@ public class HelpOption
     --quiet,       -q                               Only displays the names of the branches without any additional information or formatting
     --print-top,   -p <Number>                      Prints the top N branches based on the specified sort criterion
     --version,     -v                               Shows the current version of the tool
+    --pager,       --                               Forces the output to be displayed in a pager interface.
+    --no-pager,    --                               Disables the pager interface and forces the output to be displayed in the console
     """;
 
     public static void Execute()
