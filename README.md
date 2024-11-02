@@ -98,6 +98,8 @@ git bb [options]
 - `-r, --remote`: Includes remote branches in the output.
 - `-h, --help`: Displays the help message with information about all available options.
 - `-p, --print-top <Number>`: Prints the top N branches based on the specified sort criterion.
+- `--pager`: Forces the output to be displayed in a pager interface.
+- `--no-pager`: Forces the output to be displayed in the console.
 
 ---
 
