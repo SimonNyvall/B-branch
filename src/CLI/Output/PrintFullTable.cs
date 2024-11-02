@@ -9,7 +9,7 @@ public class PrintFullTable
     private static int LongestBranchNameLength { get; set; }
     private static string? currentSearchTerm;
 
-    public static void Print(List<GitBranch> branches, bool isPagerEnabled)
+    public static void Print(List<GitBranch> branches, PageBehaviour pageBehaviour)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -28,13 +28,23 @@ public class PrintFullTable
 
         PrintHeaders();
 
-        if (DoesOutputFitScreen(branches.Count) || isPagerEnabled)
+        if (pageBehaviour == PageBehaviour.Paginate)
         {
             StartPaging(branches);
             return;
         }
 
-        PrintBranchRows(branches, null);
+        if (pageBehaviour == PageBehaviour.Auto && DoesOutputFitScreen(branches.Count))
+        {
+            StartPaging(branches);
+            return;
+        }
+
+        if (pageBehaviour == PageBehaviour.None)
+        {
+            PrintBranchRows(branches, null);
+            return;
+        }
     }
 
     private static void StartPaging(List<GitBranch> branches)

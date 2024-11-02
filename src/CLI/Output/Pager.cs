@@ -155,3 +155,10 @@ internal class Pager
 
     private static bool CanPageUp(int scrollPosition) => scrollPosition - ConsoleHeight > 0;
 }
+
+public enum PageBehaviour
+{
+    None,
+    Paginate,
+    Auto
+}
