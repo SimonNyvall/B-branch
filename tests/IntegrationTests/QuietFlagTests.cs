@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class QuietFlagTests
+public class QuietFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithQuietFlag()
@@ -11,7 +11,7 @@ public class QuietFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-q");
+        using var process = GetDotnetProcess("-q");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -31,7 +31,7 @@ public class QuietFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--quiet");
+        using var process = GetDotnetProcess("--quiet");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();

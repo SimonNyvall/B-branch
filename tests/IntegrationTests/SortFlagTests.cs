@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class SortFlagTests
+public class SortFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortFlag()
@@ -11,7 +11,7 @@ public class SortFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithSortShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-s", "name");
+        using var process = GetDotnetProcess("-s", "name");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -23,11 +23,11 @@ public class SortFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");
@@ -42,7 +42,7 @@ public class SortFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithSortLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--sort", "name");
+        using var process = GetDotnetProcess("--sort", "name");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -54,11 +54,11 @@ public class SortFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");

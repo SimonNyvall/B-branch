@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-public class VersionFlagTests
+public class VersionFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithVersionFlag()
@@ -13,7 +13,7 @@ public class VersionFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-v");
+        using var process = GetDotnetProcess("-v");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -30,7 +30,7 @@ public class VersionFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-v");
+        using var process = GetDotnetProcess("-v");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();

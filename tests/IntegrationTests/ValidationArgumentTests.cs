@@ -1,11 +1,11 @@
 namespace Bbranch.IntegrationTests;
 
-public class ValidationArgumentsTests
+public class ValidationArgumentsTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_NotValidOutput_WithVersionAndOtherFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-v", "-t", "main");
+        using var process = GetDotnetProcess("-v", "-t", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -18,7 +18,7 @@ public class ValidationArgumentsTests
     [Fact]
     public async Task IntegrationTest_NotValidOutput_WithContainsAndNoContainsFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-c", "main", "-n", "main");
+        using var process = GetDotnetProcess("-c", "main", "-n", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -31,7 +31,7 @@ public class ValidationArgumentsTests
     [Fact]
     public async Task IntegrationTest_NotValidOutput_WithAllAndRemoteFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-a", "-r");
+        using var process = GetDotnetProcess("-a", "-r");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -44,7 +44,7 @@ public class ValidationArgumentsTests
     [Fact]
     public async Task IntegrationTest_NotValidOutput_WithPrintTopFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-p", "0");
+        using var process = GetDotnetProcess("-p", "0");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();

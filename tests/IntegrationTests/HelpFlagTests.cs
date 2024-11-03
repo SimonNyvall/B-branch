@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class HelpFlagTests
+public class HelpFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithHelpFlag()
@@ -11,7 +11,7 @@ public class HelpFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-h");
+        using var process = GetDotnetProcess("-h");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -35,7 +35,7 @@ public class HelpFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--help");
+        using var process = GetDotnetProcess("--help");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();

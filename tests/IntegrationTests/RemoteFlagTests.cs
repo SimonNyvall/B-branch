@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class RemoteFlagTests
+public class RemoteFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteFlag()
@@ -11,7 +11,7 @@ public class RemoteFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-r");
+        using var process = GetDotnetProcess("-r");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -23,11 +23,11 @@ public class RemoteFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");
@@ -36,7 +36,7 @@ public class RemoteFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--remote");
+        using var process = GetDotnetProcess("--remote");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -48,11 +48,11 @@ public class RemoteFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");

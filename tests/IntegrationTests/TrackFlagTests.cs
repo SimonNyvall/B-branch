@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class TrackFlagTests
+public class TrackFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithTrackFlag()
@@ -11,7 +11,7 @@ public class TrackFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-t", "main");
+        using var process = GetDotnetProcess("-t", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -23,11 +23,11 @@ public class TrackFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");
@@ -36,7 +36,7 @@ public class TrackFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--track", "main");
+        using var process = GetDotnetProcess("--track", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -48,11 +48,11 @@ public class TrackFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");

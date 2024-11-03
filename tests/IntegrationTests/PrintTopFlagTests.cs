@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class PrintTopFlagTests
+public class PrintTopFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopFlag()
@@ -11,7 +11,7 @@ public class PrintTopFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--print-top", "1");
+        using var process = GetDotnetProcess("--print-top", "1");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -23,14 +23,14 @@ public class PrintTopFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         Assert.True(lines.Length <= 3, "Too many lines printed.");
     }
 
     private static async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-p", "1");
+        using var process = GetDotnetProcess("-p", "1");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -42,7 +42,7 @@ public class PrintTopFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         Assert.True(lines.Length <= 3, "Too many lines printed.");
     }

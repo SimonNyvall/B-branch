@@ -1,6 +1,6 @@
 namespace Bbranch.IntegrationTests;
 
-public class ContainsFlagTests
+public class ContainsFlagTests : IntegrationBase
 {
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsFlag()
@@ -11,7 +11,7 @@ public class ContainsFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("-c", "main");
+        using var process = GetDotnetProcess("-c", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -23,11 +23,11 @@ public class ContainsFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");
@@ -40,7 +40,7 @@ public class ContainsFlagTests
 
     private static async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
     {
-        using var process = ProcessHelper.GetDotnetProcess("--contains", "main");
+        using var process = GetDotnetProcess("--contains", "main");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -52,11 +52,11 @@ public class ContainsFlagTests
 
         string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        CommonTests.AssertHeader(lines);
+        AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = CommonTests.GetAheadBehindFromString(line);
+            var (ahead, behind) = GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, "ahead was below 0.");
             Assert.True(behind >= 0, "behind was below 0.");
