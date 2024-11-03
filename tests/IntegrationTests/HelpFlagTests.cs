@@ -11,7 +11,7 @@ public class HelpFlagTests : IntegrationBase
 
     private static async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
-        using var process = GetDotnetProcess("-h");
+        using var process = GetDotnetProcess(true, "-h");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -19,7 +19,9 @@ public class HelpFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        output = output.Replace("\r", "");
+
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         Assert.Contains("--help,        -h", lines[2]);
         Assert.Contains("--track,       -t", lines[3]);
@@ -35,7 +37,7 @@ public class HelpFlagTests : IntegrationBase
 
     private static async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
-        using var process = GetDotnetProcess("--help");
+        using var process = GetDotnetProcess(true, "--help");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -43,7 +45,9 @@ public class HelpFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        output = output.Replace("\r", "");
+
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         Assert.Contains("--help,        -h", lines[2]);
         Assert.Contains("--track,       -t", lines[3]);

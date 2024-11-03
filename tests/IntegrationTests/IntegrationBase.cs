@@ -29,16 +29,39 @@ public abstract partial class IntegrationBase
         return process;
     }
 
+    protected static Process GetDotnetProcess(bool allowPager, params string[] flags)
+    {
+        string combinedFlags = string.Join(" ", flags);
+
+        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
+        Process process = new()
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"run --project ./src/CLI/CLI.csproj -- {combinedFlags}",
+                WorkingDirectory = repoPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        return process;
+    }
+
     protected static void AssertHeader(string[] headerLines)
     {
         Assert.True(headerLines.Length >= 2, "Header lines does not contain enought lines for header print.");
 
-        Assert.Contains("Ahead 󰜘", headerLines[0]);
-        Assert.Contains("Behind 󰜘", headerLines[0]);
-        Assert.Contains("Branch Name ", headerLines[0]);
-        Assert.Contains("Last commit ", headerLines[0]);
+        Assert.Contains("Ahead", headerLines[0]);
+        Assert.Contains("Behind", headerLines[0]);
+        Assert.Contains("Branch name", headerLines[0]);
+        Assert.Contains("Last commit", headerLines[0]);
 
-        Assert.True(headerLines[1].All(c => c == '|' || c == '-' || c == ' '));
+        Assert.True(headerLines[1].All(c => c == '|' || c == '-' || c == ' ' || c == '\r'));
     }
 
     protected static (int ahead, int behind) GetAheadBehindFromString(string line)

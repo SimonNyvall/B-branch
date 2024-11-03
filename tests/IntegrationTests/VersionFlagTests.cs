@@ -13,7 +13,7 @@ public class VersionFlagTests : IntegrationBase
 
     private static async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
-        using var process = GetDotnetProcess("-v");
+        using var process = GetDotnetProcess(true, "-v");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();
@@ -30,7 +30,7 @@ public class VersionFlagTests : IntegrationBase
 
     private static async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
-        using var process = GetDotnetProcess("-v");
+        using var process = GetDotnetProcess(true, "-v");
         process.Start();
 
         string output = await process.StandardOutput.ReadToEndAsync();

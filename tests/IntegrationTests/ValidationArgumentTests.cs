@@ -11,6 +11,8 @@ public class ValidationArgumentsTests : IntegrationBase
         string output = await process.StandardOutput.ReadToEndAsync();
         string error = await process.StandardError.ReadToEndAsync();
 
+        output = output.Replace("\r", "");
+
         Assert.True(string.IsNullOrEmpty(error), error);
         Assert.Equal("You cannot use --version with any other option\n", output);
     }
@@ -23,6 +25,8 @@ public class ValidationArgumentsTests : IntegrationBase
 
         string output = await process.StandardOutput.ReadToEndAsync();
         string error = await process.StandardError.ReadToEndAsync();
+
+        output = output.Replace("\r", "");
 
         Assert.True(string.IsNullOrEmpty(error), error);
         Assert.Equal("You cannot use both --contains and --no-contains\n", output);
@@ -37,6 +41,8 @@ public class ValidationArgumentsTests : IntegrationBase
         string output = await process.StandardOutput.ReadToEndAsync();
         string error = await process.StandardError.ReadToEndAsync();
 
+        output = output.Replace("\r", "");
+
         Assert.True(string.IsNullOrEmpty(error), error);
         Assert.Equal("You cannot use both --all and --remote\n", output);
     }
@@ -49,6 +55,8 @@ public class ValidationArgumentsTests : IntegrationBase
 
         string output = await process.StandardOutput.ReadToEndAsync();
         string error = await process.StandardError.ReadToEndAsync();
+
+        output = output.Replace("\r", "");
 
         Assert.True(string.IsNullOrEmpty(error), error);
         Assert.Equal("Value for --print-top must be greater than 0\n", output);

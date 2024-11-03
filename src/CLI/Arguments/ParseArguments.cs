@@ -90,7 +90,7 @@ public class Parse
                 "--quite" or "-q" => IFlag<QuiteFlag>.Create(null),
                 "--remote" or "-r" => IFlag<RemoteFlag>.Create(null),
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
-                "--track" or "-t" => IFlag<TrackFlag>.Create(null),
+                "--track" or "-t" => IFlag<TrackFlag>.Create(option.Value),
                 "--version" or "-v" => IFlag<VersionFlag>.Create(null),
                 "--pager" => IFlag<PagerFlag>.Create(null),
                 "--no-pager" => IFlag<NoPagerFlag>.Create(null),

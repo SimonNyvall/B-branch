@@ -21,7 +21,7 @@ public class PrintTopFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         AssertHeader(lines);
 
@@ -40,7 +40,7 @@ public class PrintTopFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        string[] lines = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         AssertHeader(lines);
 
