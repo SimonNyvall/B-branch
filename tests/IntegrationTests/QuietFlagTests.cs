@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class QuietFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithQuietFlag()
     {
         await IntegrationTest_ValidOutput_WithQuietShortFlag();
         await IntegrationTest_ValidOutput_WithQuietLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
         using var process = GetDotnetProcess("-q");
-        process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+       
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -29,15 +25,11 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
         using var process = GetDotnetProcess("--quiet");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

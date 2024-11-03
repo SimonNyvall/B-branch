@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class RemoteFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithRemoteFlag()
     {
         await IntegrationTest_ValidOutput_WithRemoteShortFlag();
         await IntegrationTest_ValidOutput_WithRemoteLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
         using var process = GetDotnetProcess("-r");
-        process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+      
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -29,20 +25,16 @@ public class RemoteFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
         using var process = GetDotnetProcess("--remote");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -54,8 +46,8 @@ public class RemoteFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 }

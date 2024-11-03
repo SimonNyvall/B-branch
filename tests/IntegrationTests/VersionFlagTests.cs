@@ -4,20 +4,18 @@ namespace Bbranch.IntegrationTests;
 
 public class VersionFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithVersionFlag()
     {
         await IntegrationTest_ValidOutput_WithVersionShortFlag();
         await IntegrationTest_ValidOutput_WithVersionLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
         using var process = GetDotnetProcess(true, "-v");
-        process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
+       
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -28,13 +26,11 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
         using var process = GetDotnetProcess(true, "-v");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

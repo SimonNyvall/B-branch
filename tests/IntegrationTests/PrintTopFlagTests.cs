@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class PrintTopFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithPrintTopFlag()
     {
         await IntegrationTest_ValidOutput_WithPrintTopShortFlag();
         await IntegrationTest_ValidOutput_WithPrintTopLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
         using var process = GetDotnetProcess("--print-top", "1");
-        process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+       
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -25,18 +21,14 @@ public class PrintTopFlagTests : IntegrationBase
 
         AssertHeader(lines);
 
-        Assert.True(lines.Length <= 3, "Too many lines printed.");
+        Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
         using var process = GetDotnetProcess("-p", "1");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -44,6 +36,6 @@ public class PrintTopFlagTests : IntegrationBase
 
         AssertHeader(lines);
 
-        Assert.True(lines.Length <= 3, "Too many lines printed.");
+        Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 }

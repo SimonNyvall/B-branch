@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class TrackFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithTrackFlag()
     {
         await IntegrationTest_ValidOutput_WithTrackShortFlag();
         await IntegrationTest_ValidOutput_WithTrackLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
         using var process = GetDotnetProcess("-t", "main");
-        process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+      
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -29,20 +25,16 @@ public class TrackFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
         using var process = GetDotnetProcess("--track", "main");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -54,8 +46,8 @@ public class TrackFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 }

@@ -2,20 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class HelpFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithHelpFlag()
     {
         await IntegrationTest_ValidOutput_WithHelpShortFlag();
         await IntegrationTest_ValidOutput_WithHelpLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
         using var process = GetDotnetProcess(true, "-h");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -35,13 +33,11 @@ public class HelpFlagTests : IntegrationBase
         Assert.Contains("--version,     -v", lines[11]);
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
         using var process = GetDotnetProcess(true, "--help");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

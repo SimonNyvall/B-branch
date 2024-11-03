@@ -52,9 +52,32 @@ public abstract partial class IntegrationBase
         return process;
     }
 
+    protected async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process, int timeoutMilliseconds = 20000)
+    {
+        process.Start();
+
+        var completedTask = await Task.WhenAny(
+            Task.Run(() => process.WaitForExit()),
+            Task.Delay(timeoutMilliseconds)
+        );
+
+        if (!completedTask.IsCompleted)
+        {
+            process.Kill();
+            throw new Exception("Process timed out");
+        }
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
+
+        process.WaitForExit();
+
+        return (output, error);
+    }
+
     protected static void AssertHeader(string[] headerLines)
     {
-        Assert.True(headerLines.Length >= 2, "Header lines does not contain enought lines for header print.");
+        Assert.True(headerLines.Length >= 2, $"Header lines does not contain enought lines for header print. Expected at least 2 lines. Actual: {headerLines.Length} Lines: {string.Join('\n', headerLines)}");
 
         Assert.Contains("Ahead", headerLines[0]);
         Assert.Contains("Behind", headerLines[0]);
@@ -71,7 +94,7 @@ public abstract partial class IntegrationBase
 
         Match match = aheadBehindPattern().Match(line);
 
-        if (!match.Success) throw new Exception("Failed to parse ahead/behind");
+        if (!match.Success) throw new Exception($"Failed to parse ahead/behind... Line: {line}");
 
         ahead = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
         behind = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);

@@ -2,16 +2,12 @@ namespace Bbranch.IntegrationTests;
 
 public class NoFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
         using var process = GetDotnetProcess();
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -23,8 +19,8 @@ public class NoFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 

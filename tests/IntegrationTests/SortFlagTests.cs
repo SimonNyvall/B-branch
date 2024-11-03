@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class SortFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortFlag()
     {
         await IntegrationTest_ValidOutput_WithSortShortFlag();
         await IntegrationTest_ValidOutput_WithSortLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithSortShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithSortShortFlag()
     {
         using var process = GetDotnetProcess("-s", "name");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -29,8 +25,8 @@ public class SortFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
         string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
@@ -40,15 +36,11 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithSortLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithSortLongFlag()
     {
         using var process = GetDotnetProcess("--sort", "name");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -60,8 +52,8 @@ public class SortFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
         string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();

@@ -7,6 +7,11 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <RunSettings>
+      <RunConfiguration>
+        <DisableParallelization>true</DisableParallelization>
+      </RunConfiguration>
+    </RunSettings>
   </PropertyGroup>
 
   <ItemGroup>

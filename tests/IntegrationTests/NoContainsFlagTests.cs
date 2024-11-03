@@ -2,22 +2,18 @@ namespace Bbranch.IntegrationTests;
 
 public class NoContainsFlagTests : IntegrationBase
 {
-    [Fact]
+    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoContainsFlag()
     {
         await IntegrationTest_ValidOutput_WithNoContainsShortFlag();
         await IntegrationTest_ValidOutput_WithNoContainsLongFlag();
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
+    private async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
     {
         using var process = GetDotnetProcess("-n", "main");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -29,8 +25,8 @@ public class NoContainsFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
         string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
@@ -38,15 +34,11 @@ public class NoContainsFlagTests : IntegrationBase
         Assert.All(branchNames, b => Assert.DoesNotContain("main", b, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
+    private async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
     {
         using var process = GetDotnetProcess("--no-contains", "main");
-        process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -58,8 +50,8 @@ public class NoContainsFlagTests : IntegrationBase
         {
             var (ahead, behind) = GetAheadBehindFromString(line);
 
-            Assert.True(ahead >= 0, "ahead was below 0.");
-            Assert.True(behind >= 0, "behind was below 0.");
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
         string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
