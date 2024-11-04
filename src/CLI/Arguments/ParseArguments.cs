@@ -82,18 +82,18 @@ public class Parse
         {
             IFlag flag = option.Key switch
             {
-                "--all" or "-a" => IFlag<AllFlag>.Create(null),
-                "--help" or "-h" => IFlag<HelpFlag>.Create(null),
+                "--all" or "-a" => IFlag<AllFlag>.Create(option.Value),
+                "--help" or "-h" => IFlag<HelpFlag>.Create(option.Value),
                 "--contains" or "-c" => IFlag<ContainsFlag>.Create(option.Value),
                 "--no-contains" or "-n" => IFlag<NoContainsFlag>.Create(option.Value),
                 "--print-top" or "-p" => IFlag<PrintTopFlag>.Create(option.Value),
-                "--quite" or "-q" => IFlag<QuiteFlag>.Create(null),
-                "--remote" or "-r" => IFlag<RemoteFlag>.Create(null),
+                "--quite" or "-q" => IFlag<QuiteFlag>.Create(option.Value),
+                "--remote" or "-r" => IFlag<RemoteFlag>.Create(option.Value),
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
                 "--track" or "-t" => IFlag<TrackFlag>.Create(option.Value),
-                "--version" or "-v" => IFlag<VersionFlag>.Create(null),
-                "--pager" => IFlag<PagerFlag>.Create(null),
-                "--no-pager" => IFlag<NoPagerFlag>.Create(null),
+                "--version" or "-v" => IFlag<VersionFlag>.Create(option.Value),
+                "--pager" => IFlag<PagerFlag>.Create(option.Value),
+                "--no-pager" => IFlag<NoPagerFlag>.Create(option.Value),
                 _ => throw new ArgumentException($"Unknown option: {option.Key}")
             };
 
