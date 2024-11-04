@@ -1,19 +1,23 @@
-using System.Text;
+using System.Diagnostics;
+using Xunit.Abstractions;
 
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class AllFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithAllFlag()
+    private readonly ITestOutputHelper _output;
+
+    public AllFlagTests(ITestOutputHelper output)
     {
-        await IntegrationTest_ValidOutput_WithAllShortFlag();
-        await IntegrationTest_ValidOutput_WithAllLongFlag();
+        _output = output;
+        WarmUp();
     }
 
-    private async Task IntegrationTest_ValidOutput_WithAllShortFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
-        using var process = GetDotnetProcess("-a");
+        using var process = GetBbranchProcessWithoutPager("-a");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -30,9 +34,10 @@ public class AllFlagTests : IntegrationBase
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithAllLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
-        using var process = GetDotnetProcess("--all");
+        using var process = GetBbranchProcessWithoutPager("--all");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

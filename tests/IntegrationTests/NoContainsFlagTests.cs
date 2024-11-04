@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class NoContainsFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithNoContainsFlag()
+    public async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithNoContainsShortFlag();
-        await IntegrationTest_ValidOutput_WithNoContainsLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
-    {
-        using var process = GetDotnetProcess("-n", "main");
+        using var process = GetBbranchProcessWithoutPager("-n", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -34,9 +29,10 @@ public class NoContainsFlagTests : IntegrationBase
         Assert.All(branchNames, b => Assert.DoesNotContain("main", b, StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
     {
-        using var process = GetDotnetProcess("--no-contains", "main");
+        using var process = GetBbranchProcessWithoutPager("--no-contains", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

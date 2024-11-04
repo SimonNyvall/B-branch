@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class HelpFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithHelpFlag()
+    public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithHelpShortFlag();
-        await IntegrationTest_ValidOutput_WithHelpLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
-    {
-        using var process = GetDotnetProcess(true, "-h");
+        using var process = GetBbranchProcess("-h");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -33,9 +28,10 @@ public class HelpFlagTests : IntegrationBase
         Assert.Contains("--version,     -v", lines[11]);
     }
 
-    private async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
-        using var process = GetDotnetProcess(true, "--help");
+        using var process = GetBbranchProcess("--help");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

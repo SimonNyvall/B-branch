@@ -1,3 +1,4 @@
+using System.Text;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -6,7 +7,13 @@ namespace Bbranch.IntegrationTests;
 
 public abstract partial class IntegrationBase
 {
-    protected static Process GetDotnetProcess(params string[] flags)
+    protected void WarmUp()
+    {
+        using var warpUpProcess = GetBbranchProcessWithoutPager();
+        var (output, error) = RunProcessWithTimeoutAsync(warpUpProcess).GetAwaiter().GetResult();
+    }
+
+    protected static Process GetBbranchProcessWithoutPager(params string[] flags)
     {
         string combinedFlags = string.Join(" ", flags);
 
@@ -20,7 +27,6 @@ public abstract partial class IntegrationBase
                 WorkingDirectory = repoPath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                RedirectStandardInput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             }
@@ -29,7 +35,7 @@ public abstract partial class IntegrationBase
         return process;
     }
 
-    protected static Process GetDotnetProcess(bool allowPager, params string[] flags)
+    protected static Process GetBbranchProcess(params string[] flags)
     {
         string combinedFlags = string.Join(" ", flags);
 
@@ -43,7 +49,6 @@ public abstract partial class IntegrationBase
                 WorkingDirectory = repoPath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                RedirectStandardInput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             }
@@ -52,25 +57,44 @@ public abstract partial class IntegrationBase
         return process;
     }
 
-    protected async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process, int timeoutMilliseconds = 20000)
+    protected async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process)
     {
-        process.Start();
+       var outputBuilder = new StringBuilder();
+        var errorBuilder = new StringBuilder();
 
+        process.OutputDataReceived += (sender, args) =>
+        {
+            if (args.Data != null) outputBuilder.AppendLine(args.Data);
+        };
+
+        process.ErrorDataReceived += (sender, args) =>
+        {
+            if (args.Data != null) errorBuilder.AppendLine(args.Data);
+        };
+
+        const int timeoutMilliseconds = 120000;
+
+        process.Start(); // Start the process
+        process.BeginOutputReadLine(); // Begin asynchronous reading of standard output
+        process.BeginErrorReadLine(); // Begin asynchronous reading of standard error
+
+        using var cts = new CancellationTokenSource(timeoutMilliseconds);
+        
+        // Wait for either the process to exit or timeout
         var completedTask = await Task.WhenAny(
             Task.Run(() => process.WaitForExit()),
-            Task.Delay(timeoutMilliseconds)
+            Task.Delay(Timeout.Infinite, cts.Token) // This will complete when cancellation occurs
         );
 
         if (!completedTask.IsCompleted)
         {
-            process.Kill();
+            process.Kill(); // Process has timed out, kill it
             throw new Exception("Process timed out");
         }
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
-
-        process.WaitForExit();
+        // After the process exits, retrieve the output and error
+        string output = outputBuilder.ToString();
+        string error = errorBuilder.ToString();
 
         return (output, error);
     }

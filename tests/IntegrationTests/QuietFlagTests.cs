@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class QuietFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithQuietFlag()
+    public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithQuietShortFlag();
-        await IntegrationTest_ValidOutput_WithQuietLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
-    {
-        using var process = GetDotnetProcess("-q");
+        using var process = GetBbranchProcessWithoutPager("-q");
        
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -24,10 +19,11 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Branch Name ", lines[0]);
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
-
-    private async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
+    
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
-        using var process = GetDotnetProcess("--quiet");
+        using var process = GetBbranchProcessWithoutPager("--quiet");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

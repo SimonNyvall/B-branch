@@ -10,6 +10,8 @@
     <RunSettings>
       <RunConfiguration>
         <DisableParallelization>true</DisableParallelization>
+        <ParallelizeAssemblies>false</ParallelizeAssemblies>
+        <ParallelizeTestCollections>false</ParallelizeTestCollections>
       </RunConfiguration>
     </RunSettings>
   </PropertyGroup>

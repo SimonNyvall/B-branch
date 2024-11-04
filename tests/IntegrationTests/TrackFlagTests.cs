@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class TrackFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithTrackFlag()
+    public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithTrackShortFlag();
-        await IntegrationTest_ValidOutput_WithTrackLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
-    {
-        using var process = GetDotnetProcess("-t", "main");
+        using var process = GetBbranchProcessWithoutPager("-t", "main");
       
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -30,9 +25,10 @@ public class TrackFlagTests : IntegrationBase
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
-        using var process = GetDotnetProcess("--track", "main");
+        using var process = GetBbranchProcessWithoutPager("--track", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

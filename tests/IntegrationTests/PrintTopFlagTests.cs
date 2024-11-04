@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class PrintTopFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithPrintTopFlag()
+    public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
-        await IntegrationTest_ValidOutput_WithPrintTopShortFlag();
-        await IntegrationTest_ValidOutput_WithPrintTopLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
-    {
-        using var process = GetDotnetProcess("--print-top", "1");
+        using var process = GetBbranchProcessWithoutPager("--print-top", "1");
        
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -24,9 +19,10 @@ public class PrintTopFlagTests : IntegrationBase
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    private async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
-        using var process = GetDotnetProcess("-p", "1");
+        using var process = GetBbranchProcessWithoutPager("-p", "1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

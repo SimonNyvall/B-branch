@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class SortFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithSortFlag()
+    public async Task IntegrationTest_ValidOutput_WithSortShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithSortShortFlag();
-        await IntegrationTest_ValidOutput_WithSortLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithSortShortFlag()
-    {
-        using var process = GetDotnetProcess("-s", "name");
+        using var process = GetBbranchProcessWithoutPager("-s", "name");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -36,9 +31,10 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    private async Task IntegrationTest_ValidOutput_WithSortLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithSortLongFlag()
     {
-        using var process = GetDotnetProcess("--sort", "name");
+        using var process = GetBbranchProcessWithoutPager("--sort", "name");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

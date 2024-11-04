@@ -1,11 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class ValidationArgumentsTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_NotValidOutput_WithVersionAndOtherFlag()
     {
-        using var process = GetDotnetProcess("-v", "-t", "main");
+        using var process = GetBbranchProcessWithoutPager("-v", "-t", "main");
       
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -18,7 +19,7 @@ public class ValidationArgumentsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_NotValidOutput_WithContainsAndNoContainsFlag()
     {
-        using var process = GetDotnetProcess("-c", "main", "-n", "main");
+        using var process = GetBbranchProcessWithoutPager("-c", "main", "-n", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -31,7 +32,7 @@ public class ValidationArgumentsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_NotValidOutput_WithAllAndRemoteFlag()
     {
-        using var process = GetDotnetProcess("-a", "-r");
+        using var process = GetBbranchProcessWithoutPager("-a", "-r");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -44,7 +45,7 @@ public class ValidationArgumentsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_NotValidOutput_WithPrintTopFlag()
     {
-        using var process = GetDotnetProcess("-p", "0");
+        using var process = GetBbranchProcessWithoutPager("-p", "0");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

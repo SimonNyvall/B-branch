@@ -1,17 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class RemoteFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithRemoteFlag()
+    public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithRemoteShortFlag();
-        await IntegrationTest_ValidOutput_WithRemoteLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
-    {
-        using var process = GetDotnetProcess("-r");
+        using var process = GetBbranchProcessWithoutPager("-r");
       
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -30,9 +25,10 @@ public class RemoteFlagTests : IntegrationBase
         }
     }
 
-    private async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
-        using var process = GetDotnetProcess("--remote");
+        using var process = GetBbranchProcessWithoutPager("--remote");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

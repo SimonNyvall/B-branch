@@ -1,11 +1,12 @@
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class NoFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
-        using var process = GetDotnetProcess();
+        using var process = GetBbranchProcessWithoutPager();
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

@@ -2,18 +2,13 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
+[Collection("Sequential")]
 public class VersionFlagTests : IntegrationBase
 {
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithVersionFlag()
+    public async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
-        await IntegrationTest_ValidOutput_WithVersionShortFlag();
-        await IntegrationTest_ValidOutput_WithVersionLongFlag();
-    }
-
-    private async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
-    {
-        using var process = GetDotnetProcess(true, "-v");
+        using var process = GetBbranchProcess("-v");
        
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -26,9 +21,10 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    private async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
-        using var process = GetDotnetProcess(true, "-v");
+        using var process = GetBbranchProcess("-v");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
