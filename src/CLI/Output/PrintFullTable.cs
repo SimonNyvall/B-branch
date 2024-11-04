@@ -34,16 +34,21 @@ public class PrintFullTable
             return;
         }
 
-        if (pageBehaviour == PageBehaviour.Auto && DoesOutputFitScreen(branches.Count))
+        if (pageBehaviour == PageBehaviour.None)
         {
-            StartPaging(branches);
+            PrintBranchRows(branches, null, PageBehaviour.None);
             return;
         }
 
-        if (pageBehaviour == PageBehaviour.None)
+        if (pageBehaviour == PageBehaviour.Auto)
         {
-            PrintBranchRows(branches, null);
-            return;
+            if (DoesOutputFitScreen(branches.Count))
+            {
+                StartPaging(branches);
+                return;
+            }
+
+            PrintBranchRows(branches, null, PageBehaviour.None);
         }
     }
 
@@ -52,7 +57,7 @@ public class PrintFullTable
         Console.Clear();
 
         PrintHeaders();
-        PrintBranchRows(branches.Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
+        PrintBranchRows(branches.Take(ConsoleHeight - 2).ToList(), currentSearchTerm, PageBehaviour.Paginate);
 
         Pager.Start(
             SpawnWindowListenerThread,
@@ -123,7 +128,7 @@ public class PrintFullTable
         }
 
         Console.SetCursorPosition(0, 2);
-        PrintBranchRows(branches.Skip(scrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm);
+        PrintBranchRows(branches.Skip(scrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm, PageBehaviour.Paginate);
     }
 
     private static int HandleSearch(List<GitBranch> branches, int scrollPosition)
@@ -157,7 +162,12 @@ public class PrintFullTable
         {
             if (i > ConsoleHeight + scrollPosition - 3) break;
 
-            PrintBranchRowWithHighlight(branches[i], currentSearchTerm);
+            if (branches.Count > ConsoleHeight)
+            {
+                PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.Paginate);
+            }
+
+            PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.None);
         }
 
         if (branches.Count > ConsoleHeight) return scrollPosition;
@@ -184,14 +194,14 @@ public class PrintFullTable
         );
     }
 
-    private static void PrintBranchRows(List<GitBranch> branchTable, string? search)
+    private static void PrintBranchRows(List<GitBranch> branchTable, string? search, PageBehaviour pageBehaviour)
     {
         foreach (var branch in branchTable)
         {
-            PrintBranchRowWithHighlight(branch, search);
+            PrintBranchRowWithHighlight(branch, search, pageBehaviour);
         }
 
-        if (branchTable.Count < ConsoleHeight - 1)
+        if (pageBehaviour == PageBehaviour.Paginate)
         {
             for (int i = branchTable.Count; i < ConsoleHeight - 1; i++)
             {
@@ -216,7 +226,7 @@ public class PrintFullTable
         Console.ResetColor();
     }
 
-    private static void PrintBranchRowWithHighlight(GitBranch branch, string? search)
+    private static void PrintBranchRowWithHighlight(GitBranch branch, string? search, PageBehaviour pageBehaviour)
     {
         var aHead = branch.AheadBehind.Ahead.ToString().PadRight(8);
         var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
@@ -224,7 +234,10 @@ public class PrintFullTable
         var lastCommitText = GetTimePrefix(branch.LastCommit);
         var description = branch.Description ?? string.Empty;
 
-        Console.Write(new string(' ', Console.WindowWidth - 1) + "\r");
+        if (pageBehaviour == PageBehaviour.Paginate)
+        {
+            Console.Write(new string(' ', Console.WindowWidth - 1) + "\r");
+        }
 
         Console.Write(' ');
         HighlightText(aHead.ToString(), search);

@@ -43,3 +43,12 @@ To run the tests, either run `dotnet test` from the root directory or use the te
 > [!Important]
 > The `dotnet run` command does only invoke the `Unit tests` and not the `Integration tests`.
 > To tun the `Integration tests` you need to run `dotnet test` from the `tests/IntegrationTests/` directory.
+
+To run the Integration test you can use the following command:
+```bash
+cd tests/IntegrationTests/
+docker build -t integration-tests .
+docker run integration-tests
+```
+
+This will build a docker container and run it with the integration tests as well as the application.

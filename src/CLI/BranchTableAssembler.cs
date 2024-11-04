@@ -68,7 +68,7 @@ public class BranchTableAssembler
     {
         if (arguments.Contains<ContainsFlag>(out var containsFlag))
         {
-            var value = containsFlag.Value!;
+            var value = containsFlag.Value!.ToString();
 
             IOption containsOption = new ContainsOption(value.ToString());
             optionStrategies.AddStrategyOption(containsOption);
@@ -89,7 +89,7 @@ public class BranchTableAssembler
     {
         if (arguments.Contains<TrackFlag>(out var trackFlag))
         {
-            var value = trackFlag.Value;
+            var value = trackFlag.Value.ToString();
 
             IOption trackOption = new TrackAheadBehindOption(_gitBase, value.ToString());
             optionStrategies.AddStrategyOption(trackOption);
@@ -113,7 +113,7 @@ public class BranchTableAssembler
 
         if (arguments.Contains<SortFlag>(out var sortFlag))
         {
-            var value = sortFlag.Value;
+            var value = sortFlag.Value.ToString();
 
             if (value.ToString() == "name")
             {
@@ -148,7 +148,7 @@ public class BranchTableAssembler
     {
         if (!arguments.Contains<PrintTopFlag>(out var printTopFlag)) return;
 
-        var topValue = Convert.ToInt32(printTopFlag.Value);
+        var topValue = Convert.ToInt32(printTopFlag.Value.ToString());
         IOption printTopOption = new TopOption(topValue);
         optionStrategies.AddStrategyOption(printTopOption);
     }
