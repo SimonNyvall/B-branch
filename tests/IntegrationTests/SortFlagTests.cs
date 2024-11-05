@@ -185,9 +185,9 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = lines.Skip(2).Select(l => int.Parse(l.Split('|')[0].Trim())).ToArray();
+        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
 
-        int[] sortedAheadValues = [.. aheadValues.OrderBy(a => a)];
+        int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
         Assert.Equal(aheadValues, sortedAheadValues);
     }
@@ -213,9 +213,9 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = lines.Skip(2).Select(l => int.Parse(l.Split('|')[0].Trim())).ToArray();
+        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
 
-        int[] sortedAheadValues = [.. aheadValues.OrderBy(a => a)];
+        int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
         Assert.Equal(aheadValues, sortedAheadValues);
     }
@@ -241,9 +241,9 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = lines.Skip(2).Select(l => int.Parse(l.Split('|')[1].Trim())).ToArray();
+        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
 
-        int[] sortedBehindValues = [.. behindValues.OrderBy(b => b)];
+        int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
@@ -269,9 +269,9 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = lines.Skip(2).Select(l => int.Parse(l.Split('|')[1].Trim())).ToArray();
+        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
 
-        int[] sortedBehindValues = [.. behindValues.OrderBy(b => b)];
+        int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
         Assert.Equal(behindValues, sortedBehindValues);
     }

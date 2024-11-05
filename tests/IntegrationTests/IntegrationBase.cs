@@ -74,25 +74,23 @@ public abstract partial class IntegrationBase
 
         const int timeoutMilliseconds = 120000;
 
-        process.Start(); // Start the process
-        process.BeginOutputReadLine(); // Begin asynchronous reading of standard output
-        process.BeginErrorReadLine(); // Begin asynchronous reading of standard error
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
 
         using var cts = new CancellationTokenSource(timeoutMilliseconds);
         
-        // Wait for either the process to exit or timeout
         var completedTask = await Task.WhenAny(
             Task.Run(() => process.WaitForExit()),
-            Task.Delay(Timeout.Infinite, cts.Token) // This will complete when cancellation occurs
+            Task.Delay(Timeout.Infinite, cts.Token)
         );
 
         if (!completedTask.IsCompleted)
         {
-            process.Kill(); // Process has timed out, kill it
+            process.Kill(); 
             throw new Exception("Process timed out");
         }
 
-        // After the process exits, retrieve the output and error
         string output = outputBuilder.ToString();
         string error = errorBuilder.ToString();
 
