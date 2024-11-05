@@ -55,4 +55,18 @@ public class AllFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithAllFlagAndValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("--all", "value");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("Value for --all is not allowed\n", output);
+    }
 }

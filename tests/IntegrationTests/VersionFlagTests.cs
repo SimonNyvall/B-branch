@@ -9,7 +9,7 @@ public class VersionFlagTests : IntegrationBase
     public async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
         using var process = GetBbranchProcess("-v");
-       
+
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
@@ -35,5 +35,19 @@ public class VersionFlagTests : IntegrationBase
         Match match = Regex.Match(output, pattern);
 
         Assert.True(match.Success, "Failed to match version pattern.");
+    }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndValue()
+    {
+        using var process = GetBbranchProcess("--version", "value");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("Value for --version is not allowed\n", output);
     }
 }

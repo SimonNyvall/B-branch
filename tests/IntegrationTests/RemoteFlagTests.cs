@@ -46,4 +46,18 @@ public class RemoteFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithRemoteFlagAndValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("--remote", "value");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("Value for --remote is not allowed\n", output);
+    }
 }
