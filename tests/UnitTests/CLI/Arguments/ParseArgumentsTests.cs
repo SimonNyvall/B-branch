@@ -165,4 +165,59 @@ public class ParseArgumentsTests
         Assert.True(options.Contains<HelpFlag>());
         Assert.True(isSuccessful);
     }
+
+    [Fact]
+    public void ParseArgument_ShouldReturnQuiteFlagAndAllFlag_WithQuiteAndAllConcatenatedArguments()
+    {
+        string[] args = ["-qa"];
+
+        FlagCollection options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.True(options.Contains<QuiteFlag>());
+        Assert.True(options.Contains<AllFlag>());
+        Assert.True(isSuccessful);
+        Assert.Equal(2, options.Count);
+    }
+
+    [Fact]
+    public void ParseArgument_ShouldReturnQuiteFlagAndAllFlagAndSortFlag_WithQuiteAndAllAndSortConcatenatedArguments()
+    {
+        string[] args = ["-qa", "--sort", "name"];
+
+        FlagCollection options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.True(options.Contains<QuiteFlag>());
+        Assert.True(options.Contains<AllFlag>());
+        Assert.True(options.Contains<SortFlag>());
+        Assert.True(isSuccessful);
+        Assert.Equal(3, options.Count);
+    }
+
+    [Fact]
+    public void ParseArgument_ShouldReturnError_WithConcatFlagAndInvalidDashCount()
+    {
+        string[] args = ["--qa"];
+
+        FlagCollection options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
+    }
+
+    [Fact]
+    public void ParseArgument_ShouldReturnError_WithDuplicatedConcatFlag()
+    {
+        string[] args = ["-qaq"];
+
+        FlagCollection options = [];
+
+        bool isSuccessful = Parse.TryParseOptions(args, out options);
+
+        Assert.False(isSuccessful);
+    }
 }
