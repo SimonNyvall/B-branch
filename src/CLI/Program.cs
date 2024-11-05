@@ -45,7 +45,7 @@ else
     shouldPage = PageBehaviour.Auto;
 }
 
-if (options.Contains<QuiteFlag>())
+if (options.Contains<quietFlag>())
 {
     PrintLightTable.Print(branchTable);
 

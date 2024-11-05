@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 RUN apt-get update && \
-    apt-get install -y git && \
+    apt-get install -y git clang gcc zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -30,6 +30,9 @@ COPY tests/ ./tests/
 RUN dotnet restore
 
 RUN dotnet build --no-restore -c Debug
+
+WORKDIR /app/src/CLI
+RUN dotnet publish -r linux-x64 -c Release -o /app/publish
 
 WORKDIR /app/tests/IntegrationTests
 

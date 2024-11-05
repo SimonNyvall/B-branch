@@ -237,10 +237,10 @@ public class ValidateArgumentTests
     }
 
     [Fact]
-    public void ValidateArguments_ShouldReturnError_WithQuiteAndValueArguments()
+    public void ValidateArguments_ShouldReturnError_WithquietAndValueArguments()
     {
         FlagCollection options = [];
-        options.Add(IFlag<QuiteFlag>.Create("value"));
+        options.Add(IFlag<quietFlag>.Create("value"));
 
         Assert.False(Validate.ValidateOptions(options));
     }

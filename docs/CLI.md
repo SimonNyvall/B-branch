@@ -32,7 +32,7 @@ private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> opti
             "--contains" or "-c" => IFlag<ContainsFlag>.Create(option.Value),
             "--no-contains" or "-n" => IFlag<NoContainsFlag>.Create(option.Value),
             "--print-top" or "-p" => IFlag<PrintTopFlag>.Create(option.Value),
-            "--quite" or "-q" => IFlag<QuiteFlag>.Create(null),
+            "--quiet" or "-q" => IFlag<quietFlag>.Create(null),
             "--remote" or "-r" => IFlag<RemoteFlag>.Create(null),
             "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
             "--track" or "-t" => IFlag<TrackFlag>.Create(null),

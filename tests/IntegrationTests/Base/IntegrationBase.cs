@@ -7,6 +7,8 @@ namespace Bbranch.IntegrationTests;
 
 public abstract partial class IntegrationBase
 {
+    private static readonly string PublishedArtifactPath = Path.Combine(Directory.GetCurrentDirectory(), "/app/publish/CLI");
+
     protected void WarmUp()
     {
         using var warpUpProcess = GetBbranchProcessWithoutPager();
@@ -17,14 +19,12 @@ public abstract partial class IntegrationBase
     {
         string combinedFlags = string.Join(" ", flags);
 
-        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
         Process process = new()
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "dotnet",
-                Arguments = $"run --project ./src/CLI/CLI.csproj -- --no-pager {combinedFlags}",
-                WorkingDirectory = repoPath,
+                FileName = PublishedArtifactPath,
+                Arguments = $"--no-pager {combinedFlags}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -39,14 +39,12 @@ public abstract partial class IntegrationBase
     {
         string combinedFlags = string.Join(" ", flags);
 
-        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
         Process process = new()
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "dotnet",
-                Arguments = $"run --project ./src/CLI/CLI.csproj -- {combinedFlags}",
-                WorkingDirectory = repoPath,
+                FileName = PublishedArtifactPath,
+                Arguments = $"{combinedFlags}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -74,25 +72,23 @@ public abstract partial class IntegrationBase
 
         const int timeoutMilliseconds = 120000;
 
-        process.Start(); // Start the process
-        process.BeginOutputReadLine(); // Begin asynchronous reading of standard output
-        process.BeginErrorReadLine(); // Begin asynchronous reading of standard error
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
 
         using var cts = new CancellationTokenSource(timeoutMilliseconds);
         
-        // Wait for either the process to exit or timeout
         var completedTask = await Task.WhenAny(
             Task.Run(() => process.WaitForExit()),
-            Task.Delay(Timeout.Infinite, cts.Token) // This will complete when cancellation occurs
+            Task.Delay(Timeout.Infinite, cts.Token)
         );
 
         if (!completedTask.IsCompleted)
         {
-            process.Kill(); // Process has timed out, kill it
+            process.Kill(); 
             throw new Exception("Process timed out");
         }
 
-        // After the process exits, retrieve the output and error
         string output = outputBuilder.ToString();
         string error = errorBuilder.ToString();
 

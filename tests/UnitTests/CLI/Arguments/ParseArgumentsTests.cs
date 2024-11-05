@@ -167,7 +167,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnQuiteFlagAndAllFlag_WithQuiteAndAllConcatenatedArguments()
+    public void ParseArgument_ShouldReturnquietFlagAndAllFlag_WithquietAndAllConcatenatedArguments()
     {
         string[] args = ["-qa"];
 
@@ -175,14 +175,14 @@ public class ParseArgumentsTests
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.True(options.Contains<QuiteFlag>());
+        Assert.True(options.Contains<quietFlag>());
         Assert.True(options.Contains<AllFlag>());
         Assert.True(isSuccessful);
         Assert.Equal(2, options.Count);
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnQuiteFlagAndAllFlagAndSortFlag_WithQuiteAndAllAndSortConcatenatedArguments()
+    public void ParseArgument_ShouldReturnquietFlagAndAllFlagAndSortFlag_WithquietAndAllAndSortConcatenatedArguments()
     {
         string[] args = ["-qa", "--sort", "name"];
 
@@ -190,7 +190,7 @@ public class ParseArgumentsTests
 
         bool isSuccessful = Parse.TryParseOptions(args, out options);
 
-        Assert.True(options.Contains<QuiteFlag>());
+        Assert.True(options.Contains<quietFlag>());
         Assert.True(options.Contains<AllFlag>());
         Assert.True(options.Contains<SortFlag>());
         Assert.True(isSuccessful);

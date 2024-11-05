@@ -52,4 +52,18 @@ public class HelpFlagTests : IntegrationBase
         Assert.Contains("--print-top,   -p", lines[10]);
         Assert.Contains("--version,     -v", lines[11]);
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithHelpFlagAndValue()
+    {
+        using var process = GetBbranchProcess("--help", "value");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("Value for --help is not allowed\n", output);
+    }
 }

@@ -36,4 +36,18 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Branch Name ", lines[0]);
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("--quiet", "value");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("Value for --quiet is not allowed\n", output);
+    }
 }
