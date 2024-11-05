@@ -7,6 +7,8 @@ namespace Bbranch.IntegrationTests;
 
 public abstract partial class IntegrationBase
 {
+    private static readonly string PublishedArtifactPath = Path.Combine(Directory.GetCurrentDirectory(), "/app/publish/CLI");
+
     protected void WarmUp()
     {
         using var warpUpProcess = GetBbranchProcessWithoutPager();
@@ -17,14 +19,12 @@ public abstract partial class IntegrationBase
     {
         string combinedFlags = string.Join(" ", flags);
 
-        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
         Process process = new()
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "dotnet",
-                Arguments = $"run --project ./src/CLI/CLI.csproj -- --no-pager {combinedFlags}",
-                WorkingDirectory = repoPath,
+                FileName = PublishedArtifactPath,
+                Arguments = $"--no-pager {combinedFlags}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -39,14 +39,12 @@ public abstract partial class IntegrationBase
     {
         string combinedFlags = string.Join(" ", flags);
 
-        string repoPath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../");
         Process process = new()
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "dotnet",
-                Arguments = $"run --project ./src/CLI/CLI.csproj -- {combinedFlags}",
-                WorkingDirectory = repoPath,
+                FileName = PublishedArtifactPath,
+                Arguments = $"{combinedFlags}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
