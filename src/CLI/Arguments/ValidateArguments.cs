@@ -19,6 +19,8 @@ public class Validate
             ValidateSortWithNull(options);
             ValidatePrintTopWithNull(options);
             ValidateTrackWithNull(options);
+            ValidatePagerWithNoPager(options);
+            ValidateNonValueFlags(options);
 
             return true;
         }
@@ -117,5 +119,74 @@ public class Validate
         if (!options.Contains<TrackFlag>(out var trackFlag)) return;
 
         if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --track is missing");
+    }
+
+    private static void ValidatePagerWithNoPager(FlagCollection options)
+    {
+        if (!(options.Contains<PagerFlag>() || options.Contains<NoPagerFlag>())) return;
+
+        if (options.Contains<PagerFlag>() && options.Contains<NoPagerFlag>())
+        {
+            throw new ArgumentException("You cannot use both --pager and --no-pager");
+        }
+    }
+
+    private static void ValidateNonValueFlags(FlagCollection options)
+    {
+        if (options.Contains<HelpFlag>(out var helpFlag))
+        {
+            if (helpFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --help is not allowed");
+            }
+        }
+
+        if (options.Contains<VersionFlag>(out var versionFlag))
+        {
+            if (versionFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --version is not allowed");
+            }
+        }
+
+        if (options.Contains<AllFlag>(out var allFlag))
+        {
+            if (allFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --all is not allowed");
+            }
+        }
+
+        if (options.Contains<RemoteFlag>(out var remoteFlag))
+        {
+            if (remoteFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --remote is not allowed");
+            }
+        }
+
+        if (options.Contains<QuiteFlag>(out var quiteFlag))
+        {
+            if (quiteFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --quite is not allowed");
+            }
+        }
+
+        if (options.Contains<PagerFlag>(out var pagerFlag))
+        {
+            if (pagerFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --pager is not allowed");
+            }
+        }
+
+        if (options.Contains<NoPagerFlag>(out var noPagerFlag))
+        {
+            if (noPagerFlag.Value.ToString() != string.Empty)
+            {
+                throw new ArgumentException("Value for --no-pager is not allowed");
+            }
+        }
     }
 }

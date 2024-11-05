@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Bbranch.CLI.Arguments;
 using Bbranch.CLI.Arguments.FlagSystem;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
@@ -185,6 +186,79 @@ public class ValidateArgumentTests
     {
         FlagCollection options = new();
         options.Add(IFlag<PrintTopFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithPagerAndNoPagerArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<PagerFlag>.Create(null));
+        options.Add(IFlag<NoPagerFlag>.Create(null));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithAllAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<AllFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithHelpAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<HelpFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithVersionAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<VersionFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithRemoteAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<RemoteFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithQuiteAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<QuiteFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithPagerAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<PagerFlag>.Create("value"));
+
+        Assert.False(Validate.ValidateOptions(options));
+    }
+
+    [Fact]
+    public void ValidateArguments_ShouldReturnError_WithNoPagerAndValueArguments()
+    {
+        FlagCollection options = [];
+        options.Add(IFlag<NoPagerFlag>.Create("value"));
 
         Assert.False(Validate.ValidateOptions(options));
     }
