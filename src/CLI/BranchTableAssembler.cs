@@ -130,6 +130,11 @@ public class BranchTableAssembler
                 sortOption = new SortByBehindOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
+            else if (value.ToString() == "date")
+            {
+                sortOption = new SortByLastCommitOptions();
+                optionStrategies.AddStrategyOption(sortOption);
+            }
 
             return;
         }
