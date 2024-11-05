@@ -25,6 +25,8 @@ public class FlagCollection : IEnumerable<IFlag>
     }
 
     public IEnumerator<IFlag> GetEnumerator() => _flags.GetEnumerator();
+
+    public void Clear() => _flags.Clear();
    
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

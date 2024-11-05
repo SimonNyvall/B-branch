@@ -5,8 +5,12 @@ using FlagSystem.Flags;
 
 public class Parse
 {
+    private static FlagCollection _flags = [];
+
     public static bool TryParseOptions(string[] args, out FlagCollection options)
     {
+        _flags.Clear();
+
         try
         {
             options = ParseArguments(args);
@@ -74,13 +78,11 @@ public class Parse
     private static bool IsOptionDuplicated(string option, Dictionary<string, string> options) =>
         options.ContainsKey(option);
 
-    private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> options)
+    private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> options, int retry = 1)
     {
-        FlagCollection flags = [];
-
         foreach (KeyValuePair<string, string?> option in options)
         {
-            IFlag flag = option.Key switch
+            IFlag? flag = option.Key switch
             {
                 "--all" or "-a" => IFlag<AllFlag>.Create(option.Value),
                 "--help" or "-h" => IFlag<HelpFlag>.Create(option.Value),
@@ -94,12 +96,67 @@ public class Parse
                 "--version" or "-v" => IFlag<VersionFlag>.Create(option.Value),
                 "--pager" => IFlag<PagerFlag>.Create(option.Value),
                 "--no-pager" => IFlag<NoPagerFlag>.Create(option.Value),
-                _ => throw new ArgumentException($"Unknown option: {option.Key}")
+                _ => null
             };
 
-            flags.Add(flag);
+            if (retry != 1)
+            {
+                throw new ArgumentException($"Invalid option: {option.Key}");
+            }
+
+            if (flag is null && retry == 1)
+            {
+                MapOptionsToFlags(SplitOptions(options, option), retry++);
+
+                if (_flags.Count != 0)
+                {
+                    return _flags;
+                }
+            }
+
+            if (flag is not null)
+            {
+                _flags.Add(flag);
+            }
         }
 
-        return flags;
+        return _flags;
+    }
+
+    private static Dictionary<string, string?> SplitOptions(Dictionary<string, string?> options, KeyValuePair<string, string?> failOption)
+    {
+        if (!failOption.Key.StartsWith('-'))
+        {
+            throw new ArgumentException($"Consecutive option: {failOption.Key}");
+        }
+
+        if (failOption.Key.Length == 1)
+        {
+            throw new ArgumentException($"Invalid option: {failOption.Key}");
+        }
+
+        if (failOption.Key.Length > 2)
+        {
+            if (failOption.Key[1] == '-')
+            {
+                throw new ArgumentException($"Only one dash is allowed: {failOption.Key}");
+            }
+        }        
+
+        foreach (char flag in failOption.Key.TrimStart('-'))
+        {
+            string key = $"-{flag}";
+
+            if (options.ContainsKey(key))
+            {
+                throw new ArgumentException($"Duplicate option: {key}");
+            }
+
+            options[key] = string.Empty;
+        }
+
+        options.Remove(failOption.Key);
+
+        return options;
     }
 }
