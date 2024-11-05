@@ -165,11 +165,11 @@ public class Validate
             }
         }
 
-        if (options.Contains<QuiteFlag>(out var quiteFlag))
+        if (options.Contains<quietFlag>(out var quietFlag))
         {
-            if (quiteFlag.Value.ToString() != string.Empty)
+            if (quietFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --quite is not allowed");
+                throw new ArgumentException("Value for --quiet is not allowed");
             }
         }
 

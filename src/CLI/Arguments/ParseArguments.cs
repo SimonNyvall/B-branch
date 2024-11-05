@@ -89,7 +89,7 @@ public class Parse
                 "--contains" or "-c" => IFlag<ContainsFlag>.Create(option.Value),
                 "--no-contains" or "-n" => IFlag<NoContainsFlag>.Create(option.Value),
                 "--print-top" or "-p" => IFlag<PrintTopFlag>.Create(option.Value),
-                "--quite" or "-q" => IFlag<QuiteFlag>.Create(option.Value),
+                "--quiet" or "-q" => IFlag<quietFlag>.Create(option.Value),
                 "--remote" or "-r" => IFlag<RemoteFlag>.Create(option.Value),
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
                 "--track" or "-t" => IFlag<TrackFlag>.Create(option.Value),
@@ -99,14 +99,14 @@ public class Parse
                 _ => null
             };
 
-            if (retry != 1)
+            if (retry == 2 && flag is null)
             {
                 throw new ArgumentException($"Invalid option: {option.Key}");
             }
 
             if (flag is null && retry == 1)
             {
-                MapOptionsToFlags(SplitOptions(options, option), retry++);
+                MapOptionsToFlags(SplitOptions(options, option), retry + 1);
 
                 if (_flags.Count != 0)
                 {
