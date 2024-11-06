@@ -5,11 +5,9 @@
 
 <div align="center">
   <hr/>
- <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat-square&logo=google%20tasks&logoColor=white&label=test%2Fbuild&color=green
-" alt=".NET">&nbsp;&nbsp;
+ <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat-square&logo=google%20tasks&logoColor=white&label=test%2Fbuild&color=green" alt=".NET">&nbsp;&nbsp;
  <img src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat-square" alt="github stars"/>&nbsp;&nbsp;
- <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat-square&logo=Github&color=dark%20green
-" alt="download count">
+ <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat-square&logo=Github&color=dark%20green" alt="download count">
 </div>
 
 - [Premise](#premise-rocket)
