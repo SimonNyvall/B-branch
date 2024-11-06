@@ -104,8 +104,12 @@ git bb [options]
 ---
 
 ## Download :computer:
+Download the latest release for free! If you're using **Cygwin**, **Git Bash**, **MSYS2**, **Bash** in linux or **WSL**, you can also use the install script:
+```sh
+curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
+```
 
-[Download](https://github.com/SimonNyvall/B-branch/releases) the latest release for free! In the release, you will find the compiled executable for **Windows**, **Linux**, and **MacOS** with an installation script.
+For a manual installation, follow the steps in the [release](https://github.com/SimonNyvall/B-branch/releases) notes.
 
 > [!NOTE]
 > For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
