@@ -6,6 +6,8 @@ BIN_DIR_UNIX="/usr/local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
+VERSION="1.0.1"
+FINAL_BINARY=""
 
 # Helper function to detect OS
 detect_os() {
@@ -24,12 +26,11 @@ cleanup() {
     if [ "${OS}" = "Windows" ]; then
         echo "Removing previous installation from ${BIN_DIR_WIN}"
         rm -rf "$USERPROFILE\\${BIN_DIR_WIN}"
-        sed -i '/alias.bb/d' "$GITCONFIG_WIN" || true
     else
         echo "Removing previous installation from ${BIN_DIR_UNIX}"
         sudo rm -rf "${BIN_DIR_UNIX}"
-        sed -i '/alias.bb/d' "${GITCONFIG_UNIX}" || true
     fi
+    git config --global --unset alias.bb
     echo "Cleanup completed."
 }
 
@@ -55,68 +56,73 @@ download_binary() {
     esac
 
     # Construct download URL based on OS and architecture
-    URL="https://your-download-url.com/b-branch-${OS}-${ARCH}.zip"
+    URL="https://github.com/SimonNyvall/B-branch/releases/download/v${VERSION}/b-branch-${OS}-${ARCH}.zip"
     echo "Downloading B-branch from ${URL}"
 
-    # Download the file using curl or wget
+    # Download the file using curl
     if command -v curl >/dev/null 2>&1; then
-        curl -sSfLO "${URL}"
-    elif command -v wget >/dev/null 2>&1; then
-        wget "${URL}"
+        if [ "${OS}" = "win" ]; then
+            mkdir -p "${USERPROFILE}\\AppData\\Local\\b-branch"
+            curl -sSfLo "${USERPROFILE}\\${BIN_DIR_WIN}\\b-branch-${OS}-${ARCH}.zip" "${URL}"
+        else 
+            mkdir -p "${BIN_DIR_UNIX}"
+            curl -sSfLo "${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}.zip" "${URL}"
+        fi
     else
-        echo "Error: curl or wget is required to download files." && exit 1
+        echo "Error: curl is required to download files." && exit 1
     fi
 
     # Extract the downloaded archive
-    ZIP_FILE="b-branch-${OS}-${ARCH}.zip"
+    ZIP_FILE=""
+    TARGET_DIR=""
+
+    if [ "${OS}" = "win" ]; then
+        ZIP_FILE="${USERPROFILE}\\${BIN_DIR_WIN}\\b-branch-${OS}-${ARCH}.zip"
+        TARGET_DIR="${USERPROFILE}\\${BIN_DIR_WIN}"
+        USERPROFILE_UNIX=$(echo "$USERPROFILE" | sed 's/\\/\//g')
+        BIN_DIR_WIN_UNIX=$(echo "$BIN_DIR_WIN" | sed 's/\\/\//g')
+        FINAL_BINARY="${USERPROFILE_UNIX}/${BIN_DIR_WIN_UNIX}/b-branch-${OS}-${ARCH}"
+    else
+        ZIP_FILE="${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}.zip"
+        TARGET_DIR="${BIN_DIR_UNIX}"
+        FINAL_BINARY="${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}"
+    fi
+
     if [ -f "${ZIP_FILE}" ]; then
         echo "Extracting B-branch archive..."
-        unzip "${ZIP_FILE}" || { echo "Unzip failed"; exit 1; }
+        unzip -o "${ZIP_FILE}" -d $"${TARGET_DIR}" || { echo "Unzip failed"; exit 1; }
+
+        rm -f "${ZIP_FILE}"
     else
         echo "Download failed: ${ZIP_FILE} not found." && exit 1
     fi
 }
 
-# Move Binary to the Correct Directory
-install_binary() {
-    echo "Installing B-branch..."
-
-    if [ "${OS}" = "Windows" ]; then
-        DEST_PATH="$USERPROFILE\\${BIN_DIR_WIN}"
-        mkdir -p "${DEST_PATH}"
-        mv "b-branch-${ARCH}" "${DEST_PATH}"
-    else
-        sudo mkdir -p "${BIN_DIR_UNIX}"
-        sudo mv "b-branch-${ARCH}" "${BIN_DIR_UNIX}"
-    fi
-    echo "B-branch installed successfully."
-}
-
 # Configure Git Alias
 configure_git_alias() {
-    echo "Setting up git alias..."
-    if [ "${OS}" = "Windows" ]; then
-        git config --global alias.bb "!f() { $USERPROFILE\\${BIN_DIR_WIN}\\CLI.exe \"\$@\"; }; f"
+    echo "Linking B-branch CLI to local git..."
+
+    if [ "${OS}" = "win" ]; then
+        git config --global alias.bb "!f() { $FINAL_BINARY/CLI.exe \"\$@\"; }; f"
     else
-        git config --global alias.bb "!bash -c '\"${BIN_DIR_UNIX}/CLI\" \"\$@\"' bash"
+        git config --global alias.bb "!bash -c '\"${FINAL_BINARY}/CLI\" \"\$@\"' bash"
     fi
+
     echo "Git alias 'bb' configured successfully."
+    echo "B-branch installation was successful!"
 }
 
-# Main installation process
 main() {
     OS=$(detect_os)
     if [ "${OS}" = "UNKNOWN" ]; then
         echo "Unsupported OS." && exit 1
     fi
 
-    cleanup
-    download_binary
-    install_binary
-    configure_git_alias
+    cleanup || { echo "Cleanup failed"; exit 1; }
+    download_binary || { echo "Download failed"; exit 1; }
+    configure_git_alias || { echo "Git alias configuration failed"; exit 1; }
 
     echo "B-branch installation completed!"
 }
 
-# Run the main function
 main "$@"
