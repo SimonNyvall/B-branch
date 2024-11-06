@@ -1,4 +1,3 @@
-
 <p align="center"><img src="./images/logo.png" alt="logo" width="250px"/></p>
 <h1 align="center">B-branch</h1>
 <h3 align="center">A git extension for better branch management</h3>
