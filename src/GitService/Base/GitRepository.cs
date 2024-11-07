@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Bbranch.Shared.TableData;
 using Bbranch.GitService.Base.Commands;
+using System.IO.Compression;
+using System.Text;
 
 namespace Bbranch.GitService.Base;
 
@@ -68,16 +70,114 @@ public class GitRepository : IGitRepository
 
     public DateTime GetLastCommitDate(string branchName)
     {
-        LastCommitDateFetchCommand lastCommitDateCommand = new(branchName);
+        try
+        {
+            string commitHash = File.ReadAllText(Path.Combine(_gitPath, "refs", "heads", branchName)).Trim();
+            
+            string dirName = commitHash[..2];
+            commitHash = commitHash[2..];
 
-        return lastCommitDateCommand.Execute();
+            DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
+
+            return lastWriteTimeOfCommit;
+        }
+        catch
+        {
+            LastCommitDateFetchCommand lastCommitDateCommand = new(branchName);
+
+            return lastCommitDateCommand.Execute();
+        }
     }
 
     public AheadBehind GetLocalAheadBehind(string localBranchName)
     {
-        DefaultAheadBehindStatusCommand defaultAheadBehindCommand = new(localBranchName);
+        try
+        {
+            string localBranchRefPath = Path.Combine(_gitPath, "refs", "heads", localBranchName);
+            string remoteBranchRefPath = Path.Combine(_gitPath, "refs", "remotes", "origin", localBranchName);
 
-        return ParseAheadBehind(defaultAheadBehindCommand.Execute());
+            if (!File.Exists(remoteBranchRefPath))
+            {
+                return new(0, 0);
+            }
+
+            string localCommitHash = File.ReadAllText(localBranchRefPath).Trim();
+            string remoteCommitHash = File.ReadAllText(remoteBranchRefPath).Trim();
+
+            int ahead = CountCommitsBetween(localCommitHash, remoteCommitHash, direction: "ahead");
+            int behind = CountCommitsBetween(localCommitHash, remoteCommitHash, direction: "behind");
+
+            return new(ahead, behind);
+        }
+        catch
+        {
+            DefaultAheadBehindStatusCommand defaultAheadBehindCommand = new(localBranchName);
+
+            return ParseAheadBehind(defaultAheadBehindCommand.Execute());
+        }
+    }
+
+    private int CountCommitsBetween(string startHash, string endHash, string direction)
+    {
+        int count = 0;
+        string currentHash = direction == "ahead" ? startHash : endHash;
+        string targetHash = direction == "ahead" ? endHash : startHash;
+
+        while (currentHash != targetHash)
+        {
+            string dirName = currentHash[..2];
+            string fileName = currentHash[2..];
+
+            string commitObjectPath = Path.Combine(_gitPath, "objects", dirName, fileName);
+
+            if (!File.Exists(commitObjectPath))
+            {
+                return 0;
+            }
+
+            string parentCommitHash = GetParentCommitHash(commitObjectPath);
+
+            count++;
+            currentHash = parentCommitHash;
+
+            if (string.IsNullOrEmpty(currentHash))
+            {
+                break;
+            }
+        }
+
+        return count;
+    }
+
+    private static string GetParentCommitHash(string commitObjectPath)
+    {
+        byte[] compressedData = File.ReadAllBytes(commitObjectPath);
+        string deCompressedData = DecompressGitObject(compressedData);
+
+        using StringReader reader = new(deCompressedData);
+
+        string line;
+        while ((line = reader.ReadLine()!) is not null)
+        {
+            if (line.StartsWith("parent "))
+            {
+                return line[7..].Trim();
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static string DecompressGitObject(byte[] compressedData)
+    {
+        using MemoryStream compressedStream = new(compressedData);
+        using ZLibStream zLibStream = new(compressedStream, CompressionMode.Decompress);
+        using MemoryStream deCompressedStream = new();
+
+        zLibStream.CopyTo(deCompressedStream);
+        byte[] deCompressedData = deCompressedStream.ToArray();
+
+        return Encoding.UTF8.GetString(deCompressedData);
     }
 
     public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
