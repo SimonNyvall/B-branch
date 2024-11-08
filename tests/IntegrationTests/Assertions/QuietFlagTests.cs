@@ -48,6 +48,6 @@ public class QuietFlagTests : IntegrationBase
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("Value for --quiet is not allowed\n", output);
+        Assert.Equal("fatal: Value for --quiet is not allowed\n", output);
     }
 }

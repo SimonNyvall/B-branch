@@ -58,6 +58,20 @@ public class RemoteFlagTests : IntegrationBase
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("Value for --remote is not allowed\n", output);
+        Assert.Equal("fatal: Value for --remote is not allowed\n", output);
+    }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithRemoteAndAllFlag()
+    {
+        using var process = GetBbranchProcessWithoutPager("--remote", "--all");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("fatal: Cannot use both --all and --remote\n", output);
     }
 }

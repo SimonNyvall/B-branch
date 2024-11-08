@@ -48,6 +48,20 @@ public class VersionFlagTests : IntegrationBase
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("Value for --version is not allowed\n", output);
+        Assert.Equal("fatal: Value for --version is not allowed\n", output);
+    }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndOtherFlag()
+    {
+        using var process = GetBbranchProcess("--version", "-a");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("fatal: --version cannot be used with any other option\n", output);
     }
 }

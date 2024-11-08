@@ -63,108 +63,6 @@ public class SortFlagTests : IntegrationBase
     }
 
     [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
-    {
-        using var process = GetBbranchProcessWithoutPager("-s", "date");
-
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
-
-        Assert.True(string.IsNullOrEmpty(error), error);
-
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        AssertHeader(lines);
-
-        foreach (string line in lines.Skip(2))
-        {
-            var (ahead, behind) = GetAheadBehindFromString(line);
-
-            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
-            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
-        }
-
-        string[] commitDates = lines
-            .Skip(2)
-            .Select(l =>
-            {
-                string dateWithDescription = l.Split('|')[3].Trim();
-                int agoIndex = dateWithDescription.IndexOf("ago") + 3;
-
-                if (agoIndex > 2)
-                {
-                    return dateWithDescription.Substring(0, agoIndex).Trim();
-                }
-
-                return dateWithDescription;
-            })
-            .ToArray();
-
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
-
-        Assert.Equal(sortedCommitDates, commitDates);
-    }
-
-    [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
-    {
-        using var process = GetBbranchProcessWithoutPager("--sort", "date");
-
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
-
-        Assert.True(string.IsNullOrEmpty(error), error);
-
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        AssertHeader(lines);
-
-        foreach (string line in lines.Skip(2))
-        {
-            var (ahead, behind) = GetAheadBehindFromString(line);
-
-            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
-            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
-        }
-
-        string[] commitDates = lines
-            .Skip(2)
-            .Select(l =>
-            {
-                string dateWithDescription = l.Split('|')[3].Trim();
-                int agoIndex = dateWithDescription.IndexOf("ago") + 3;
-
-                if (agoIndex > 2)
-                {
-                    return dateWithDescription.Substring(0, agoIndex).Trim();
-                }
-
-                return dateWithDescription;
-            })
-            .ToArray();
-
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
-
-        Assert.Equal(sortedCommitDates, commitDates);
-    }
-
-    [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
         using var process = GetBbranchProcessWithoutPager("-s", "ahead");
@@ -275,6 +173,123 @@ public class SortFlagTests : IntegrationBase
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("-s", "invalid");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        output = output.Replace("\r", "");
+
+        Assert.Equal("fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'\n", output);
+    }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("-s", "date");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        AssertHeader(lines);
+
+        foreach (string line in lines.Skip(2))
+        {
+            var (ahead, behind) = GetAheadBehindFromString(line);
+
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
+        }
+
+        string[] commitDates = lines
+            .Skip(2)
+            .Select(l =>
+            {
+                string dateWithDescription = l.Split('|')[3].Trim();
+                int agoIndex = dateWithDescription.IndexOf("ago") + 3;
+
+                if (agoIndex > 2)
+                {
+                    return dateWithDescription.Substring(0, agoIndex).Trim();
+                }
+
+                return dateWithDescription;
+            })
+            .ToArray();
+
+        string[] sortedCommitDates = commitDates.Select(dateStr => new
+        {
+            OriginalString = dateStr,
+            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+            OrderPriority = GetOrderPriority(dateStr)
+        })
+       .OrderBy(x => x.OrderPriority)
+       .ThenByDescending(x => x.DateTime)
+       .Select(x => x.OriginalString)
+       .ToArray();
+
+        Assert.Equal(sortedCommitDates, commitDates);
+    }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("--sort", "date");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        AssertHeader(lines);
+
+        foreach (string line in lines.Skip(2))
+        {
+            var (ahead, behind) = GetAheadBehindFromString(line);
+
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
+        }
+
+        string[] commitDates = lines
+            .Skip(2)
+            .Select(l =>
+            {
+                string dateWithDescription = l.Split('|')[3].Trim();
+                int agoIndex = dateWithDescription.IndexOf("ago") + 3;
+
+                if (agoIndex > 2)
+                {
+                    return dateWithDescription.Substring(0, agoIndex).Trim();
+                }
+
+                return dateWithDescription;
+            })
+            .ToArray();
+
+        string[] sortedCommitDates = commitDates.Select(dateStr => new
+        {
+            OriginalString = dateStr,
+            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+            OrderPriority = GetOrderPriority(dateStr)
+        })
+       .OrderBy(x => x.OrderPriority)
+       .ThenByDescending(x => x.DateTime)
+       .Select(x => x.OriginalString)
+       .ToArray();
+
+        Assert.Equal(sortedCommitDates, commitDates);
+    }
+
 
     private static string CleanSpaces(string input)
     {

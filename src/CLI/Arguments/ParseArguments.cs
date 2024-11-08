@@ -51,7 +51,7 @@ public class Parse
             {
                 if (IsOptionDuplicated(option, options!))
                 {
-                    throw new ArgumentException($"Duplicate option: {option}");
+                    throw new ArgumentException($"error: duplicated option: {option}");
                 }
 
                 options[option] = arguments[++i];
@@ -60,7 +60,7 @@ public class Parse
 
             if (IsOptionDuplicated(option, options!))
             {
-                throw new ArgumentException($"Duplicate option: {option}");
+                throw new ArgumentException($"error: duplicate option: {option}");
             }
 
             options[option] = null;
@@ -101,7 +101,7 @@ public class Parse
 
             if (retry == 2 && flag is null)
             {
-                throw new ArgumentException($"Invalid option: {option.Key}");
+                throw new ArgumentException($"error: unknown option: {option.Key}");
             }
 
             if (flag is null && retry == 1)
@@ -127,19 +127,19 @@ public class Parse
     {
         if (!failOption.Key.StartsWith('-'))
         {
-            throw new ArgumentException($"Consecutive option: {failOption.Key}");
+            throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
         }
 
         if (failOption.Key.Length == 1)
         {
-            throw new ArgumentException($"Invalid option: {failOption.Key}");
+            throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
         }
 
         if (failOption.Key.Length > 2)
         {
             if (failOption.Key[1] == '-')
             {
-                throw new ArgumentException($"Only one dash is allowed: {failOption.Key}");
+                throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
             }
         }        
 
@@ -149,7 +149,7 @@ public class Parse
 
             if (options.ContainsKey(key))
             {
-                throw new ArgumentException($"Duplicate option: {key}");
+                throw new ArgumentException($"error: duplicated option: {key}");
             }
 
             options[key] = string.Empty;

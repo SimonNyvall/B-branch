@@ -16,7 +16,6 @@ public class Validate
             ValidatePrintTopValue(options);
             ValidateContainsWithNull(options);
             ValidateNoContainsWithNull(options);
-            ValidateSortWithNull(options);
             ValidatePrintTopWithNull(options);
             ValidateTrackWithNull(options);
             ValidatePagerWithNoPager(options);
@@ -35,7 +34,7 @@ public class Validate
     {
         if (options.Contains<VersionFlag>() && options.Count > 1)
         {
-            throw new ArgumentException("You cannot use --version with any other option");
+            throw new ArgumentException("fatal: --version cannot be used with any other option");
         }
     }
 
@@ -43,7 +42,7 @@ public class Validate
     {
         if (options.Contains<ContainsFlag>() && options.Contains<NoContainsFlag>())
         {
-            throw new ArgumentException("You cannot use both --contains and --no-contains");
+            throw new ArgumentException("fatal: Cannot use both --contains and --no-contains");
         }
     }
 
@@ -51,7 +50,7 @@ public class Validate
     {
         if (options.Contains<AllFlag>() && options.Contains<RemoteFlag>())
         {
-            throw new ArgumentException("You cannot use both --all and --remote");
+            throw new ArgumentException("fatal: Cannot use both --all and --remote");
         }
     }
 
@@ -64,9 +63,7 @@ public class Validate
                 return;
             }
 
-            throw new ArgumentException(
-                "Value for --sort is missing. Valid values are: date, name, ahead, behind"
-            );
+            throw new ArgumentException("fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'");
         }
     }
 
@@ -74,14 +71,14 @@ public class Validate
     {
         if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
-            if (!int.TryParse(printTopFlag.Value.ToString(), out int numberValue))
+            if (!int.TryParse(printTopFlag.Value.ToString(), out int numberValue) && printTopFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Invalid value for --print-top");
+                throw new ArgumentException("fatal: Value for --print-top must be an integer");
             }
 
-            if (numberValue < 1)
+            if (numberValue < 1 && printTopFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --print-top must be greater than 0");
+                throw new ArgumentException("fatal: Value for --print-top must be greater than 0");
             }
         }
     }
@@ -90,35 +87,28 @@ public class Validate
     {
         if (!options.Contains<ContainsFlag>(out var containsFlag)) return;
 
-        if (containsFlag.Value is null || containsFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --contains is missing");
+        if (containsFlag.Value is null || containsFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --contains is missing");
     }
 
     private static void ValidateNoContainsWithNull(FlagCollection options)
     {
         if (!options.Contains<NoContainsFlag>(out var noContainsFlag)) return;
 
-        if (noContainsFlag.Value is null || noContainsFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --no-contains must be null");
-    }
-
-    private static void ValidateSortWithNull(FlagCollection options)
-    {
-        if (!options.Contains<SortFlag>(out var sortFlag)) return;
-
-        if (sortFlag.Value is null) throw new ArgumentException("Value for --sort is missing");
+        if (noContainsFlag.Value is null || noContainsFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --no-contains is missing");
     }
 
     private static void ValidatePrintTopWithNull(FlagCollection options)
     {
         if (!options.Contains<PrintTopFlag>(out var printTopFlag)) return;
 
-        if (printTopFlag.Value is null || printTopFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --print-top is missing");
+        if (printTopFlag.Value is null || printTopFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --print-top is missing");
     }
 
     private static void ValidateTrackWithNull(FlagCollection options)
     {
         if (!options.Contains<TrackFlag>(out var trackFlag)) return;
 
-        if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("Value for --track is missing");
+        if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --track is missing");
     }
 
     private static void ValidatePagerWithNoPager(FlagCollection options)
@@ -127,7 +117,7 @@ public class Validate
 
         if (options.Contains<PagerFlag>() && options.Contains<NoPagerFlag>())
         {
-            throw new ArgumentException("You cannot use both --pager and --no-pager");
+            throw new ArgumentException("fatal: Cannot use both --pager and --no-pager");
         }
     }
 
@@ -137,7 +127,7 @@ public class Validate
         {
             if (helpFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --help is not allowed");
+                throw new ArgumentException("fatal: Value for --help is not allowed");
             }
         }
 
@@ -145,7 +135,7 @@ public class Validate
         {
             if (versionFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --version is not allowed");
+                throw new ArgumentException("fatal: Value for --version is not allowed");
             }
         }
 
@@ -153,7 +143,7 @@ public class Validate
         {
             if (allFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --all is not allowed");
+                throw new ArgumentException("fatal: Value for --all is not allowed");
             }
         }
 
@@ -161,7 +151,7 @@ public class Validate
         {
             if (remoteFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --remote is not allowed");
+                throw new ArgumentException("fatal: Value for --remote is not allowed");
             }
         }
 
@@ -169,7 +159,7 @@ public class Validate
         {
             if (quietFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --quiet is not allowed");
+                throw new ArgumentException("fatal: Value for --quiet is not allowed");
             }
         }
 
@@ -177,7 +167,7 @@ public class Validate
         {
             if (pagerFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --pager is not allowed");
+                throw new ArgumentException("fatal: Value for --pager is not allowed");
             }
         }
 
@@ -185,7 +175,7 @@ public class Validate
         {
             if (noPagerFlag.Value.ToString() != string.Empty)
             {
-                throw new ArgumentException("Value for --no-pager is not allowed");
+                throw new ArgumentException("fatal: Value for --no-pager is not allowed");
             }
         }
     }

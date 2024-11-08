@@ -3,6 +3,28 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class HelpFlagTests : IntegrationBase
 {
+    private readonly string _helpMessage = """
+    usage: git bb [<options>] [<additional arguments>]
+
+    Generic options:
+        -h, --help              Show the help message.
+        -v, --version           Show the current version of the tool.
+        -q, --quiet             Suppress additional output, showing only branch names.
+
+    Filtering options:
+        -c, --contains <string>         List brnches containing the specified string.
+        -n, --no-contains <string>      List branches not containing the specified string.
+        -s, --sort <criterion>          Sort branches by <date|name|ahead|behind>.
+        -t, --track <branch>            Show upstream relationship of the specified branch.
+        -a, --all                       List both local and remote branches.
+        -r, --remote                    List only remote branches.
+        -p, --print-top <N>             Show the top N branches based on sort criterion.
+
+    Display options:
+        --pager                         Force output to display in a pager.
+        --no-pager                      Display output directly in the console.
+    """.Replace("\r", "").Replace("\n", "");
+
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
@@ -12,20 +34,9 @@ public class HelpFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        output = output.Replace("\r", "");
+        output = output.Replace("\r", "").Replace("\n", "");
 
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        Assert.Contains("--help,        -h", lines[2]);
-        Assert.Contains("--track,       -t", lines[3]);
-        Assert.Contains("--sort,        -s", lines[4]);
-        Assert.Contains("--contains,    -c", lines[5]);
-        Assert.Contains("--no-contains, -n", lines[6]);
-        Assert.Contains("--all,         -a", lines[7]);
-        Assert.Contains("--remote,      -r", lines[8]);
-        Assert.Contains("--quiet,       -q", lines[9]);
-        Assert.Contains("--print-top,   -p", lines[10]);
-        Assert.Contains("--version,     -v", lines[11]);
+        Assert.Equal(_helpMessage, output);
     }
 
     [Fact(Timeout = 120000)]
@@ -37,20 +48,9 @@ public class HelpFlagTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        output = output.Replace("\r", "");
+        output = output.Replace("\r", "").Replace("\n", "");
 
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        Assert.Contains("--help,        -h", lines[2]);
-        Assert.Contains("--track,       -t", lines[3]);
-        Assert.Contains("--sort,        -s", lines[4]);
-        Assert.Contains("--contains,    -c", lines[5]);
-        Assert.Contains("--no-contains, -n", lines[6]);
-        Assert.Contains("--all,         -a", lines[7]);
-        Assert.Contains("--remote,      -r", lines[8]);
-        Assert.Contains("--quiet,       -q", lines[9]);
-        Assert.Contains("--print-top,   -p", lines[10]);
-        Assert.Contains("--version,     -v", lines[11]);
+        Assert.Equal(_helpMessage, output);
     }
 
     [Fact(Timeout = 120000)]
@@ -64,6 +64,6 @@ public class HelpFlagTests : IntegrationBase
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("Value for --help is not allowed\n", output);
+        Assert.Equal("fatal: Value for --help is not allowed\n", output);
     }
 }

@@ -72,8 +72,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.True(string.IsNullOrEmpty(error), error);
 
         output = output.Replace("\r", "");
+        string[] outputLines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        Assert.Equal("Only one dash is allowed: --qa\n", output);
+        Assert.Equal("error: pathspec '--qa' did not match any file(s) known to git", outputLines[0]);
     }
 
     [Fact(Timeout = 120000)]
@@ -86,8 +87,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.True(string.IsNullOrEmpty(error), error);
 
         output = output.Replace("\r", "");
+        string[] outputLines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        Assert.Equal("Duplicate option: -q\n", output);
+        Assert.Equal("error: duplicated option: -q", outputLines[0]);
     }
 
     [Fact(Timeout = 120000)]
@@ -100,7 +102,8 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.True(string.IsNullOrEmpty(error), error);
 
         output = output.Replace("\r", "");
+        string[] outputLines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        Assert.Equal("Invalid option: -z\n", output);
+        Assert.Equal("error: unknown option: -z", outputLines[0]);
     }
 }

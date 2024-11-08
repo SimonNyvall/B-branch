@@ -46,4 +46,17 @@ public class TrackFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
+
+    [Fact(Timeout = 120000)]
+    public async Task IntegrationTest_InvalidOutput_WithTrackFlagAndNoValue()
+    {
+        using var process = GetBbranchProcessWithoutPager("--track");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        output = output.Replace("\r", "");
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+        Assert.Equal("fatal: Value for --track is missing\n", output);
+    }
 }
