@@ -82,23 +82,34 @@ git branch --edit-description
 ## Usage
 
 ```sh
-git bb [options]
+git bb [<options>] [<additional arguments>]
 ```
 
 ### Options
 
-- `-t, --track <String>`: Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.
-- `-q, --quiet`: Only displays the names of the branches without any additional information or formatting.
-- `-v, --version`: Shows the current version of the `B-branch` tool.
-- `-s, --sort <String>`: Sorts the branches based on the specified criterion. Valid options are `[date]`, `[name]`, `[ahead]`, or `[behind]`.
-- `-a, --all`: Displays all branches, both local and remote.
-- `-n, --no-contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that do not contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
-- `-c, --contains <String>`, `"String1;String2;..."`: Filters the list to only show branches that contain the specified string. Valid options are `<String>` OR `"String1;String2;..."`.
-- `-r, --remote`: Includes remote branches in the output.
-- `-h, --help`: Displays the help message with information about all available options.
-- `-p, --print-top <Number>`: Prints the top N branches based on the specified sort criterion.
-- `--pager`: Forces the output to be displayed in a pager interface.
-- `--no-pager`: Forces the output to be displayed in the console.
+#### Generic options:
+| Flag                 | Description                                            |
+|-------------------------|--------------------------------------------------------|
+| `-h`, `--help`          | Show the help message.                                 |
+| `-v`, `--version`       | Show the current version of the tool.                  |
+| `-q`, `--quiet`         | Suppress additional output, showing only branch names. |
+
+#### Filtering options:
+| Flag                      | Description                                         |
+|------------------------------|-----------------------------------------------------|
+| `-c`, `--contains` <string>  | List branches containing the specified string.      |
+| `-n`, `--no-contains` <string>| List branches not containing the specified string. |
+| `-s`, `--sort` <criterion>   | Sort branches by `<date|name|ahead|behind>`.        |
+| `-t`, `--track` <branch>     | Show upstream relationship of the specified branch. |
+| `-a`, `--all`                | List both local and remote branches.                |
+| `-r`, `--remote`             | List only remote branches.                          |
+| `-p`, `--print-top` <N>      | Show the top N branches based on sort criterion.    |
+
+#### Display options:
+| Flag        | Description                             |
+|----------------|----------------------------------------|
+| `--pager`      | Force output to display in a pager.    |
+| `--no-pager`   | Display output directly in the console.|
 
 ---
 

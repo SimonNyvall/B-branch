@@ -2,22 +2,26 @@ namespace Bbranch.CLI.Options;
 
 public class HelpOption
 {
-    private static string _helpMessage = """
-    Usage: git bb [options]
+    private static readonly string _helpMessage = """
+    usage: git bb [<options>] [<additional arguments>]
 
-    Options:
-    --help,        -h                               Displays the help message with information about all available options.
-    --track,       -t <String>                      Displays information about how many commits the specified branch is ahead or behind relative to its upstream branch.
-    --sort,        -s <String>                      Sorts the branches based on the specified criterion. Valid options are [date], [name], [ahead], or [behind].
-    --contains,    -c <String> OR "String1;String2" Filters the list to only show branches that contain the specified string.
-    --no-contains, -n <String> OR "String1;String2" Filters the list to only show branches that do not contain the specified string.
-    --all,         -a                               Displays all branches, both local and remote.
-    --remote,      -r                               Includes remote branches in the output.
-    --quiet,       -q                               Only displays the names of the branches without any additional information or formatting.
-    --print-top,   -p <Number>                      Prints the top N branches based on the specified sort criterion.
-    --version,     -v                               Shows the current version of the tool. 
-    --pager,       --                               Forces the output to be displayed in a pager interface.
-    --no-pager,    --                               Disables the pager interface and forces the output to be displayed in the console.
+    Generic options:
+        -h, --help              Show the help message.
+        -v, --version           Show the current version of the tool.
+        -q, --quiet             Suppress additional output, showing only branch names.
+
+    Filtering options:
+        -c, --contains <string>         List brnches containing the specified string.
+        -n, --no-contains <string>      List branches not containing the specified string.
+        -s, --sort <criterion>          Sort branches by <date|name|ahead|behind>.
+        -t, --track <branch>            Show upstream relationship of the specified branch.
+        -a, --all                       List both local and remote branches.
+        -r, --remote                    List only remote branches.
+        -p, --print-top <N>             Show the top N branches based on sort criterion.
+
+    Display options:
+        --pager                         Force output to display in a pager.
+        --no-pager                      Display output directly in the console.
     """;
 
     public static void Execute()

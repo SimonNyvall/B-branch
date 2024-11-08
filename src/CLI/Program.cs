@@ -10,7 +10,7 @@ FlagCollection options = [];
 
 if (!Parse.TryParseOptions(args, out options))
 {
-    return;
+    HelpOption.Execute();
 }
 
 if (!Validate.ValidateOptions(options))
