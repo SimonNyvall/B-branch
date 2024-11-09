@@ -36,4 +36,4 @@ RUN dotnet publish -r linux-x64 -c Release -o /app/publish
 
 WORKDIR /app/tests/IntegrationTests
 
-ENTRYPOINT ["dotnet", "test", "--no-build", "--logger:trx", "-v", "n"]
+ENTRYPOINT ["dotnet", "test", "--no-build", "-v", "n"]
