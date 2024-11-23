@@ -47,7 +47,7 @@ else
 
 if (options.Contains<quietFlag>())
 {
-    PrintLightTable.Print(branchTable);
+    PrintLightTable.Print(branchTable, shouldPage);
 
     return;
 }

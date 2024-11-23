@@ -4,18 +4,21 @@ namespace Bbranch.CLI.Output;
 
 internal class Pager
 {
+    public static int ScrollPosition { get => _scrollPosition; set => _scrollPosition = value; }
+    public static bool IsAtBottom { get; set; } = false;
+    public static int HeaderHight { get; set; } = 2;
     private static int _scrollPosition = 0;
     private static int ConsoleHeight => Console.WindowHeight - 1;
 
     public static void Start(
-        Action<List<GitBranch>, int> windowResize,
-        Action<List<GitBranch>, int, string?> updateView,
-        Func<List<GitBranch>, int, int> searchHandler,
+        Action<List<GitBranch>> windowResize,
+        Action<List<GitBranch>, string?> updateView,
+        Action<List<GitBranch>> searchHandler,
         List<GitBranch> branches)
     {
         Console.CursorVisible = false;
 
-        windowResize(branches, _scrollPosition);
+        windowResize(branches);
 
         while (true)
         {
@@ -23,11 +26,12 @@ internal class Pager
 
             if (IsScrollAtBottom(_scrollPosition, branches.Count))
             {
-                PrintEndPromt();
+                PrintEndPrompt();
+                IsAtBottom = true;
             }
             else
             {
-                PrintCommandPromt();
+                PrintCommandPrompt();
             }
 
             ConsoleKeyInfo key = Console.ReadKey(true);
@@ -40,7 +44,8 @@ internal class Pager
                         if (!CanScrollUp(_scrollPosition)) break;
 
                         _scrollPosition--;
-                        updateView(branches, _scrollPosition, string.Empty);
+                        updateView(branches, string.Empty);
+                        IsAtBottom = false;
                         break;
                     }
                 case ConsoleKey.DownArrow:
@@ -49,7 +54,7 @@ internal class Pager
                         if (!CanScrollDown(_scrollPosition, branches.Count)) break;
 
                         _scrollPosition++;
-                        updateView(branches, _scrollPosition, string.Empty);
+                        updateView(branches, string.Empty);
                         break;
                     }
                 case ConsoleKey.Home:
@@ -58,15 +63,20 @@ internal class Pager
                     {
                         if (key.KeyChar == 'G' || key.Key == ConsoleKey.End)
                         {
-                            _scrollPosition = Math.Abs(branches.Count - ConsoleHeight + 2);
-                            updateView(branches, _scrollPosition, string.Empty);
+                            if (!IsAtBottom)
+                            {
+                                IsAtBottom = true;
+                                _scrollPosition = Math.Abs(branches.Count - ConsoleHeight + HeaderHight);
+                                updateView(branches, string.Empty);
+                            }
                             break;
                         }
 
                         if (key.KeyChar == 'g' || key.Key == ConsoleKey.Home)
                         {
                             _scrollPosition = 0;
-                            updateView(branches, _scrollPosition, string.Empty);
+                            IsAtBottom = false;
+                            updateView(branches, string.Empty);
                             break;
                         }
 
@@ -86,7 +96,7 @@ internal class Pager
                             _scrollPosition = branches.Count - pageHeight;
                         }
 
-                        updateView(branches, _scrollPosition, string.Empty);
+                        updateView(branches, string.Empty);
                         break;
                     }
                 case ConsoleKey.B:
@@ -100,17 +110,17 @@ internal class Pager
                             _scrollPosition = 0;
                         }
 
-                        updateView(branches, _scrollPosition, string.Empty);
+                        updateView(branches, string.Empty);
                         break;
                     }
                 case ConsoleKey.Divide:
                 case ConsoleKey.Oem2:
                 case ConsoleKey.D7:
-                    _scrollPosition = searchHandler(branches, _scrollPosition);
+                    searchHandler(branches);
                     break;
                 case ConsoleKey.Escape:
                     {
-                        updateView(branches, _scrollPosition, null);
+                        updateView(branches, null);
                         break;
                     }
                 case ConsoleKey.Q:
@@ -120,25 +130,28 @@ internal class Pager
         }
     }
 
-    private static void PrintCommandPromt()
+    internal static void PrintCommandPrompt()
     {
         Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write(":    ");
+        Console.Write(new string(' ', Console.WindowWidth - 1) + '\r');
+        Console.Write(":");
     }
 
-    private static void PrintEndPromt()
+    internal static void PrintEndPrompt()
     {
         Console.SetCursorPosition(0, ConsoleHeight);
+        Console.Write(new string(' ', Console.WindowWidth - 1) + '\r');
         Console.BackgroundColor = ConsoleColor.White;
         Console.ForegroundColor = ConsoleColor.Black;
         Console.Write("(END)");
         Console.ResetColor();
     }
 
-    private static void PrintSearchPromt()
+    internal static void PrintSearchPrompt()
     {
         Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write("/    ");
+        Console.Write(new string(' ', Console.WindowWidth - 1) + '\r');
+        Console.Write("/");
         Console.SetCursorPosition(1, ConsoleHeight);
     }
 
@@ -148,7 +161,7 @@ internal class Pager
     private static bool CanScrollUp(int scrollPosition) => scrollPosition > 0;
 
     private static bool CanScrollDown(int scrollPosition, int branchCount) =>
-        scrollPosition < Math.Abs(branchCount - ConsoleHeight + 2);
+        scrollPosition < Math.Abs(branchCount - ConsoleHeight + HeaderHight) && !IsAtBottom;
 
     private static bool CanPageDown(int scrollPosition, int branchCount) =>
         branchCount - scrollPosition - (ConsoleHeight - 2) > (ConsoleHeight - 2);
