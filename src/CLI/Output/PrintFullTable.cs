@@ -1,10 +1,12 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
 public class PrintFullTable
 {
+    public static int ScrollPosition { get => Pager.ScrollPosition; set => Pager.ScrollPosition = value; }
     private static int ConsoleHeight => Console.WindowHeight - 1;
     private static int LongestBranchNameLength { get; set; }
     private static string? currentSearchTerm;
@@ -67,9 +69,9 @@ public class PrintFullTable
         );
     }
 
-    private static void SpawnWindowListenerThread(List<GitBranch> branches, int scrollPosition)
+    private static void SpawnWindowListenerThread(List<GitBranch> branches)
     {
-        int currentPosition = scrollPosition;
+        int currentPosition = ScrollPosition;
         Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref currentPosition))
         {
             IsBackground = true
@@ -86,7 +88,7 @@ public class PrintFullTable
         {
             if (Console.WindowHeight != previousHeight)
             {
-
+                Pager.IsAtBottom = false;
                 previousHeight = Console.WindowHeight;
 
                 Console.Clear();
@@ -98,21 +100,23 @@ public class PrintFullTable
                     scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
                 }
 
-                UpdateView(branches, scrollPosition, string.Empty);
+                UpdateView(branches, string.Empty);
 
                 if (branches.Count < ConsoleHeight - 1)
                 {
+                    Pager.IsAtBottom = true;
+
                     for (int i = branches.Count; i < ConsoleHeight - 2; i++)
                     {
                         Console.SetCursorPosition(0, i + 2);
                         Console.Write('~');
                     }
 
-                    PrintEndPromt();
+                    Pager.PrintEndPrompt();
                 }
                 else
                 {
-                    PrintCommandPromt();
+                    Pager.PrintCommandPrompt();
                 }
             }
 
@@ -120,7 +124,7 @@ public class PrintFullTable
         }
     }
 
-    private static void UpdateView(List<GitBranch> branches, int scrollPosition, string? searchTerm)
+    private static void UpdateView(List<GitBranch> branches, string? searchTerm)
     {
         if (searchTerm is null)
         {
@@ -128,57 +132,67 @@ public class PrintFullTable
         }
 
         Console.SetCursorPosition(0, 2);
-        PrintBranchRows(branches.Skip(scrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm, PageBehaviour.Paginate);
+        PrintBranchRows(branches.Skip(ScrollPosition).Take(ConsoleHeight - 2).ToList(), currentSearchTerm, PageBehaviour.Paginate);
     }
 
-    private static int HandleSearch(List<GitBranch> branches, int scrollPosition)
+    private static void HandleSearch(List<GitBranch> branches)
     {
-        PrintSearchPromt();
+        Pager.PrintSearchPrompt();
 
         currentSearchTerm = Console.ReadLine() ?? string.Empty;
 
         Console.Clear();
 
-        if (string.IsNullOrEmpty(currentSearchTerm)) return scrollPosition;
+        if (string.IsNullOrEmpty(currentSearchTerm)) return;
 
         Console.SetCursorPosition(0, 0);
         PrintHeaders();
 
         int firstMatchIndex = branches.FindIndex(x => x.Branch.Name.Contains(currentSearchTerm, StringComparison.OrdinalIgnoreCase));
 
-        if (firstMatchIndex == -1) return scrollPosition;
+        if (firstMatchIndex == -1) return;
 
-        if (Math.Abs(ConsoleHeight - branches.Count - 1) > firstMatchIndex)
+        Pager.IsAtBottom = false;
+        if (branches.Count > ConsoleHeight)
         {
-            scrollPosition = firstMatchIndex;
+            if (Math.Abs(branches.Count - ConsoleHeight - 1) > firstMatchIndex)
+            {
+                ScrollPosition = firstMatchIndex;
+            }
+            else
+            {
+                ScrollPosition = Math.Abs(branches.Count - ConsoleHeight);
+            }
         }
         else
         {
-            scrollPosition = Math.Abs(branches.Count - ConsoleHeight + 2);
+            ScrollPosition = 0;
+            firstMatchIndex = ScrollPosition;
         }
 
-
-        for (int i = scrollPosition; i < branches.Count; i++)
+        for (int i = ScrollPosition; i < firstMatchIndex + ConsoleHeight - 2; i++)
         {
-            if (i > ConsoleHeight + scrollPosition - 3) break;
-
-            if (branches.Count > ConsoleHeight)
+            if (branches.Count >= ConsoleHeight)
             {
                 PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.Paginate);
+                continue;
             }
 
-            PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.None);
+            if (i < branches.Count)
+            {
+                PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.None);
+            }
         }
 
-        if (branches.Count > ConsoleHeight) return scrollPosition;
+        if (branches.Count > ConsoleHeight) return;
+
+        Pager.IsAtBottom = true;
 
         for (int i = branches.Count; i < ConsoleHeight - 1; i++)
         {
             Console.SetCursorPosition(0, i + 2);
             Console.Write('~');
         }
-
-        return scrollPosition;
     }
 
     private static void PrintHeaders()
@@ -267,7 +281,7 @@ public class PrintFullTable
     {
         int matchIndex;
 
-        if (search is null)
+        if (search is null or "")
         {
             matchIndex = -1;
         }
@@ -330,26 +344,4 @@ public class PrintFullTable
     }
 
     private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
-
-    private static void PrintCommandPromt()
-    {
-        Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write(":    ");
-    }
-
-    private static void PrintEndPromt()
-    {
-        Console.SetCursorPosition(0, ConsoleHeight);
-        Console.BackgroundColor = ConsoleColor.White;
-        Console.ForegroundColor = ConsoleColor.Black;
-        Console.Write("(END)");
-        Console.ResetColor();
-    }
-
-    private static void PrintSearchPromt()
-    {
-        Console.SetCursorPosition(0, ConsoleHeight);
-        Console.Write("/    ");
-        Console.SetCursorPosition(1, ConsoleHeight);
-    }
 }
