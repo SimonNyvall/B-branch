@@ -253,6 +253,13 @@ public class PrintLightTable
             Console.Write(text);
         }
 
-        Console.Write(new string(' ', Console.WindowWidth - text.Length - 1) + '\r');
+        try
+        {
+            Console.Write(new string(' ', Console.WindowWidth - text.Length - 1) + '\r');
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

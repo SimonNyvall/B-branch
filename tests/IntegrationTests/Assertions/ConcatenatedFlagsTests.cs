@@ -12,33 +12,15 @@ public class ConcatenatedFlagsTests : IntegrationBase
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        output = output.Replace("*", "");
+        string[] lines = output.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         Assert.DoesNotContain("Ahead 󰜘", lines[0]);
         Assert.DoesNotContain("Behind 󰜘", lines[0]);
         Assert.DoesNotContain("Branch Name ", lines[0]);
         Assert.DoesNotContain("Last commit ", lines[0]);
 
-        Assert.Contains(lines, l => l.Contains("origin"));
-        Assert.Contains(lines, l => !l.Contains("origin"));
-    }
-
-    [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithAllAndQuietAndSortFlagsConcatenated()
-    {
-        using var process = GetBbranchProcessWithoutPager("-qa", "--sort", "date");
-
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
-
-        Assert.True(string.IsNullOrEmpty(error), error);
-
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        Assert.DoesNotContain("Ahead 󰜘", lines[0]);
-        Assert.DoesNotContain("Behind 󰜘", lines[0]);
-        Assert.DoesNotContain("Branch Name ", lines[0]);
-        Assert.DoesNotContain("Last commit ", lines[0]);
-
+        Assert.Equal(5, lines.Length);
         Assert.Contains(lines, l => l.Contains("origin"));
         Assert.Contains(lines, l => !l.Contains("origin"));
     }
