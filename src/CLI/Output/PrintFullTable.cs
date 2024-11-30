@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
@@ -335,6 +334,11 @@ public class PrintFullTable
             if (currentTime.Day - lastCommit.Day == 1) return $"{time} yesterday";
 
             return $"{time} today";
+        } 
+        
+        if (days >= 30)
+        {
+            return days >= 60 ? $"{currentTime.Month - currentTime.AddDays(days * -1).Month} months ago" : $"1 month ago";
         }
 
         string timeElapsed = days == 1 ? "day" : "days";
