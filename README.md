@@ -124,6 +124,14 @@ For a manual installation, follow the steps in the [release](https://github.com/
 > [!NOTE]
 > For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
 
+### Next Release
+- `!command` to pager view to execute commands while in the pager.
+- `n` key in pager to jump the next search result.
+- `N` key in pager to jump to the previous search result.
+- `h` key in pager to show the help message.
+- .NET 9 upgrade.
+- Multi-branch description support.
+
 ## Contributing
 
 We welcome contributions to **B-branch**! If you have suggestions or improvements, please adhere to the following [guidelines](./CONTRIBUTE.md) when contributing to the project. Don't forget to give [the project](https://github.com/SimonNyvall/B-branch) a **star!** ⭐ Thanks again!
