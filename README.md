@@ -119,10 +119,16 @@ Download the latest release for free! If you're using **Cygwin**, **Git Bash**, 
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
 ```
 
+The install script will download the latest release and **install/update** the tool on your system.
+
 For a manual installation, follow the steps in the [release](https://github.com/SimonNyvall/B-branch/releases) notes.
 
 > [!NOTE]
 > For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
+> If you already have a nerd font installed, you can run the following command to tell B-branch to display characters correctly:
+> ```sh
+> git config --global vars.useNerdFonts true
+> ```
 
 ### Next Release
 - `!command` to pager view to execute commands while in the pager.

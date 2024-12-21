@@ -41,14 +41,16 @@ public void ParseArguments_ShouldReturnContainsFlag_WithContainsArgument()
 ## How to Run Tests
 To run the tests, either run `dotnet test` from the root directory or use the test runner in your IDE.
 > [!Important]
-> The `dotnet run` command does only invoke the `Unit tests` and not the `Integration tests`.
-> To tun the `Integration tests` you need to run `dotnet test` from the `tests/IntegrationTests/` directory.
+> The `dotnet test` command does only invoke the `Unit tests` and not the `Integration tests`.
+> The integration tests do not run on a local machine, as they require an environment with the right setup to run.
 
 To run the Integration test you can use the following command:
 ```bash
 cd tests/IntegrationTests/
-docker build -t integration-tests .
-docker run integration-tests
+docker build -t integration-test-image .
+docker run integration-tests-image
 ```
 
 This will build a docker container and run it with the integration tests as well as the application.
+
+It is also not possible to run the `test-runner-ps1`. This script will run both hte unit and integration tests. Just make sure to have docker engine running.

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
@@ -196,9 +197,20 @@ public class PrintFullTable
 
     private static void PrintHeaders()
     {
-        string branchHeader = " Branch name  ".PadRight(LongestBranchNameLength + 1);
+        string branchHeader = string.Empty;
+        string[] headers = [];
         string underline = new('-', LongestBranchNameLength + 1);
-        string[] headers = [" Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  "];
+
+        if (IsUserUsingNerdFonts())
+        {
+            branchHeader = " Branch name  ".PadRight(LongestBranchNameLength + 1);
+            headers = [" Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  "];
+        }
+        else
+        {
+            branchHeader = " Branch name ".PadRight(LongestBranchNameLength + 1);
+            headers = [" Ahead   ", " Behind   ", branchHeader, " Last commit   "];
+        }
 
         PrintColoredLine(headers, ConsoleColor.Yellow);
 
@@ -348,4 +360,15 @@ public class PrintFullTable
     }
 
     private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
+
+    private static bool IsUserUsingNerdFonts()
+    {
+        string gitConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gitconfig");
+
+        if (!File.Exists(gitConfigPath)) return false;
+
+        string[] gitConfigLines = File.ReadAllLines(gitConfigPath);
+
+        return gitConfigLines.Any(line => line.Contains("\tuseNerdFonts = true"));
+    }
 }
