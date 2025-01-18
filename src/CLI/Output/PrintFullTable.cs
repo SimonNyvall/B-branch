@@ -256,7 +256,7 @@ public class PrintFullTable
         var aHead = branch.AheadBehind.Ahead.ToString().PadRight(8);
         var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
         var branchName = branch.Branch.Name.PadRight(LongestBranchNameLength);
-        var lastCommitText = GetTimePrefix(branch.LastCommit);
+        var lastCommitText = PrintFormater.GetTimePrefix(branch.LastCommit, DateTime.Now);
         var description = branch.Description ?? string.Empty;
 
         if (pageBehaviour == PageBehaviour.Paginate)
@@ -280,7 +280,9 @@ public class PrintFullTable
         Console.ResetColor();
 
         Console.Write(" |  ");
+
         HighlightText(lastCommitText, search);
+
         Console.Write("    ");
 
         HighlightText(description, search);
@@ -288,7 +290,7 @@ public class PrintFullTable
         Console.WriteLine();
     }
 
-    private static void HighlightText(string text, string? search)
+    private static void HighlightText(string text, string? search, ConsoleColor? color = null)
     {
         int matchIndex;
 
@@ -307,7 +309,15 @@ public class PrintFullTable
         {
             Console.Write(text[..matchIndex]);
 
-            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            if (color is not null)
+            {
+                Console.ForegroundColor = color.Value;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+            }
+
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Write(text.Substring(matchIndex, search!.Length));
 
@@ -318,45 +328,6 @@ public class PrintFullTable
         {
             Console.Write(text);
         }
-    }
-
-    private static string GetTimePrefix(DateTime lastCommit)
-    {
-        DateTime currentTime = DateTime.Now;
-
-        DateTimeFormatInfo dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-
-        int days = (currentTime - lastCommit).Days;
-
-        if (days == 0)
-        {
-            string timeFormat;
-
-            if (dateTimeFormat.ShortTimePattern.Contains("tt"))
-            {
-                timeFormat = (lastCommit.Hour > 9 && lastCommit.Hour < 13) ? "h:mm tt" : "h:mm  tt";
-            }
-            else
-            {
-                timeFormat = "HH:mm";
-            }
-
-            string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
-
-            if (currentTime.Day - lastCommit.Day == 1) return $"{time} yesterday";
-
-            return $"{time} today";
-        } 
-        
-        if (days >= 30)
-        {
-            return days >= 60 ? $"{currentTime.Month - currentTime.AddDays(days * -1).Month} months ago" : $"1 month ago";
-        }
-
-        string timeElapsed = days == 1 ? "day" : "days";
-
-        int padLeft = 5 - days.ToString().Length;
-        return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
     }
 
     private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
