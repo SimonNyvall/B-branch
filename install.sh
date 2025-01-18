@@ -6,7 +6,7 @@ BIN_DIR_UNIX="/usr/local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
-VERSION="1.1.0"
+VERSION="1.1.1"
 FINAL_BINARY=""
 
 # Helper function to detect OS
@@ -64,7 +64,7 @@ download_binary() {
         if [ "${OS}" = "win" ]; then
             mkdir -p "${USERPROFILE}\\AppData\\Local\\b-branch"
             curl -sSfLo "${USERPROFILE}\\${BIN_DIR_WIN}\\b-branch-${OS}-${ARCH}.zip" "${URL}"
-        else 
+        else
             mkdir -p "${BIN_DIR_UNIX}"
             curl -sSfLo "${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}.zip" "${URL}"
         fi
