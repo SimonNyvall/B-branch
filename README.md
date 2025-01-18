@@ -1,12 +1,12 @@
-<p align="center"><img src="./images/logo.png" alt="logo" width="250px"/></p>
+<p align="center"><img src="./images/git-logo.png" alt="logo" width="200px"/></p>
 <h1 align="center">B-branch</h1>
-<h3 align="center">A git extension for better branch management</h3>
+<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch management</h3>
 
 <div align="center">
   <hr/>
- <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat-square&logo=google%20tasks&logoColor=white&label=test%2Fbuild&color=dark%20green" alt=".NET">&nbsp;&nbsp;
+ <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat-square&logo=google%20tasks&logoColor=white&label=test%2Fbuild&color=blue" alt=".NET">&nbsp;&nbsp;
  <img src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat-square" alt="github stars"/>&nbsp;&nbsp;
- <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat-square&logo=Github&color=dark%20green" alt="download count">
+ <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat-square&logo=Github&color=blue" alt="download count">
 </div>
 
 - [Premise](#premise-rocket)
@@ -28,7 +28,7 @@ Traditional git branch commands sort branches alphabetically, making it hard to 
 
 Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** with no dependencies required when using the compiled executable. [Download](#download-computer) the latest release for **free**!
 
-<img align="center" width="100%" src="./images/banner.png" alt="screen" width="500"/>
+<img align="center" width="100%" src="./images/banner2.png" alt="screen" width="500"/>
 
 ---
 
@@ -135,8 +135,10 @@ For a manual installation, follow the steps in the [release](https://github.com/
 - `n` key in pager to jump the next search result.
 - `N` key in pager to jump to the previous search result.
 - `h` key in pager to show the help message.
-- .NET 9 upgrade.
 - Multi-branch description support.
+
+#### Ideas
+
 
 ## Contributing
 
