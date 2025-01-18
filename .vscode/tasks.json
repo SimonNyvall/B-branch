@@ -10,6 +10,27 @@
                 "${workspaceFolder}/src/CLI/CLI.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run-unit-tests",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/tests/UnitTests/UnitTests.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-and-test",
+            "dependsOn": [
+                "build",
+                "run-unit-tests"
+            ],
+            "dependsOrder": "sequence",
+            "type": "shell",
+            "command": "echo Build and Test Completed",
+            "problemMatcher": []
         }
     ]
 }

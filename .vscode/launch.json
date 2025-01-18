@@ -5,7 +5,7 @@
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-and-test",
             "program": "${workspaceFolder}/src/CLI/bin/Debug/net8.0/CLI",
             "args": ["--no-pager"],
             "cwd": "${workspaceFolder}",
