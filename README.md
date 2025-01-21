@@ -131,14 +131,16 @@ For a manual installation, follow the steps in the [release](https://github.com/
 > ```
 
 ### Next Release
+See the latest work being done in the [project backlog](https://github.com/users/SimonNyvall/projects/10).
+
 - `!command` to pager view to execute commands while in the pager.
 - `n` key in pager to jump the next search result.
 - `N` key in pager to jump to the previous search result.
 - `h` key in pager to show the help message.
 - Multi-branch description support.
-
-#### Ideas
-
+- View stale branches.
+- Regex support for contains and no-contains options.
+- Pre-fetch branches to get latest information.
 
 ## Contributing
 
