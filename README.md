@@ -15,6 +15,7 @@
 - [Usage](#usage)
   - [Options](#options)
 - [Download](#download-computer)
+  - [Next Release](#next-release)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments-mega)
 - [License](#license-book)
