@@ -2,11 +2,12 @@ using System.Globalization;
 
 namespace Bbranch.CLI.Output;
 
-public class PrintFormater
+public static class PrintFormater
 {
     public static string GetTimePrefix(DateTime lastCommit, DateTime currentTime)
     {
-        DateTimeFormatInfo dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+        CultureInfo culture = CultureInfo.InvariantCulture;
+        DateTimeFormatInfo dateTimeFormat = culture.DateTimeFormat;
 
         int days = (currentTime - lastCommit).Days;
 
@@ -23,14 +24,14 @@ public class PrintFormater
                 timeFormat = "HH:mm";
             }
 
-            string time = lastCommit.ToString(timeFormat, CultureInfo.CurrentCulture);
+            string time = lastCommit.ToString(timeFormat, culture);
 
             return $"{time} today";
         }
 
         if (days == 1)
         {
-            string time = lastCommit.ToString("HH:mm", CultureInfo.CurrentCulture);
+            string time = lastCommit.ToString("HH:mm", culture);
             return $"{time} yesterday";
         }
 
