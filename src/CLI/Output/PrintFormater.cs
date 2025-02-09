@@ -37,10 +37,9 @@ public static class PrintFormater
 
         if (days >= 30)
         {
-            DateTime pastDate = currentTime.AddDays(-days);
-            int monthDifference = ((currentTime.Year - pastDate.Year) * 12) + currentTime.Month - pastDate.Month;
+            int monthDifference = (currentTime.Year - lastCommit.Year) * 12 + currentTime.Month - lastCommit.Month;
 
-            return monthDifference > 1 ? $"{monthDifference}     months ago" : "1     month ago";
+            return monthDifference > 1 ? $"{monthDifference} months ago" : "1 month ago";
         }
 
         string timeElapsed = days == 1 ? "day" : "days";
