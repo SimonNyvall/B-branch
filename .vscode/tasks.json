@@ -25,7 +25,6 @@
             "label": "build-and-test",
             "dependsOn": [
                 "build",
-                "run-unit-tests"
             ],
             "dependsOrder": "sequence",
             "type": "shell",

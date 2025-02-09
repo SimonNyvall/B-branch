@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-and-test",
-            "program": "${workspaceFolder}/src/CLI/bin/Debug/net8.0/CLI",
+            "program": "${workspaceFolder}/src/CLI/bin/Debug/net9.0/CLI",
             "args": ["--no-pager"],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
