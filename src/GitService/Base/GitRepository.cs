@@ -77,6 +77,11 @@ public class GitRepository : IGitRepository
             string dirName = commitHash[..2];
             commitHash = commitHash[2..];
 
+            if (!Directory.Exists(Path.Combine(_gitPath, "objects", dirName)))
+            {
+                throw new DirectoryNotFoundException();
+            }
+
             DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
 
             return lastWriteTimeOfCommit;
