@@ -4,18 +4,22 @@ updates:
     directory: "/tests/IntegrationTests"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
 
   - package-ecosystem: "nuget"
     directory: "/tests/UnitTests"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
 
   security-update:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "dev"

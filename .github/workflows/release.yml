@@ -1,0 +1,35 @@
+﻿name: Manual Build and Upload Artifacts
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [win-x64, linux-x64, osx-arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0'
+
+      - name: Build for ${{ matrix.os }}
+        run: |
+          cd src/CLI
+          dotnet publish -r ${{ matrix.os }} -c Release
+
+      - name: Zip output
+        run: |
+          cd src/CLI/bin/Release/net9.0/${{ matrix.os }}
+          zip -r ../../../../${{ matrix.os }}.zip .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: src/CLI/bin/Release/${{ matrix.os }}.zip
