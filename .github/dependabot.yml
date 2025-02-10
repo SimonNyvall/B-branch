@@ -18,7 +18,7 @@ updates:
       interval: "weekly"
     target-branch: "dev"
 
-  security-update:
+  - package-ecosystem: "security-update"
     directory: "/"
     schedule:
       interval: "daily"
