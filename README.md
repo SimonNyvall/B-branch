@@ -1,6 +1,6 @@
-<p align="center"><img src="./images/git-logo.png" alt="logo" width="200px"/></p>
+<p align="center"><img src="./images/git-logo.png" alt="logo" width="150px"/></p>
 <h1 align="center">B-branch</h1>
-<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch management</h3>
+<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch management :wrench:</h3>
 
 <div align="center">
   <hr/>
