@@ -1,13 +1,18 @@
-<p align="center"><img src="./images/git-logo.png" alt="logo" width="150px"/></p>
+<p align="center"><img src="./images/git-logo.png" alt="logo" width="128px"/></p>
 <h1 align="center">B-branch</h1>
-<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch management :wrench:</h3>
+<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch overview :wrench:</h3>
+<p align="center"><strong>Download for</strong> macOS (<a href="https://github.com/SimonNyvall/B-branch/releases">Apple Silicon</a>) · Linux (<a href="https://github.com/SimonNyvall/B-branch/releases">x64</a>) · Windows (<a href="https://github.com/SimonNyvall/B-branch/releases">x64</a>)</p>
 
 <div align="center">
   <hr/>
- <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat-square&logo=google%20tasks&logoColor=white&label=test%2Fbuild&color=blue" alt=".NET">&nbsp;&nbsp;
- <img src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat-square" alt="github stars"/>&nbsp;&nbsp;
- <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat-square&logo=Github&color=blue" alt="download count">
+ <img src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/dotnet.yml?style=flat&logoColor=white&label=test%2Fbuild&color=green" alt=".NET">&nbsp;&nbsp;
+ <img src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat&color=yellow" alt="github stars"/>&nbsp;&nbsp;
+ <img src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat&logo=Github&color=blue" alt="download count">&nbsp;&nbsp
+ <img src="https://img.shields.io/badge/GitButler-%23B9F4F2?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMzkiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAzOSAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI1LjIxNDUgMTIuMTk5N0wyLjg3MTA3IDEuMzg5MTJDMS41NDI5NSAwLjc0NjUzMiAwIDEuNzE0MDYgMCAzLjE4OTQ3VjI0LjgxMDVDMCAyNi4yODU5IDEuNTQyOTUgMjcuMjUzNSAyLjg3MTA3IDI2LjYxMDlMMjUuMjE0NSAxNS44MDAzQzI2LjcxOTcgMTUuMDcyMSAyNi43MTk3IDEyLjkyNzkgMjUuMjE0NSAxMi4xOTk3WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEzLjc4NTUgMTIuMTk5N0wzNi4xMjg5IDEuMzg5MTJDMzcuNDU3MSAwLjc0NjUzMiAzOSAxLjcxNDA2IDM5IDMuMTg5NDdWMjQuODEwNUMzOSAyNi4yODU5IDM3LjQ1NzEgMjcuMjUzNSAzNi4xMjg5IDI2LjYxMDlMMTMuNzg1NSAxNS44MDAzQzEyLjI4MDMgMTUuMDcyMSAxMi4yODAzIDEyLjkyNzkgMTMuNzg1NSAxMi4xOTk3WiIgZmlsbD0idXJsKCNwYWludDBfcmFkaWFsXzMxMF8xMjkpIi8%2BCjxkZWZzPgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50MF9yYWRpYWxfMzEwXzEyOSIgY3g9IjAiIGN5PSIwIiByPSIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSgxNi41NzAxIDE0KSBzY2FsZSgxOS44NjQxIDE5LjgzODMpIj4KPHN0b3Agb2Zmc2V0PSIwLjMwMTA1NiIgc3RvcC1vcGFjaXR5PSIwIi8%2BCjxzdG9wIG9mZnNldD0iMSIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8L2RlZnM%2BCjwvc3ZnPgo%3D" alt="gitbutler"/>
 </div>
+
+<details>
+<summary>Table of content</summary>
 
 - [Premise](#premise-rocket)
   - [Features](#features)
@@ -20,6 +25,8 @@
 - [Acknowledgments](#acknowledgments-mega)
 - [License](#license-book)
 - [FQAs](#fqas)
+
+</details>
 
 ## Premise :rocket:
 
