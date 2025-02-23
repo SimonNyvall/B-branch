@@ -9,6 +9,11 @@ public static class PrintFormater
         CultureInfo culture = CultureInfo.InvariantCulture;
         DateTimeFormatInfo dateTimeFormat = culture.DateTimeFormat;
 
+        if (lastCommit.Year <= 1601)
+        {
+            return "--";
+        }
+
         int days = (currentTime - lastCommit).Days;
 
         if (days == 0)
