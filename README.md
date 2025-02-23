@@ -168,3 +168,7 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 
 - **Q**: What is a common use case for B-branch?
   - **A**: A common use case I use is to check how many commits I am behind or ahead of the upstream main branch. To see if I need to pull or merge the changes. This can be done by running `git bb -t "origin/main"`.
+
+- **Q**: Why does B-branch not show the date of the last commit sometimes?
+  - **A**: This can happen if the branch has no commits or if the branch has no objects in the repository. A solution to this is to apply [git maintenance](https://git-scm.com/docs/git-maintenance) to the repository, to clean up and optimize the repository objects.
+  
