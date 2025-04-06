@@ -84,6 +84,11 @@ public class GitRepository : IGitRepository
 
             DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
 
+            if (lastWriteTimeOfCommit.Year <= 1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
+            {
+                throw new InvalidDataException();
+            }
+
             return lastWriteTimeOfCommit;
         }
         catch

@@ -4,18 +4,48 @@ updates:
     directory: "/tests/IntegrationTests"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "integration-tests"
+      - "x-unit"
 
   - package-ecosystem: "nuget"
     directory: "/tests/UnitTests"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "unit-tests"
+      - "x-unit"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-
-  security-update:
-    directory: "/"
+    target-branch: "dev"
+    labels:
+      - "github-actions"
+        
+  - package-ecosystem: "nuget"
+    directory: "/src/CLI"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "cli"
+        
+  - package-ecosystem: "nuget"
+    directory: "/src/GitService"
+    schedule:
+      interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "GitService"
+        
+  - package-ecosystem: "nuget"
+    directory: "/src/Shared"
+    schedule:
+      interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "Shared"

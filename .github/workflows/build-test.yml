@@ -1,10 +1,10 @@
-name: .NET
+name: Build and test B-branch.
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "dev"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "dev"]
 
 jobs:
   build:
@@ -13,23 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
-      - name: Restore dependencies
+      - name: Restore dotnet dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Build Solution
         run: dotnet build --no-restore
 
-      - name: Unit-Test
+      - name: Run Unit-Test
         working-directory: ./tests/UnitTests/
         run: dotnet test --no-build --verbosity detailed
 
-      - name: Build Docker image
+      - name: Build Docker Integration-Test Image
         run: docker build -t integration-tests .
 
-      - name: Run Docker Integration Tests
+      - name: Run Docker Integration-Tests Container
         run: docker run --rm integration-tests

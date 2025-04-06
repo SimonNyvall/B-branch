@@ -83,4 +83,15 @@ public class PrintFormaterTests
 
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void GetTimePrefix_ShouldReturnDashes_WithLargeYearDifference()
+    {
+        DateTime dateTime = _currentTime.AddYears(-1600);
+        string expected = "--";
+        
+        string actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
+        
+        Assert.Equal(expected, actual);
+    }
 }
