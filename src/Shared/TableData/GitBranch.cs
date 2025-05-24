@@ -46,9 +46,9 @@ public class GitBranch
 
     public GitBranch SetLastCommit(DateTime lastCommit)
     {
-        if (lastCommit == DateTime.MinValue)
+        if (lastCommit > DateTime.Now)
         {
-            throw new ArgumentException("Last commit should not be empty");
+            throw new ArgumentException("Last commit date cannot be in the future");
         }
 
         LastCommit = lastCommit;
@@ -68,7 +68,7 @@ public class GitBranch
         return new GitBranch(
             new AheadBehind { Ahead = 0, Behind = 0 },
             new Branch { Name = "branchName", IsWorkingBranch = false },
-            DateTime.MaxValue,
+            DateTime.MinValue,
             string.Empty
         );
     }
