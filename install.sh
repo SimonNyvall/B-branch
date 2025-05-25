@@ -6,7 +6,7 @@ BIN_DIR_UNIX="/usr/local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
-VERSION="1.1.1"
+VERSION="1.1.2"
 FINAL_BINARY=""
 
 # Helper function to detect OS
