@@ -3,7 +3,7 @@ namespace Bbranch.CLI.Arguments;
 using FlagSystem;
 using FlagSystem.Flags;
 
-public class Parse
+public sealed class Parse
 {
     private static FlagCollection _flags = [];
 

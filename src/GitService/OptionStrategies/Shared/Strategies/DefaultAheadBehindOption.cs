@@ -3,7 +3,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
-public class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
+public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

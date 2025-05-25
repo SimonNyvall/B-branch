@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Bbranch.GitService.Base;
 
-public class GitRepository : IGitRepository
+public sealed class GitRepository : IGitRepository
 {
     private static GitRepository? _instance;
 

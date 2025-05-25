@@ -2,7 +2,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
 
-public class NoContainsOption(string pattern) : IOption
+public sealed class NoContainsOption(string pattern) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

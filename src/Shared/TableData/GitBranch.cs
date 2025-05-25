@@ -1,6 +1,6 @@
 namespace Bbranch.Shared.TableData;
 
-public class GitBranch
+public sealed class GitBranch
 {
     public Branch Branch { get; private set; }
     public AheadBehind AheadBehind { get; private set; }
@@ -67,7 +67,7 @@ public class GitBranch
     {
         return new GitBranch(
             new AheadBehind { Ahead = 0, Behind = 0 },
-            new Branch { Name = "branchName", IsWorkingBranch = false },
+            new Branch("branchName", false),
             DateTime.MinValue,
             string.Empty
         );

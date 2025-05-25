@@ -1,8 +1,8 @@
 namespace Bbranch.CLI.Options;
 
-public class HelpOption
+public static class HelpOption
 {
-    private static readonly string _helpMessage = """
+    private static readonly string HelpMessage = """
     usage: git bb [<options>] [<additional arguments>]
 
     Generic options:
@@ -26,7 +26,7 @@ public class HelpOption
 
     public static void Execute()
     {
-        Console.WriteLine(_helpMessage);
+        Console.WriteLine(HelpMessage);
         Environment.Exit(0);
     }
 }

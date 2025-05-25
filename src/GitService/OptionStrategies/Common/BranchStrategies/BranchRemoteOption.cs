@@ -3,7 +3,7 @@ using Bbranch.GitService.Base;
 
 namespace Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 
-public class BranchRemoteOptions(IGitRepository gitBase) : IOption
+public sealed class BranchRemoteOptions(IGitRepository gitBase) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

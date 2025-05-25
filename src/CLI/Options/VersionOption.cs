@@ -1,6 +1,6 @@
 namespace Bbranch.CLI.Options;
 
-public class VersionOption
+public static class VersionOption
 {
     public static void Execute()
     {

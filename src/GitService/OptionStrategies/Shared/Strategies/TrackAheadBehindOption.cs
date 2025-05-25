@@ -3,7 +3,7 @@ using Bbranch.GitService.Base;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
-public class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName) : IOption
+public sealed class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName) : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

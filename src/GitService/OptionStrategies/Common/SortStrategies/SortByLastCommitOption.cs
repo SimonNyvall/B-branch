@@ -3,7 +3,7 @@ using Bbranch.Shared.TableData;
 namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
 // This is the default sort option
-public class SortByLastCommitOptions : IOption
+public sealed class SortByLastCommitOptions : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

@@ -2,7 +2,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
-internal class Pager
+internal static class Pager
 {
     public static int ScrollPosition { get => _scrollPosition; set => _scrollPosition = value; }
     public static bool IsAtBottom { get; set; } = false;

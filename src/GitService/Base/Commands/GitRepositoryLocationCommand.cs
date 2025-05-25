@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal class GitRepositoryLocationCommand : AbstractCommand<string>
+internal sealed class GitRepositoryLocationCommand : AbstractCommand<string>
 {
     public override string CommandArgument => "rev-parse --git-dir";
 

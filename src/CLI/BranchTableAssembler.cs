@@ -12,7 +12,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI;
 
-public class BranchTableAssembler
+public static class BranchTableAssembler
 {
     private static readonly IGitRepository _gitBase = GitRepository.GetInstance();
 

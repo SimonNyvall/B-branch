@@ -3,7 +3,7 @@ using Bbranch.GitService.Base;
 
 namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
-public class DescriptionOption : IOption
+public sealed class DescriptionOption : IOption
 {
     public List<GitBranch> Execute(List<GitBranch> branches)
     {

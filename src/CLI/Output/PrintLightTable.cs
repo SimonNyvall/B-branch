@@ -2,7 +2,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
-public class PrintLightTable
+public static class PrintLightTable
 {
     public static int ScrollPosition { get => Pager.ScrollPosition; set => Pager.ScrollPosition = value; }
     private static int ConsoleHeight => Console.WindowHeight - 1;
