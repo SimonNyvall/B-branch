@@ -241,8 +241,17 @@ public sealed class GitRepository : IGitRepository
 
     private List<GitBranch> GetMergedBranchList(List<GitBranch> headBranches, List<GitBranch> refBranches)
     {
-        var mergedBranches = refBranches.Where(x => headBranches.Any(y => y.Branch.Name != x.Branch.Name));
-        headBranches.AddRange(mergedBranches);
+        var branchNames = new HashSet<string>(headBranches.Select(b => b.Branch.Name));
+
+        foreach (var branch in refBranches)
+        {
+            if (!branchNames.Contains(branch.Branch.Name))
+            {
+                headBranches.Add(branch);
+                branchNames.Add(branch.Branch.Name);
+            }
+        }
+
         return headBranches;
     }
 
