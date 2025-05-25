@@ -2,7 +2,7 @@ namespace Bbranch.Shared.TableData;
 
 public sealed class GitBranch
 {
-    public Branch Branch { get; private set; }
+    public Branch Branch { get; private set; } = null!;
     public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
     public string? Description { get; private set; }
