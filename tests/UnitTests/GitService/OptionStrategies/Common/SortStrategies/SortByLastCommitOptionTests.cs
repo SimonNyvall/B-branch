@@ -6,7 +6,7 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public class SortByLastCommitOptionTests()
 {
     [Fact]
-    public void SortByLastCommitOption_ShouldReturnSortedBranches()
+    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var currentDateTime = DateTime.Now;
 
@@ -27,7 +27,7 @@ public class SortByLastCommitOptionTests()
     }
 
     [Fact]
-    public void SortByLastCommitOption_ShouldReturnSortedBranches_WhenBranchesAreAlreadySorted()
+    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var currentDateTime = DateTime.Now;
 

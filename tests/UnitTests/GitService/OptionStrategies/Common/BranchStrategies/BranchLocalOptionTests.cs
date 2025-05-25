@@ -1,26 +1,23 @@
 using Bbranch.GitService.Base;
 using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 using Bbranch.Shared.TableData;
-using NSubstitute;
 
 namespace Bbranch.Tests.GitService.Common.BranchStrategies;
 
-public class BranchLocalOptionTests
+public sealed class BranchLocalOptionTests
 {
     [Fact]
-    public void Execute_ShouldReturnLocalBranches()
+    public void Given_BranchLocalOptions_When_ExecuteRun_Then_Return_LocalBranches()
     {
-        var mockGitBase = Substitute.For<IGitRepository>();
-
         var localBranches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", isWorkingBranch: true)),
             GitBranch.Default().SetBranch(new Branch("feature/branch", isWorkingBranch: true))
         };
+        
+        IGitRepository gitBase = new GitRepositoryMock(localBranches);
 
-        mockGitBase.GetLocalBranchNames().Returns(localBranches);
-
-        var branchLocalOptions = new BranchLocalOptions(mockGitBase);
+        var branchLocalOptions = new BranchLocalOptions(gitBase);
 
         List<GitBranch> result = branchLocalOptions.Execute([]);
 
@@ -28,18 +25,32 @@ public class BranchLocalOptionTests
     }
 
     [Fact]
-    public void Execute_ShouldReturnLocalBranches_WithEmptyList()
+    public void Given_BranchLocalOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoLocalBranches()
     {
-        var mockGitBase = Substitute.For<IGitRepository>();
-
         var localBranches = new List<GitBranch>();
 
-        mockGitBase.GetLocalBranchNames().Returns(localBranches);
-
-        var branchLocalOptions = new BranchLocalOptions(mockGitBase);
+        IGitRepository gitBase = new GitRepositoryMock(localBranches);
+        
+        var branchLocalOptions = new BranchLocalOptions(gitBase);
 
         List<GitBranch> result = branchLocalOptions.Execute([]);
 
         Assert.Empty(result);
+    }
+
+    private sealed class GitRepositoryMock(List<GitBranch> returnValue) : IGitRepository
+    {
+        public List<GitBranch> GetLocalBranchNames()
+        {
+            return returnValue;
+        }
+        
+        public string GetWorkingBranch() => throw new NotImplementedException();
+        public List<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
+        public List<GitBranch> GetBranchDescription(List<GitBranch> branches) => throw new NotImplementedException();
+        public AheadBehind GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
+        public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
+        public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
+        public bool DoesBranchExist(string branchName) => throw new NotImplementedException();
     }
 }

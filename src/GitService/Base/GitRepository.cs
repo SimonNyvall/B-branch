@@ -279,7 +279,7 @@ public sealed class GitRepository : IGitRepository
                 continue;
             }
 
-            Branch branch = new() { Name = branchName.Replace($"{prefix}/", ""), IsWorkingBranch = false };
+            Branch branch = new(branchName.Replace($"{prefix}/", ""), false);
             
             branches.Add(GitBranch.Default().SetBranch(branch));
         }
@@ -298,7 +298,7 @@ public sealed class GitRepository : IGitRepository
             var relativePath = Path.GetRelativePath(path, file);
             var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
-            Branch branch = new() { Name = branchName, IsWorkingBranch = false };
+            Branch branch = new(branchName, false);
 
             branches.Add(GitBranch.Default().SetBranch(branch));
         }

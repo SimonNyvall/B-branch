@@ -7,7 +7,7 @@ namespace Bbranch.Tests.CLI.Arguments;
 public class ParseArgumentsTests
 {
     [Fact]
-    public void ParseArguments_ShouldReturnVersionFlag_WithOnlyVersionArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_VersionFlag_WithOnlyVersionArgument()
     {
         string[] args = ["--version"];
 
@@ -20,7 +20,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnContainsFlag_WithContainsArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_ContainsFlag_WithContainsArgument()
     {
         string[] args = ["--contains", "test"];
 
@@ -33,7 +33,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnNoContainsFlag_WithNoContainsArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_NoContainsFlag_WithNoContainsArgument()
     {
         string[] args = ["--no-contains", "test"];
 
@@ -46,7 +46,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgument()
     {
         string[] args = ["--invalid"];
 
@@ -58,7 +58,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithDuplicateArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithDuplicateArgument()
     {
         string[] args = ["--contains", "test", "--contains", "test"];
 
@@ -70,7 +70,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlag()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlag()
     {
         string[] args = ["--contains", "--invalid"];
 
@@ -82,7 +82,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShort()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShort()
     {
         string[] args = ["-c", "--invalid"];
 
@@ -94,7 +94,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShortAndValue()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShortAndValue()
     {
         string[] args = ["-c", "test", "--invalid"];
 
@@ -106,7 +106,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShortAndValueShort()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShortAndValueShort()
     {
         string[] args = ["-c", "test", "-i"];
 
@@ -118,7 +118,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShortAndValueShortAndValue()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShortAndValueShortAndValue()
     {
         string[] args = ["-c", "test", "-i", "test"];
 
@@ -130,7 +130,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShortAndValueShortAndValueShort()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShortAndValueShortAndValueShort()
     {
         string[] args = ["-c", "test", "-i", "test", "-t"];
 
@@ -142,7 +142,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArguments_ShouldReturnError_WithInvalidArgumentAfterFlagShortAndValueShortAndValueShortAndValue()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithInvalidArgumentAfterFlagShortAndValueShortAndValueShortAndValue()
     {
         string[] args = ["-c", "test", "-i", "test", "-t", "test"];
 
@@ -154,7 +154,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnHelpFlag_WithOnlyHelpArgument()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_HelpFlag_WithOnlyHelpArgument()
     {
         string[] args = ["--help"];
 
@@ -167,7 +167,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnquietFlagAndAllFlag_WithquietAndAllConcatenatedArguments()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_QuietFlagAndAllFlag_WithQuietAndAllConcatenatedArguments()
     {
         string[] args = ["-qa"];
 
@@ -182,7 +182,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnquietFlagAndAllFlagAndSortFlag_WithquietAndAllAndSortConcatenatedArguments()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_QuietFlagAndAllFlagAndSortFlag_WithQuietAndAllAndSortConcatenatedArguments()
     {
         string[] args = ["-qa", "--sort", "name"];
 
@@ -198,7 +198,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnError_WithConcatFlagAndInvalidDashCount()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithConcatFlagAndInvalidDashCount()
     {
         string[] args = ["--qa"];
 
@@ -210,7 +210,7 @@ public class ParseArgumentsTests
     }
 
     [Fact]
-    public void ParseArgument_ShouldReturnError_WithDuplicatedConcatFlag()
+    public void Given_Parse_When_ParseArgumentsRun_Then_Return_Error_WithDuplicatedConcatFlag()
     {
         string[] args = ["-qaq"];
 

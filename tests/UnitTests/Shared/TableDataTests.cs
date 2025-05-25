@@ -2,20 +2,20 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.Shared;
 
-public class TableDataTests
+public sealed class TableDataTests
 {
     [Fact]
-    public void GitBranch_ShouldSetAheadBehind_WithValidAheadBehind()
+    public void Given_ValidAheadBehind_When_SetAheadBehindRun_Then_Set_AheadBehind()
     {
         AheadBehind aheadBehind = new(1, 2);
 
-        GitBranch gitBranch = GitBranch.Default().SetAheadBehind(aheadBehind);
+        var gitBranch = GitBranch.Default().SetAheadBehind(aheadBehind);
         
         Assert.Equal(aheadBehind, gitBranch.AheadBehind);
     }
 
     [Fact]
-    public void GitBranch_ShouldThrowException_WithNegativeAheadBehind()
+    public void Given_InvalidAheadBehind_When_SetAheadBehindRun_Then_Throw_ArgumentException()
     {
         AheadBehind aheadBehind = new(-1, 2);
 
@@ -23,7 +23,7 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldSetBranch_WithValidBranch()
+    public void Given_ValidBranch_When_SetBranchRun_Then_Set_Branch()
     {
         Branch branch = new("main", isWorkingBranch: true);
 
@@ -33,7 +33,7 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldThrowException_WithNameIsNull()
+    public void Given_InvalidBranch_When_SetBranchRun_Then_Throw_ArgumentException()
     {
         Branch branch = new(string.Empty, isWorkingBranch: true);
 
@@ -41,9 +41,9 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldSetDescription_WithValidDescription()
+    public void Given_Description_When_SetDescriptionRun_Then_Set_Description()
     {
-        string description = "This is a description";
+        var description = "This is a description";
 
         GitBranch gitBranch = GitBranch.Default().SetDescription(description);
 
@@ -51,7 +51,7 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldSetLastCommit_WithValidLastCommit()
+    public void Given_ValidLastCommitDate_When_SetLastCommitRun_Then_Set_LastCommit()
     {
         DateTime lastCommit = DateTime.Now;
 
@@ -61,7 +61,7 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldThrowException_WithDateTimeMaxValue()
+    public void Given_InvalidLastCommitDate_When_SetLastCommitRun_Then_Throw_ArgumentException()
     {
         DateTime lastCommit = DateTime.MaxValue;
 

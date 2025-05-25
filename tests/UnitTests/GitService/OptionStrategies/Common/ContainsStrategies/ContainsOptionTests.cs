@@ -3,10 +3,10 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 
-public class ContainsOptionTests
+public sealed class ContainsOptionTests
 {
     [Fact]
-    public void Execute_WhenBranchNameContainsPattern_ReturnsBranch()
+    public void Given_ContainsOption_When_ExecuteRun_Then_Return_Branch_IfNameContainsPattern()
     {
         var branches = new List<GitBranch>
         {
@@ -24,7 +24,7 @@ public class ContainsOptionTests
     }
 
     [Fact]
-    public void Execute_WhenBranchNameContainsPattern_ReturnsAllBranches()
+    public void Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfNamesContainPattern()
     {
         var branches = new List<GitBranch>
         {

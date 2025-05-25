@@ -3,10 +3,10 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.OptionStrategies;
 
-public class OptionStrategyTests
+public sealed class OptionStrategyTests
 {
     [Fact]
-    public void Execute_WithNoStrategies_ReturnsOriginalBranches()
+    public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_OriginalBranches()
     {
         var originalBranches = new List<GitBranch> 
         { 
@@ -22,7 +22,7 @@ public class OptionStrategyTests
     }
 
     [Fact]
-    public void Execute_WithSingleStrategy_ModifiesBranchesAccordingly()
+    public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_ModifiedBranches()
     {
         var originalBranches = new List<GitBranch> 
         {
@@ -43,7 +43,7 @@ public class OptionStrategyTests
     }
 
     [Fact]
-    public void AddStrategyOption_AddsNewStrategy()
+    public void Given_CompositeOptionStrategy_When_AddStrategyOptionRun_Then_Set_NewStrategy()
     {
         var strategy = new CompositeOptionStrategy([]);
         var mockStrategy = new MockOption([]);
@@ -54,7 +54,7 @@ public class OptionStrategyTests
         Assert.NotNull(result);
     }
 
-    private class MockOption : IOption
+    private sealed class MockOption : IOption
     {
         private readonly List<GitBranch> _branchesToReturn;
 

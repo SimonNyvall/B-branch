@@ -3,10 +3,10 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 
-public class NoContainsOptionTests
+public sealed class NoContainsOptionTests
 {
     [Fact]
-    public void Execute_WhenNoContainsOption_ShouldExcludeMain()
+    public void Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main()
     {
         var branches = new List<GitBranch>
         {
@@ -23,7 +23,7 @@ public class NoContainsOptionTests
     }
 
     [Fact]
-    public void Execute_WhenNoContainsOption_ShouldReturnAllBranches()
+    public void Given_NoContainsOption_When_ExecuteRun_Then_Return_AllBranches()
     {
         var branches = new List<GitBranch>
         {
@@ -39,7 +39,7 @@ public class NoContainsOptionTests
     }
 
     [Fact]
-    public void Execute_WhenNoContainsOption_ShouldExcludeMainForAllBranches()
+    public void Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main_ForAllBranches()
     {
         var branches = new List<GitBranch>
         {

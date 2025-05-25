@@ -3,10 +3,10 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.SortStrategies;
 
-public class SortByNameOptionTests
+public sealed class SortByNameOptionTests
 {
     [Fact]
-    public void SortByNameOption_ShouldReturnSortedBranches()
+    public void Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var branches = new List<GitBranch>
         {
@@ -25,7 +25,7 @@ public class SortByNameOptionTests
     }
 
     [Fact]
-    public void SortByNameOption_ShouldReturnSortedBranches_WhenBranchesAreAlreadySorted()
+    public void Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var branches = new List<GitBranch>
         {
