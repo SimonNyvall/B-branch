@@ -1,4 +1,4 @@
-To run the tests please check out the [Test Documentation](/docs/Tests.md).
+To run the tests please check out the [Test Documentation](../../docs/Tests.md).
 
 > [!NOTE]
 > These tests are not meant to be run on a regular basis, on a local machine.

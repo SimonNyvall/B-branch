@@ -219,30 +219,84 @@ public class GitRepository : IGitRepository
 
     public List<GitBranch> GetLocalBranchNames()
     {
-        string localBranchPath = Path.Combine(_gitPath, "refs", "heads");
-
-        List<GitBranch> updatedBranches = CollectBrancheNames(localBranchPath);
-
-        return updatedBranches;
+        var localBranchPath = Path.Combine("refs", "heads");
+        return FetchBranches(localBranchPath);
     }
 
     public List<GitBranch> GetRemoteBranchNames()
     {
-        string remoteBranchPath = Path.Combine(_gitPath, "refs", "remotes");
+        var remoteBranchPath = Path.Combine("refs", "remotes");
+        return FetchBranches(remoteBranchPath);
+    }
 
-        List<GitBranch> updatedBranches = CollectBrancheNames(remoteBranchPath);
+    private List<GitBranch> FetchBranches(string path)
+    {
+        var updatedBranches = CollectBranchNames(path);
+        
+        path = path.Replace('\\', '/');
+        updatedBranches = GetMergedBranchList(updatedBranches, GetPackedRefsBranches(path));
+        
         return updatedBranches;
     }
 
-    private static List<GitBranch> CollectBrancheNames(string directoryPath)
+    private List<GitBranch> GetMergedBranchList(List<GitBranch> headBranches, List<GitBranch> refBranches)
+    {
+        var mergedBranches = refBranches.Where(x => headBranches.Any(y => y.Branch.Name != x.Branch.Name));
+        headBranches.AddRange(mergedBranches);
+        return headBranches;
+    }
+
+    private List<GitBranch> GetPackedRefsBranches(string prefix)
+    {
+        var packedRefsPath = Path.Combine(_gitPath, "packed-refs");
+
+        if (!File.Exists(packedRefsPath)) return [];
+
+        var branches = new List<GitBranch>();
+        var packedRefsLines = File.ReadAllLines(packedRefsPath);
+
+        foreach (var line in packedRefsLines)
+        {
+            if (line.StartsWith('#') || string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            if (!line.Contains(prefix))
+            {
+                continue;
+            }
+
+            var parts = line.Split(' ');
+            if (parts.Length < 2)
+            {
+                continue;
+            }
+            
+            var branchName = parts[1];
+            if (!branchName.StartsWith(prefix))
+            {
+                continue;
+            }
+
+            Branch branch = new() { Name = branchName.Replace($"{prefix}/", ""), IsWorkingBranch = false };
+            
+            branches.Add(GitBranch.Default().SetBranch(branch));
+        }
+
+        return branches;
+    }
+
+    private List<GitBranch> CollectBranchNames(string directoryPath)
     {
         List<GitBranch> branches = [];
-        var files = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
-
-        foreach (string file in files)
+        var path = Path.Combine(_gitPath, directoryPath);
+        var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+        
+        foreach (var file in files)
         {
-            string relativePath = Path.GetRelativePath(directoryPath, file);
-            string branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+            var relativePath = Path.GetRelativePath(path, file);
+            var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
             Branch branch = new() { Name = branchName, IsWorkingBranch = false };
 

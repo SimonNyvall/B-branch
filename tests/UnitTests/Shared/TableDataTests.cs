@@ -61,9 +61,9 @@ public class TableDataTests
     }
 
     [Fact]
-    public void GitBranch_ShouldThrowException_WithDateTimeMinValue()
+    public void GitBranch_ShouldThrowException_WithDateTimeMaxValue()
     {
-        DateTime lastCommit = DateTime.MinValue;
+        DateTime lastCommit = DateTime.MaxValue;
 
         Assert.Throws<ArgumentException>(() => GitBranch.Default().SetLastCommit(lastCommit));
     }
