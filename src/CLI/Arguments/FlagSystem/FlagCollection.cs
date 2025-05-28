@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace Bbranch.CLI.Arguments.FlagSystem;
 
-public class FlagCollection : IEnumerable<IFlag>
+public sealed class FlagCollection : IEnumerable<IFlag>
 {
     private readonly List<IFlag> _flags = [];
 

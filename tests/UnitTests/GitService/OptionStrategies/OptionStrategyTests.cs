@@ -3,12 +3,12 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.OptionStrategies;
 
-public class OptionStrategyTests
+public sealed class OptionStrategyTests
 {
     [Fact]
-    public void Execute_WithNoStrategies_ReturnsOriginalBranches()
+    public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_OriginalBranches()
     {
-        var originalBranches = new List<GitBranch> 
+        var originalBranches = new HashSet<GitBranch> 
         { 
             GitBranch.Default(),
             GitBranch.Default()
@@ -22,14 +22,14 @@ public class OptionStrategyTests
     }
 
     [Fact]
-    public void Execute_WithSingleStrategy_ModifiesBranchesAccordingly()
+    public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_ModifiedBranches()
     {
-        var originalBranches = new List<GitBranch> 
+        var originalBranches = new HashSet<GitBranch> 
         {
             GitBranch.Default(),
             GitBranch.Default()
         };
-        var modifiedBranches = new List<GitBranch> 
+        var modifiedBranches = new HashSet<GitBranch>
         {
             GitBranch.Default()
         };
@@ -43,7 +43,7 @@ public class OptionStrategyTests
     }
 
     [Fact]
-    public void AddStrategyOption_AddsNewStrategy()
+    public void Given_CompositeOptionStrategy_When_AddStrategyOptionRun_Then_Set_NewStrategy()
     {
         var strategy = new CompositeOptionStrategy([]);
         var mockStrategy = new MockOption([]);
@@ -54,16 +54,16 @@ public class OptionStrategyTests
         Assert.NotNull(result);
     }
 
-    private class MockOption : IOption
+    private sealed class MockOption : IOption
     {
-        private readonly List<GitBranch> _branchesToReturn;
+        private readonly HashSet<GitBranch> _branchesToReturn;
 
-        public MockOption(List<GitBranch> branchesToReturn)
+        public MockOption(HashSet<GitBranch> branchesToReturn)
         {
             _branchesToReturn = branchesToReturn;
         }
 
-        public List<GitBranch> Execute(List<GitBranch> branches)
+        public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
         {
             return _branchesToReturn;
         }

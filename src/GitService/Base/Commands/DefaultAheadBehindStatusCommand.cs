@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal class DefaultAheadBehindStatusCommand(string localBranchName) : AbstractCommand<string>
+internal sealed class DefaultAheadBehindStatusCommand(string localBranchName) : AbstractCommand<string>
 {
     public override string CommandArgument => $"rev-list --left-right --count {localBranchName}...origin/{localBranchName}";
 

@@ -1,10 +1,10 @@
 namespace Bbranch.CLI.Options;
 
-public class VersionOption
+public static class VersionOption
 {
     public static void Execute()
     {
-        Console.WriteLine("v1.1.2");
+        Console.WriteLine("v1.1.3");
         Environment.Exit(0);
     }
 }

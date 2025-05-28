@@ -2,20 +2,19 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
-public class PrintLightTable
+public static class PrintLightTable
 {
     public static int ScrollPosition { get => Pager.ScrollPosition; set => Pager.ScrollPosition = value; }
     private static int ConsoleHeight => Console.WindowHeight - 1;
     private static string? currentSearchTerm;
 
-    public static void Print(List<GitBranch> branches, PageBehaviour pageBehaviour)
+    public static void Print(HashSet<GitBranch> branches, PageBehaviour pageBehaviour)
     {
         if (branches.Count == 0)
         {
             Console.WriteLine("No branches found");
             return;
         }
-
 
         if (pageBehaviour == PageBehaviour.Paginate)
         {
@@ -41,11 +40,11 @@ public class PrintLightTable
         }
     }
 
-    private static void StartPaging(List<GitBranch> branches)
+    private static void StartPaging(HashSet<GitBranch> branches)
     {
         Console.Clear();
 
-        PrintBranches(branches.Take(ConsoleHeight).ToList(), currentSearchTerm, PageBehaviour.Paginate);
+        PrintBranches([.. branches.Take(ConsoleHeight)], currentSearchTerm, PageBehaviour.Paginate);
 
         Pager.HeaderHight = 0;
 
@@ -57,7 +56,7 @@ public class PrintLightTable
         );
     }
 
-    private static void SpawnWindowListenerThread(List<GitBranch> branches)
+    private static void SpawnWindowListenerThread(HashSet<GitBranch> branches)
     {
         int currentPosition = ScrollPosition;
         Thread resizeListenerThread = new(() => ListenForWindowResize(branches))
@@ -68,7 +67,7 @@ public class PrintLightTable
         resizeListenerThread.Start();
     }
 
-    private static void ListenForWindowResize(List<GitBranch> branches)
+    private static void ListenForWindowResize(HashSet<GitBranch> branches)
     {
         int previousHeight = Console.WindowHeight;
 
@@ -109,7 +108,7 @@ public class PrintLightTable
         }
     }
 
-    private static void UpdateView(List<GitBranch> branches, string? searchTerm)
+    private static void UpdateView(HashSet<GitBranch> branches, string? searchTerm)
     {
         if (searchTerm is null)
         {
@@ -117,10 +116,10 @@ public class PrintLightTable
         }
 
         Console.SetCursorPosition(0, 0);
-        PrintBranches(branches.Skip(ScrollPosition).Take(ConsoleHeight).ToList(), currentSearchTerm, PageBehaviour.Paginate);
+        PrintBranches([.. branches.Skip(ScrollPosition).Take(ConsoleHeight)], currentSearchTerm, PageBehaviour.Paginate);
     }
 
-    private static void HandleSearch(List<GitBranch> branches)
+    private static void HandleSearch(HashSet<GitBranch> branches)
     {
         Pager.PrintSearchPrompt();
 
@@ -132,11 +131,25 @@ public class PrintLightTable
 
         Console.SetCursorPosition(0, 0);
 
-        int firstMatchIndex = branches.FindIndex(x => x.Branch.Name.Contains(currentSearchTerm, StringComparison.OrdinalIgnoreCase));
+        GitBranch? firstMatch = branches.FirstOrDefault(x => x.Branch.Name.Contains(currentSearchTerm, StringComparison.OrdinalIgnoreCase));
 
-        if (firstMatchIndex == -1) return;
+        if (firstMatch == null) return;
 
         Pager.IsAtBottom = false;
+
+        int firstMatchIndex = 0;
+        int currentIndex = 0;
+
+        foreach (var branch in branches)
+        {
+            if (branch.Equals(firstMatch))
+            {
+                firstMatchIndex = currentIndex;
+                break;
+            }
+            currentIndex++;
+        }
+
         if (branches.Count > ConsoleHeight)
         {
             if (Math.Abs(ConsoleHeight - branches.Count - 1) > firstMatchIndex)
@@ -146,27 +159,22 @@ public class PrintLightTable
             else
             {
                 ScrollPosition = Math.Abs(branches.Count - ConsoleHeight);
-                firstMatchIndex = ScrollPosition;
             }
         }
         else
         {
             ScrollPosition = 0;
-            firstMatchIndex = ScrollPosition;
         }
 
-        for (int i = ScrollPosition; i < firstMatchIndex + ConsoleHeight; i++)
+        currentIndex = 0;
+
+        foreach (var branch in branches)
         {
-            if (branches.Count >= ConsoleHeight)
+            if (currentIndex >= ScrollPosition && currentIndex < ScrollPosition + ConsoleHeight)
             {
-                PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.Paginate);
-                continue;
+                PrintBranchRowWithHighlight(branch, currentSearchTerm, PageBehaviour.Paginate);
             }
-            
-            if (i < branches.Count)
-            {
-                PrintBranchRowWithHighlight(branches[i], currentSearchTerm, PageBehaviour.None);
-            }
+            currentIndex++;
         }
 
         if (branches.Count > ConsoleHeight) return;
@@ -179,10 +187,10 @@ public class PrintLightTable
             Console.Write('~');
         }
     }
-
+    
     private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
 
-    private static void PrintBranches(List<GitBranch> branches, string? search, PageBehaviour pageBehaviour)
+    private static void PrintBranches(HashSet<GitBranch> branches, string? search, PageBehaviour pageBehaviour)
     {
         foreach (var branch in branches)
         {

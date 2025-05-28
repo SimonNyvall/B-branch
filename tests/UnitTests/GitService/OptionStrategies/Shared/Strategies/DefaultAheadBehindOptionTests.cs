@@ -1,17 +1,17 @@
 using Bbranch.GitService.Base;
 using Bbranch.GitService.OptionStrategies.Shared.Strategies;
 using Bbranch.Shared.TableData;
-using NSubstitute;
 
 namespace Bbranch.Tests.GitService.Shared.Strategies;
 
-public class DefaultAheadBehindOptionTests
+public sealed class DefaultAheadBehindOptionTests
 {
+    private readonly IGitRepository _gitBase = new GitRepositoryMock();
+    
     [Fact]
-    public void Execute_WithNoBranches_ReturnsEmptyList()
+    public void Given_DefaultAheadBehindOption_When_ExecuteRun_Then_Return_EmptyList()
     {
-        var gitBase = Substitute.For<IGitRepository>();
-        var strategy = new DefaultAheadBehindOption(gitBase);
+        var strategy = new DefaultAheadBehindOption(_gitBase);
 
         var result = strategy.Execute([]);
 
@@ -19,14 +19,11 @@ public class DefaultAheadBehindOptionTests
     }
 
     [Fact]
-    public void Execute_WithBranches_ReturnsEcpectedValue()
+    public void Given_DefaultAheadBehindOption_When_ExecuteRun_Then_Return_ExpectedValue()
     {
-        var gitBase = Substitute.For<IGitRepository>();
-        gitBase.GetLocalAheadBehind("").ReturnsForAnyArgs(new AheadBehind(1, 1));
+        var strategy = new DefaultAheadBehindOption(_gitBase);
 
-        var strategy = new DefaultAheadBehindOption(gitBase);
-
-        var branches = new List<GitBranch> 
+        var branches = new HashSet<GitBranch> 
         {
             GitBranch.Default(),
             GitBranch.Default()
@@ -35,5 +32,20 @@ public class DefaultAheadBehindOptionTests
         var result = strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
+    }
+
+    private sealed class GitRepositoryMock : IGitRepository
+    {
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName)
+        {
+            return Task.FromResult(new AheadBehind(1, 1));
+        }
+        
+        public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+        public string GetWorkingBranch() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
+        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
+        public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
     }
 }

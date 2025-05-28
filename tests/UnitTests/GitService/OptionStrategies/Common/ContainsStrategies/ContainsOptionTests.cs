@@ -3,16 +3,16 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 
-public class ContainsOptionTests
+public sealed class ContainsOptionTests
 {
     [Fact]
-    public void Execute_WhenBranchNameContainsPattern_ReturnsBranch()
+    public void Given_ContainsOption_When_ExecuteRun_Then_Return_Branch_IfNameContainsPattern()
     {
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", isWorkingBranch: true)),
-            GitBranch.Default().SetBranch(new Branch("feature", isWorkingBranch: true)),
-            GitBranch.Default().SetBranch(new Branch("branch", isWorkingBranch: true)),    
+            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new Branch("branch", true)),    
         };
 
         var option = new ContainsOption("branch");
@@ -20,17 +20,17 @@ public class ContainsOptionTests
         var result = option.Execute(branches);
 
         Assert.Single(result);
-        Assert.Equal("branch", result[0].Branch.Name);
+        Assert.Equal("branch", result.First().Branch.Name);
     }
 
     [Fact]
-    public void Execute_WhenBranchNameContainsPattern_ReturnsAllBranches()
+    public void Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfNamesContainPattern()
     {
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", isWorkingBranch: true)),
-            GitBranch.Default().SetBranch(new Branch("feature", isWorkingBranch: true)),
-            GitBranch.Default().SetBranch(new Branch("branch", isWorkingBranch: true)),    
+            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new Branch("branch", true)),    
         };
 
         var option = new ContainsOption("main;feature;branch");

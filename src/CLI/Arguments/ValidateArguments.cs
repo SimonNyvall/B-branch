@@ -3,7 +3,7 @@ namespace Bbranch.CLI.Arguments;
 using FlagSystem;
 using FlagSystem.Flags;
 
-public class Validate
+public sealed class Validate
 {
     public static bool ValidateOptions(FlagCollection options)
     {

@@ -3,23 +3,24 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common;
 
-public class WorkingBranchOption(IGitRepository gitBase) : IOption
+public sealed class WorkingBranchOption(IGitRepository gitBase) : IOption
 {
-    public List<GitBranch> Execute(List<GitBranch> branches)
+    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         string workingBranchName = gitBase.GetWorkingBranch();
+        
+        if (string.IsNullOrEmpty(workingBranchName))
+        {
+            return branches;
+        }
 
-        return UpdateWorkingBranches(branches, workingBranchName);
-    }
+        var branchToUpdate = branches.FirstOrDefault(branch => 
+            branch.Branch.Name.Equals(workingBranchName, StringComparison.Ordinal));
 
-    private static List<GitBranch> UpdateWorkingBranches(List<GitBranch> branches, string workingBranchName)
-    {
-        int index = branches.FindIndex(branch => branch.Branch.Name.Equals(workingBranchName));
+        if (branchToUpdate is null) return branches;
 
-        if (index == -1) return branches; 
-
-        Branch workingBranch = new(name: branches[index].Branch.Name, isWorkingBranch: true);
-        branches[index].SetBranch(workingBranch);
+        var workingBranch = branchToUpdate.Branch with { IsWorkingBranch = true };
+        branchToUpdate.SetBranch(workingBranch);
 
         return branches;
     }

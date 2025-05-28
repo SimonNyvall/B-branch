@@ -4,14 +4,20 @@ using Bbranch.Shared.TableData;
 using Bbranch.GitService.Base.Commands;
 using System.IO.Compression;
 using System.Text;
+using System.Buffers;
 
 namespace Bbranch.GitService.Base;
 
-public class GitRepository : IGitRepository
+public sealed class GitRepository : IGitRepository
 {
+    private const int MaxCacheSize = 1000;
+    private const int DecompressionBufferSize = 4096;
     private static GitRepository? _instance;
 
     private string _gitPath = string.Empty;
+
+    private readonly Dictionary<string, string> _commitParentCache = new(MaxCacheSize);
+    private readonly Dictionary<string, byte[]> _objectCache = new(MaxCacheSize);
 
     private GitRepository()
     {
@@ -35,17 +41,33 @@ public class GitRepository : IGitRepository
 
     private void SetGitPath()
     {
-        GitRepositoryCheckCommand isGitRepositoryCommand = new();
+        var currentDirectory = Directory.GetCurrentDirectory();
 
-        if (!isGitRepositoryCommand.Execute())
+        while (!string.IsNullOrEmpty(currentDirectory))
         {
-            Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
-            Environment.Exit(1);
+            var gitPath = Path.Combine(currentDirectory, ".git");
+
+            if (Directory.Exists(gitPath))
+            {
+                _gitPath = gitPath;
+                return;
+            }
+
+            if (File.Exists(gitPath))
+            {
+                var gitFileContent = File.ReadAllText(gitPath).Trim();
+                if (gitFileContent.StartsWith("gitdir:"))
+                {
+                    _gitPath = Path.GetFullPath(gitFileContent[7..].Trim(), currentDirectory);
+                    return;
+                }
+            }
+
+            currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
         }
 
-        GitRepositoryLocationCommand gitDirectoryLocationCommand = new();
-
-        _gitPath = gitDirectoryLocationCommand.Execute();
+        Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
+        Environment.Exit(1);
     }
 
     public string GetWorkingBranch()
@@ -73,7 +95,7 @@ public class GitRepository : IGitRepository
         try
         {
             string commitHash = File.ReadAllText(Path.Combine(_gitPath, "refs", "heads", branchName)).Trim();
-            
+
             string dirName = commitHash[..2];
             commitHash = commitHash[2..];
 
@@ -82,9 +104,11 @@ public class GitRepository : IGitRepository
                 throw new DirectoryNotFoundException();
             }
 
-            DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
+            DateTime lastWriteTimeOfCommit =
+                File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
 
-            if (lastWriteTimeOfCommit.Year <= 1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
+            if (lastWriteTimeOfCommit.Year <=
+                1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
             {
                 throw new InvalidDataException();
             }
@@ -99,25 +123,25 @@ public class GitRepository : IGitRepository
         }
     }
 
-    public AheadBehind GetLocalAheadBehind(string localBranchName)
+    public async Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
     {
         try
         {
-            string localBranchRefPath = Path.Combine(_gitPath, "refs", "heads", localBranchName);
-            string remoteBranchRefPath = Path.Combine(_gitPath, "refs", "remotes", "origin", localBranchName);
+            return await GetAheadBehind(localBranchName, remoteBranchName);
+        }
+        catch (Exception)
+        {
+            TrackAheadBehindStatusCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
 
-            if (!File.Exists(remoteBranchRefPath))
-            {
-                return new(0, 0);
-            }
+            return ParseAheadBehind(trackAheadBehindCommand.Execute());
+        }
+    }
 
-            string localCommitHash = File.ReadAllText(localBranchRefPath).Trim();
-            string remoteCommitHash = File.ReadAllText(remoteBranchRefPath).Trim();
-
-            int ahead = CountCommitsBetween(localCommitHash, remoteCommitHash, direction: "ahead");
-            int behind = CountCommitsBetween(localCommitHash, remoteCommitHash, direction: "behind");
-
-            return new(ahead, behind);
+    public async Task<AheadBehind> GetLocalAheadBehind(string localBranchName)
+    {
+        try
+        {
+            return await GetAheadBehind(localBranchName);
         }
         catch
         {
@@ -127,7 +151,42 @@ public class GitRepository : IGitRepository
         }
     }
 
-    private int CountCommitsBetween(string startHash, string endHash, string direction)
+    private async Task<AheadBehind> GetAheadBehind(string localBranchName, string? remoteBranchName = null)
+    {
+        string localBranchRefPath = Path.Combine(_gitPath, "refs", "heads", localBranchName);
+        string remoteBranchRefPath = remoteBranchName is null
+            ? Path.Combine(_gitPath, "refs", "remotes", "origin", localBranchName)
+            : Path.Combine(_gitPath, "refs", "remotes", "origin", remoteBranchName);
+
+        if (!File.Exists(remoteBranchRefPath))
+        {
+            return new(0, 0);
+        }
+
+        // Read files as byte arrays
+        byte[] localContentBytes = await File.ReadAllBytesAsync(localBranchRefPath);
+        byte[] remoteContentBytes = await File.ReadAllBytesAsync(remoteBranchRefPath);
+
+        // Compare contents
+        bool areEqual = localContentBytes.AsSpan().SequenceEqual(remoteContentBytes);
+        if (areEqual)
+        {
+            return new(0, 0);
+        }
+
+        // Convert to strings for commit traversal
+        string localCommitHash = Encoding.UTF8.GetString(localContentBytes).Trim();
+        string remoteCommitHash = Encoding.UTF8.GetString(remoteContentBytes).Trim();
+
+        // Run ahead/behind counts in parallel
+        var aheadTask = CountCommitsBetween(localCommitHash, remoteCommitHash, "ahead");
+        var behindTask = CountCommitsBetween(localCommitHash, remoteCommitHash, "behind");
+        
+        await Task.WhenAll(aheadTask, behindTask);
+        return new(aheadTask.Result, behindTask.Result);
+    }
+
+    private async Task<int> CountCommitsBetween(string startHash, string endHash, string direction)
     {
         int count = 0;
         string currentHash = direction == "ahead" ? startHash : endHash;
@@ -145,7 +204,7 @@ public class GitRepository : IGitRepository
                 return 0;
             }
 
-            string parentCommitHash = GetParentCommitHash(commitObjectPath);
+            string parentCommitHash = await GetParentCommitHash(commitObjectPath);
 
             count++;
             currentHash = parentCommitHash;
@@ -159,42 +218,81 @@ public class GitRepository : IGitRepository
         return count;
     }
 
-    private static string GetParentCommitHash(string commitObjectPath)
+    private async Task<string> GetParentCommitHash(string commitObjectPath)
     {
-        byte[] compressedData = File.ReadAllBytes(commitObjectPath);
-        string deCompressedData = DecompressGitObject(compressedData);
+        // Extract the hash from the path and convert to string immediately
+        string hash = Path.GetFileName(commitObjectPath);
 
-        using StringReader reader = new(deCompressedData);
-
-        string line;
-        while ((line = reader.ReadLine()!) is not null)
+        // Check cache using string
+        if (_commitParentCache.TryGetValue(hash, out var cachedParent))
         {
-            if (line.StartsWith("parent "))
-            {
-                return line[7..].Trim();
-            }
+            return cachedParent;
         }
 
-        return string.Empty;
+        byte[] compressedData;
+        if (_objectCache.TryGetValue(hash, out var cached))
+        {
+            compressedData = cached;
+        }
+        else
+        {
+            compressedData = await File.ReadAllBytesAsync(commitObjectPath);
+            _objectCache[hash] = compressedData;
+        }
+
+        // Get decompressed data as byte array
+        byte[] decompressedBytes = await DecompressGitObject(compressedData);
+        ReadOnlySpan<byte> decompressedSpan = decompressedBytes;
+        ReadOnlySpan<byte> parentPrefix = "parent "u8;
+
+        int pos = 0;
+        while (pos < decompressedSpan.Length)
+        {
+            // Find next line
+            int lineEnd = decompressedSpan[pos..].IndexOf((byte)'\n');
+            if (lineEnd == -1) break;
+            
+            var line = decompressedSpan.Slice(pos, lineEnd);
+            
+            if (line.StartsWith(parentPrefix))
+            {
+                // Extract parent hash without allocations
+                var hashBytes = line.Slice(parentPrefix.Length).TrimStart((byte)' ');
+                var parentHash = Encoding.UTF8.GetString(hashBytes); // Convert the 40-char hash
+                _commitParentCache[hash] = parentHash;
+                return parentHash;
+            }
+            
+            pos += lineEnd + 1;
+        }
+
+        var emptyResult = string.Empty;
+        _commitParentCache[hash] = emptyResult;
+        return emptyResult;
     }
 
-    private static string DecompressGitObject(byte[] compressedData)
+    private static async Task<byte[]> DecompressGitObject(ReadOnlyMemory<byte> compressedData)
     {
-        using MemoryStream compressedStream = new(compressedData);
-        using ZLibStream zLibStream = new(compressedStream, CompressionMode.Decompress);
-        using MemoryStream deCompressedStream = new();
-
-        zLibStream.CopyTo(deCompressedStream);
-        byte[] deCompressedData = deCompressedStream.ToArray();
-
-        return Encoding.UTF8.GetString(deCompressedData);
-    }
-
-    public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
-    {
-        TrackAheadBehindStatusCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
-
-        return ParseAheadBehind(trackAheadBehindCommand.Execute());
+        using var compressedStream = new MemoryStream(compressedData.ToArray());
+        await using var zLibStream = new ZLibStream(compressedStream, CompressionMode.Decompress);
+        
+        // Use ArrayPool for better memory usage
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(DecompressionBufferSize);
+        try
+        {
+            using var decompressedStream = new MemoryStream();
+            int read;
+            while ((read = await zLibStream.ReadAsync(buffer)) > 0)
+            {
+                await decompressedStream.WriteAsync(buffer.AsMemory(0, read));
+            }
+            
+            return decompressedStream.ToArray();
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     private static AheadBehind ParseAheadBehind(string result)
@@ -204,12 +302,12 @@ public class GitRepository : IGitRepository
             return new AheadBehind(0, 0);
         }
 
-        Match match = Regex.Match(result, @"(\d+)\s+(\d+)", RegexOptions.Compiled);
+        var match = Regex.Match(result, @"(\d+)\s+(\d+)", RegexOptions.Compiled);
 
         if (match.Success)
         {
-            int ahead = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-            int behind = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            var ahead = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+            var behind = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
 
             return new AheadBehind(ahead, behind);
         }
@@ -217,42 +315,51 @@ public class GitRepository : IGitRepository
         return new AheadBehind(0, 0);
     }
 
-    public List<GitBranch> GetLocalBranchNames()
+    public HashSet<GitBranch> GetLocalBranchNames()
     {
         var localBranchPath = Path.Combine("refs", "heads");
         return FetchBranches(localBranchPath);
     }
 
-    public List<GitBranch> GetRemoteBranchNames()
+    public HashSet<GitBranch> GetRemoteBranchNames()
     {
         var remoteBranchPath = Path.Combine("refs", "remotes");
         return FetchBranches(remoteBranchPath);
     }
 
-    private List<GitBranch> FetchBranches(string path)
+    private HashSet<GitBranch> FetchBranches(string path)
     {
         var updatedBranches = CollectBranchNames(path);
-        
+
         path = path.Replace('\\', '/');
         updatedBranches = GetMergedBranchList(updatedBranches, GetPackedRefsBranches(path));
-        
+
         return updatedBranches;
     }
 
-    private List<GitBranch> GetMergedBranchList(List<GitBranch> headBranches, List<GitBranch> refBranches)
+    private HashSet<GitBranch> GetMergedBranchList(HashSet<GitBranch> headBranches, HashSet<GitBranch> refBranches)
     {
-        var mergedBranches = refBranches.Where(x => headBranches.Any(y => y.Branch.Name != x.Branch.Name));
-        headBranches.AddRange(mergedBranches);
+        var branchNames = new HashSet<string>(headBranches.Select(b => b.Branch.Name));
+
+        foreach (var branch in refBranches)
+        {
+            if (!branchNames.Contains(branch.Branch.Name))
+            {
+                headBranches.Add(branch);
+                branchNames.Add(branch.Branch.Name);
+            }
+        }
+
         return headBranches;
     }
 
-    private List<GitBranch> GetPackedRefsBranches(string prefix)
+    private HashSet<GitBranch> GetPackedRefsBranches(string prefix)
     {
         var packedRefsPath = Path.Combine(_gitPath, "packed-refs");
 
         if (!File.Exists(packedRefsPath)) return [];
 
-        var branches = new List<GitBranch>();
+        var branches = new HashSet<GitBranch>();
         var packedRefsLines = File.ReadAllLines(packedRefsPath);
 
         foreach (var line in packedRefsLines)
@@ -272,33 +379,33 @@ public class GitRepository : IGitRepository
             {
                 continue;
             }
-            
+
             var branchName = parts[1];
             if (!branchName.StartsWith(prefix))
             {
                 continue;
             }
 
-            Branch branch = new() { Name = branchName.Replace($"{prefix}/", ""), IsWorkingBranch = false };
-            
+            Branch branch = new(branchName.Replace($"{prefix}/", ""), false);
+
             branches.Add(GitBranch.Default().SetBranch(branch));
         }
 
         return branches;
     }
 
-    private List<GitBranch> CollectBranchNames(string directoryPath)
+    private HashSet<GitBranch> CollectBranchNames(string directoryPath)
     {
-        List<GitBranch> branches = [];
+        HashSet<GitBranch> branches = [];
         var path = Path.Combine(_gitPath, directoryPath);
         var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-        
+
         foreach (var file in files)
         {
             var relativePath = Path.GetRelativePath(path, file);
             var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
-            Branch branch = new() { Name = branchName, IsWorkingBranch = false };
+            Branch branch = new(branchName, false);
 
             branches.Add(GitBranch.Default().SetBranch(branch));
         }
@@ -306,7 +413,7 @@ public class GitRepository : IGitRepository
         return branches;
     }
 
-    public List<GitBranch> GetBranchDescription(List<GitBranch> branches)
+    public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches)
     {
         const string descriptionFileName = "EDIT_DESCRIPTION";
 
@@ -331,12 +438,5 @@ public class GitRepository : IGitRepository
         }
 
         return branches;
-    }
-
-    public bool DoesBranchExist(string branchName)
-    {
-        BranchExistenceCheckCommand doesBranchExistCommand = new(branchName);
-
-        return doesBranchExistCommand.Execute();
     }
 }

@@ -6,11 +6,11 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public class SortByLastCommitOptionTests()
 {
     [Fact]
-    public void SortByLastCommitOption_ShouldReturnSortedBranches()
+    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var currentDateTime = DateTime.Now;
 
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
             GitBranch.Default().SetLastCommit(currentDateTime),
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-1)),
@@ -21,17 +21,17 @@ public class SortByLastCommitOptionTests()
 
         var result = sortByLastCommitOption.Execute(branches);
 
-        Assert.Equal(currentDateTime.AddDays(-2), result[2].LastCommit);
-        Assert.Equal(currentDateTime.AddDays(-1), result[1].LastCommit);
-        Assert.Equal(currentDateTime, result[0].LastCommit);
+        Assert.Equal(currentDateTime.AddDays(-2), result.ElementAt(2).LastCommit);
+        Assert.Equal(currentDateTime.AddDays(-1), result.ElementAt(1).LastCommit);
+        Assert.Equal(currentDateTime, result.First().LastCommit);
     }
 
     [Fact]
-    public void SortByLastCommitOption_ShouldReturnSortedBranches_WhenBranchesAreAlreadySorted()
+    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var currentDateTime = DateTime.Now;
 
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-2)),
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-1)),
@@ -42,8 +42,8 @@ public class SortByLastCommitOptionTests()
 
         var result = sortByLastCommitOption.Execute(branches);
 
-        Assert.Equal(currentDateTime.AddDays(-2), result[2].LastCommit);
-        Assert.Equal(currentDateTime.AddDays(-1), result[1].LastCommit);
-        Assert.Equal(currentDateTime, result[0].LastCommit);
+        Assert.Equal(currentDateTime.AddDays(-2), result.ElementAt(2).LastCommit);
+        Assert.Equal(currentDateTime.AddDays(-1), result.ElementAt(1).LastCommit);
+        Assert.Equal(currentDateTime, result.First().LastCommit);
     }
 }

@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal class GitRepositoryCheckCommand : AbstractCommand<bool>
+internal sealed class GitRepositoryCheckCommand : AbstractCommand<bool>
 {
     public override string CommandArgument => "rev-parse --is-inside-work-tree";
 

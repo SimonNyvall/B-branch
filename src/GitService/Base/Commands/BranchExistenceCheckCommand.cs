@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal class BranchExistenceCheckCommand(string branchName) : AbstractCommand<bool>
+internal sealed class BranchExistenceCheckCommand(string branchName) : AbstractCommand<bool>
 {
     public override string CommandArgument => $"rev-parse --verify {branchName}";
 
