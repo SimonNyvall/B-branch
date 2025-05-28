@@ -24,11 +24,11 @@ public static class BranchTableAssembler
         CompositeOptionStrategy optionStrategies = new(options);
 
         AddLastCommitOption(optionStrategies);
-        AddContainsOptions(arguments, optionStrategies);
-        AddTrackOption(arguments, optionStrategies);
         AddWorkingBranchOption(optionStrategies);
-        AddSortOption(arguments, optionStrategies);
         AddDescriptionOption(optionStrategies);
+        AddTrackOption(arguments, optionStrategies);
+        AddSortOption(arguments, optionStrategies);
+        AddContainsOptions(arguments, optionStrategies);
         AddPrintTopOption(arguments, optionStrategies);
 
         return optionStrategies.Execute([]);

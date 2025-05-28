@@ -9,22 +9,22 @@ public class BranchAllOptionTests
     [Fact]
     public void Given_BranchAllOptions_When_ExecuteRun_Then_Return_AllBranches()
     {
-        var localBranches = new List<GitBranch>
+        var localBranches = new HashSet<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", isWorkingBranch: true)),
-            GitBranch.Default().SetBranch(new Branch("feature/branch", isWorkingBranch: false))
+            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new Branch("feature/branch", false))
         };
 
-        var remoteBranches = new List<GitBranch>
+        var remoteBranches = new HashSet<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("origin/main", isWorkingBranch: false)),
-            GitBranch.Default().SetBranch(new Branch("origin/feature/branch", isWorkingBranch: false))
+            GitBranch.Default().SetBranch(new Branch("origin/main", false)),
+            GitBranch.Default().SetBranch(new Branch("origin/feature/branch", false))
         };
 
         IGitRepository mockGitBase = new GitRepositoryMock(localBranches, remoteBranches);
         var branchAllOptions = new BranchAllOptions(mockGitBase);
 
-        List<GitBranch> result = branchAllOptions.Execute(new List<GitBranch>());
+        HashSet<GitBranch> result = branchAllOptions.Execute([]);
 
         Assert.Equal(4, result.Count);
     }
@@ -35,28 +35,27 @@ public class BranchAllOptionTests
         IGitRepository gitBase = new GitRepositoryMock([], []);
         var branchAllOptions = new BranchAllOptions(gitBase);
 
-        List<GitBranch> result = branchAllOptions.Execute([]);
+        HashSet<GitBranch> result = branchAllOptions.Execute([]);
 
         Assert.Empty(result);
     }
 
-    private sealed class GitRepositoryMock(List<GitBranch> localValue, List<GitBranch> remoteValue) : IGitRepository
+    private sealed class GitRepositoryMock(HashSet<GitBranch> localValue, HashSet<GitBranch> remoteValue) : IGitRepository
     {
-        public List<GitBranch> GetLocalBranchNames()
+        public HashSet<GitBranch> GetLocalBranchNames()
         {
             return localValue;
         }
 
-        public List<GitBranch> GetRemoteBranchNames()
+        public HashSet<GitBranch> GetRemoteBranchNames()
         {
             return remoteValue;
         }
         
         public string GetWorkingBranch() => throw new NotImplementedException();
-        public List<GitBranch> GetBranchDescription(List<GitBranch> branches) => throw new NotImplementedException();
-        public AheadBehind GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
-        public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
+        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
         public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
-        public bool DoesBranchExist(string branchName) => throw new NotImplementedException();
     }
 }

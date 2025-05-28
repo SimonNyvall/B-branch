@@ -1,6 +1,5 @@
 using Bbranch.Shared.TableData;
 using Bbranch.GitService.Base;
-using MethodTimer;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 

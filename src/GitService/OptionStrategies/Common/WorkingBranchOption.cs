@@ -8,17 +8,18 @@ public sealed class WorkingBranchOption(IGitRepository gitBase) : IOption
     public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         string workingBranchName = gitBase.GetWorkingBranch();
+        
+        if (string.IsNullOrEmpty(workingBranchName))
+        {
+            return branches;
+        }
 
-        return UpdateWorkingBranches(branches, workingBranchName);
-    }
+        var branchToUpdate = branches.FirstOrDefault(branch => 
+            branch.Branch.Name.Equals(workingBranchName, StringComparison.Ordinal));
 
-    private static HashSet<GitBranch> UpdateWorkingBranches(HashSet<GitBranch> branches, string workingBranchName)
-    {
-        var branchToUpdate = branches.FirstOrDefault(branch => branch.Branch.Name.Equals(workingBranchName));
+        if (branchToUpdate is null) return branches;
 
-        if (branchToUpdate == null) return branches;
-
-        Branch workingBranch = new(name: branchToUpdate.Branch.Name, isWorkingBranch: true);
+        var workingBranch = branchToUpdate.Branch with { IsWorkingBranch = true };
         branchToUpdate.SetBranch(workingBranch);
 
         return branches;

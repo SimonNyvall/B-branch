@@ -23,7 +23,7 @@ public sealed class SetLastCommitTests
     {
         var strategy = new SetLastCommitOptions(_gitBase);
 
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
             GitBranch.Default(),
             GitBranch.Default()
@@ -42,11 +42,10 @@ public sealed class SetLastCommitTests
         }
         
         public string GetWorkingBranch() => throw new NotImplementedException();
-        public List<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
-        public List<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
-        public List<GitBranch> GetBranchDescription(List<GitBranch> branches) => throw new NotImplementedException();
-        public AheadBehind GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
-        public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
-        public bool DoesBranchExist(string branchName) => throw new NotImplementedException();
+        public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
+        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
     }
 }

@@ -27,8 +27,4 @@
     <ProjectReference Include="../../src/Shared/Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UnitTests\" />
-  </ItemGroup>
-
 </Project>

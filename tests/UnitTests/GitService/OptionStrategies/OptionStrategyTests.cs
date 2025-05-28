@@ -8,7 +8,7 @@ public sealed class OptionStrategyTests
     [Fact]
     public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_OriginalBranches()
     {
-        var originalBranches = new List<GitBranch> 
+        var originalBranches = new HashSet<GitBranch> 
         { 
             GitBranch.Default(),
             GitBranch.Default()
@@ -24,12 +24,12 @@ public sealed class OptionStrategyTests
     [Fact]
     public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_ModifiedBranches()
     {
-        var originalBranches = new List<GitBranch> 
+        var originalBranches = new HashSet<GitBranch> 
         {
             GitBranch.Default(),
             GitBranch.Default()
         };
-        var modifiedBranches = new List<GitBranch> 
+        var modifiedBranches = new HashSet<GitBranch>
         {
             GitBranch.Default()
         };
@@ -56,14 +56,14 @@ public sealed class OptionStrategyTests
 
     private sealed class MockOption : IOption
     {
-        private readonly List<GitBranch> _branchesToReturn;
+        private readonly HashSet<GitBranch> _branchesToReturn;
 
-        public MockOption(List<GitBranch> branchesToReturn)
+        public MockOption(HashSet<GitBranch> branchesToReturn)
         {
             _branchesToReturn = branchesToReturn;
         }
 
-        public List<GitBranch> Execute(List<GitBranch> branches)
+        public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
         {
             return _branchesToReturn;
         }

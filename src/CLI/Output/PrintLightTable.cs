@@ -16,7 +16,6 @@ public static class PrintLightTable
             return;
         }
 
-
         if (pageBehaviour == PageBehaviour.Paginate)
         {
             StartPaging(branches);

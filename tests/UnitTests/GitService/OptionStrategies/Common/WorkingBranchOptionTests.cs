@@ -11,28 +11,28 @@ public sealed class WorkingBranchOptionTests
     [Fact]
     public void Given_WorkingBranchOption_When_ExecuteRun_Then_Return_WorkingBranch()
     {
-        var branches = new List<GitBranch>
+        var branches = new HashSet<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", isWorkingBranch: false)),
-            GitBranch.Default().SetBranch(new Branch("feature", isWorkingBranch: false))
+            GitBranch.Default().SetBranch(new Branch("main", false)),
+            GitBranch.Default().SetBranch(new Branch("feature", false))
         };
 
         var workingBranchOption = new WorkingBranchOption(_gitBase);
 
-        List<GitBranch> result = workingBranchOption.Execute(branches);
+        HashSet<GitBranch> result = workingBranchOption.Execute(branches);
 
-        Assert.True(result[0].Branch.IsWorkingBranch);
-        Assert.False(result[1].Branch.IsWorkingBranch);
+        Assert.True(result.First().Branch.IsWorkingBranch);
+        Assert.False(result.ElementAt(1).Branch.IsWorkingBranch);
     }
 
     [Fact]
     public void Given_WorkingBranchOption_When_ExecuteRun_Then_Return_EmptyList()
     {
-        List<GitBranch> branches = [];
+        HashSet<GitBranch> branches = [];
 
         var workingBranchOption = new WorkingBranchOption(_gitBase);
 
-        List<GitBranch> result = workingBranchOption.Execute(branches);
+        HashSet<GitBranch> result = workingBranchOption.Execute(branches);
 
         Assert.Empty(result);
     }
@@ -44,12 +44,11 @@ public sealed class WorkingBranchOptionTests
             return "main";
         }
 
-        public List<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
-        public List<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
-        public List<GitBranch> GetBranchDescription(List<GitBranch> branches) => throw new NotImplementedException();
-        public AheadBehind GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
-        public AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
+        public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
+        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
         public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
-        public bool DoesBranchExist(string branchName) => throw new NotImplementedException();
     }
 }

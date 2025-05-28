@@ -66,7 +66,7 @@ public sealed class GitBranch
     public static GitBranch Default()
     {
         return new GitBranch(
-            new AheadBehind { Ahead = 0, Behind = 0 },
+            new AheadBehind(0, 0),
             new Branch("branchName", false),
             DateTime.MinValue,
             string.Empty

@@ -4,10 +4,6 @@
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MethodTimer.Fody" Version="3.2.3" PrivateAssets="All" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>Git_Service</RootNamespace>
