@@ -6,17 +6,15 @@ public interface IGitRepository
 {
     string GetWorkingBranch();
 
-    List<GitBranch> GetLocalBranchNames();
+    HashSet<GitBranch> GetLocalBranchNames();
 
-    List<GitBranch> GetRemoteBranchNames();
+    HashSet<GitBranch> GetRemoteBranchNames();
 
-    List<GitBranch> GetBranchDescription(List<GitBranch> branches);
+    HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches);
 
-    AheadBehind GetLocalAheadBehind(string localBranchName);
+    Task<AheadBehind> GetLocalAheadBehind(string localBranchName);
 
-    AheadBehind GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
+    Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
 
     DateTime GetLastCommitDate(string branchName);
-
-    bool DoesBranchExist(string branchName);
 }

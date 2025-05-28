@@ -9,14 +9,16 @@ using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 using Bbranch.GitService.OptionStrategies.Shared.Setters;
 using Bbranch.GitService.OptionStrategies.Shared.Strategies;
 using Bbranch.Shared.TableData;
+using MethodTimer;
 
 namespace Bbranch.CLI;
 
 public static class BranchTableAssembler
 {
-    private static readonly IGitRepository _gitBase = GitRepository.GetInstance();
+    private static readonly IGitRepository GitBase = GitRepository.GetInstance();
 
-    internal static List<GitBranch> AssembleBranchTable(FlagCollection arguments)
+    [Time]
+    internal static HashSet<GitBranch> AssembleBranchTable(FlagCollection arguments)
     {
         List<IOption> options = CreateOptions(arguments);
         CompositeOptionStrategy optionStrategies = new(options);
@@ -38,7 +40,7 @@ public static class BranchTableAssembler
 
         if (arguments.Contains<AllFlag>())
         {
-            IOption allOption = new BranchAllOptions(_gitBase);
+            IOption allOption = new BranchAllOptions(GitBase);
             options.Add(allOption);
 
             return options;
@@ -46,13 +48,13 @@ public static class BranchTableAssembler
 
         if (arguments.Contains<RemoteFlag>())
         {
-            IOption remoteOption = new BranchRemoteOptions(_gitBase);
+            IOption remoteOption = new BranchRemoteOptions(GitBase);
             options.Add(remoteOption);
 
             return options;
         }
 
-        IOption localOption = new BranchLocalOptions(_gitBase);
+        IOption localOption = new BranchLocalOptions(GitBase);
         options.Add(localOption);
 
         return options;
@@ -60,7 +62,7 @@ public static class BranchTableAssembler
 
     private static void AddLastCommitOption(CompositeOptionStrategy optionStrategies)
     {
-        IOption lastCommitOption = new SetLastCommitOptions(_gitBase);
+        IOption lastCommitOption = new SetLastCommitOptions(GitBase);
         optionStrategies.AddStrategyOption(lastCommitOption);
     }
 
@@ -70,7 +72,7 @@ public static class BranchTableAssembler
         {
             var value = containsFlag.Value!.ToString();
 
-            IOption containsOption = new ContainsOption(value.ToString());
+            IOption containsOption = new ContainsOption(value);
             optionStrategies.AddStrategyOption(containsOption);
 
             return;
@@ -91,19 +93,19 @@ public static class BranchTableAssembler
         {
             var value = trackFlag.Value.ToString();
 
-            IOption trackOption = new TrackAheadBehindOption(_gitBase, value.ToString());
+            IOption trackOption = new TrackAheadBehindOption(GitBase, value);
             optionStrategies.AddStrategyOption(trackOption);
 
             return;
         }
 
-        IOption aheadBehindOption = new DefaultAheadBehindOption(_gitBase);
+        IOption aheadBehindOption = new DefaultAheadBehindOption(GitBase);
         optionStrategies.AddStrategyOption(aheadBehindOption);
     }
 
     private static void AddWorkingBranchOption(CompositeOptionStrategy optionStrategies)
     {
-        IOption workingBranchOption = new WorkingBranchOption(_gitBase);
+        IOption workingBranchOption = new WorkingBranchOption(GitBase);
         optionStrategies.AddStrategyOption(workingBranchOption);
     }
 
@@ -115,22 +117,22 @@ public static class BranchTableAssembler
         {
             var value = sortFlag.Value.ToString();
 
-            if (value.ToString() == "name")
+            if (value == "name")
             {
                 sortOption = new SortByNameOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
-            else if (value.ToString() == "ahead")
+            else if (value == "ahead")
             {
                 sortOption = new SortByAheadOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
-            else if (value.ToString() == "behind")
+            else if (value == "behind")
             {
                 sortOption = new SortByBehindOptions();
                 optionStrategies.AddStrategyOption(sortOption);
             }
-            else if (value.ToString() == "date")
+            else if (value == "date")
             {
                 sortOption = new SortByLastCommitOptions();
                 optionStrategies.AddStrategyOption(sortOption);

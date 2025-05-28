@@ -5,21 +5,21 @@ namespace Bbranch.GitService.OptionStrategies.Common;
 
 public sealed class WorkingBranchOption(IGitRepository gitBase) : IOption
 {
-    public List<GitBranch> Execute(List<GitBranch> branches)
+    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         string workingBranchName = gitBase.GetWorkingBranch();
 
         return UpdateWorkingBranches(branches, workingBranchName);
     }
 
-    private static List<GitBranch> UpdateWorkingBranches(List<GitBranch> branches, string workingBranchName)
+    private static HashSet<GitBranch> UpdateWorkingBranches(HashSet<GitBranch> branches, string workingBranchName)
     {
-        int index = branches.FindIndex(branch => branch.Branch.Name.Equals(workingBranchName));
+        var branchToUpdate = branches.FirstOrDefault(branch => branch.Branch.Name.Equals(workingBranchName));
 
-        if (index == -1) return branches; 
+        if (branchToUpdate == null) return branches;
 
-        Branch workingBranch = new(name: branches[index].Branch.Name, isWorkingBranch: true);
-        branches[index].SetBranch(workingBranch);
+        Branch workingBranch = new(name: branchToUpdate.Branch.Name, isWorkingBranch: true);
+        branchToUpdate.SetBranch(workingBranch);
 
         return branches;
     }

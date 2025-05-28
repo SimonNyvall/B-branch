@@ -11,10 +11,10 @@ internal static class Pager
     private static int ConsoleHeight => Console.WindowHeight - 1;
 
     public static void Start(
-        Action<List<GitBranch>> windowResize,
-        Action<List<GitBranch>, string?> updateView,
-        Action<List<GitBranch>> searchHandler,
-        List<GitBranch> branches)
+        Action<HashSet<GitBranch>> windowResize,
+        Action<HashSet<GitBranch>, string?> updateView,
+        Action<HashSet<GitBranch>> searchHandler,
+        HashSet<GitBranch> branches)
     {
         Console.CursorVisible = false;
 

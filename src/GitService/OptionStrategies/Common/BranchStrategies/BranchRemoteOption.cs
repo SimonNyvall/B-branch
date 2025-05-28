@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 
 public sealed class BranchRemoteOptions(IGitRepository gitBase) : IOption
 {
-    public List<GitBranch> Execute(List<GitBranch> branches)
+    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         return gitBase.GetRemoteBranchNames();
     }

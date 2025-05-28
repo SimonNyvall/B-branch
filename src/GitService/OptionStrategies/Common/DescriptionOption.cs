@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
 public sealed class DescriptionOption : IOption
 {
-    public List<GitBranch> Execute(List<GitBranch> branches)
+    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         IGitRepository gitBase = GitRepository.GetInstance();
 
