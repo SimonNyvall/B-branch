@@ -6,8 +6,35 @@ BIN_DIR_UNIX="/usr/local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
-VERSION="1.1.2"
+DEFAULT_VERSION="1.1.3"
+VERSION="${DEFAULT_VERSION}"
 FINAL_BINARY=""
+
+# Parse command line arguments
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --version=*)
+            VERSION="${1#*=}"
+            ;;
+        --version)
+            if [ -n "$2" ] && [ "${2:0:1}" != "-" ]; then
+                VERSION="$2"
+                shift
+            else
+                echo "Error: --version requires a version number" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Unknown parameter: $1" >&2
+            echo "Usage: $0 [--version=X.Y.Z]" >&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+echo "Installing B-branch version ${VERSION}..."
 
 # Helper function to detect OS
 detect_os() {
