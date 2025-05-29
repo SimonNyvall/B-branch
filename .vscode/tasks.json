@@ -30,6 +30,21 @@
             "type": "shell",
             "command": "echo Build and Test Completed",
             "problemMatcher": []
+        },
+        {
+            "label": "aot-test-build",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/CLI/CLI.csproj",
+                "-r",
+                "win-x64",
+                "-c",
+                "Release",
+                "-o",
+                "${workspaceFolder}/aot-test-build",
+            ]
         }
     ]
 }
