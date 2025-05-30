@@ -121,10 +121,22 @@ git bb [<options>] [<additional arguments>]
 
 ---
 
-## Download :computer:
-Download the latest release for free! If you're using **Cygwin**, **Git Bash**, **MSYS2**, **Bash** in linux or **WSL**, you can also use the install script:
+## Installation :computer:
+Install the latest release for free! If you're using **Cygwin**, **Git Bash**, **MSYS2**, **Bash** in linux or **WSL**, you can also use the install script:
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
+```
+
+>[!NOTE]
+> The install script will also update the tool if it is already installed. If you want to install a specific version, you can use the `--version` flag:
+```sh
+curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh -s -- --version <version>
+```
+
+### Uninstall
+If you want to uninstall the tool, you can run the following command:
+```sh
+curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/uninstall.sh | sh
 ```
 
 The install script will download the latest release and **install/update** the tool on your system.
