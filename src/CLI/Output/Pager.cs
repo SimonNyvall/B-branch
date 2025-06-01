@@ -171,7 +171,7 @@ internal static class Pager
 
 public enum PageBehaviour
 {
+    Auto,
     None,
-    Paginate,
-    Auto
+    Paginate
 }

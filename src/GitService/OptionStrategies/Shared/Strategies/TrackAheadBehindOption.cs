@@ -1,5 +1,6 @@
 using Bbranch.Shared.TableData;
 using Bbranch.GitService.Base;
+using Git_Service.Base.Analizers;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
@@ -13,7 +14,9 @@ public sealed class TrackAheadBehindOption(IGitRepository gitBase, string remote
         {
             try
             {
-                var aheadBehind = gitBase.GetRemoteAheadBehind(branch.Branch.Name, remoteBranchName).GetAwaiter().GetResult();
+                var aheadBehindFacade = new AheadBehindFacade(gitBase.GitRepositoryPath);
+
+                var aheadBehind = aheadBehindFacade.GetRemoteAheadBehind(branch.Branch.Name, remoteBranchName).GetAwaiter().GetResult();
                 branch.SetAheadBehind(aheadBehind);
             }
             catch (Exception)

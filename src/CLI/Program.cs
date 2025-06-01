@@ -27,7 +27,7 @@ if (options.Contains<VersionFlag>())
 
 HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
 
-PageBehaviour shouldPage;
+PageBehaviour shouldPage = PageBehaviour.Auto;
 
 if (options.Contains<PagerFlag>())
 {
@@ -36,10 +36,6 @@ if (options.Contains<PagerFlag>())
 else if (options.Contains<NoPagerFlag>())
 {
     shouldPage = PageBehaviour.None;
-}
-else
-{
-    shouldPage = PageBehaviour.Auto;
 }
 
 if (options.Contains<quietFlag>())
