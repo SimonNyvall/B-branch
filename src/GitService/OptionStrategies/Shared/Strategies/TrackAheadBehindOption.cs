@@ -20,26 +20,25 @@ public sealed class TrackAheadBehindOption : IOption
 
     public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
-        var branchGroups = branches.Chunk(BatchSize);
-        var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-
-        foreach (var group in branchGroups)
+        var options = new ParallelOptions
         {
-            Parallel.ForEach(group, options, branch =>
+            MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount * 2, branches.Count)
+        };
+
+        Parallel.ForEach(branches, options, branch =>
+        {
+            try
             {
-                try
-                {
-                    var aheadBehind = _aheadBehindFacade.GetRemoteAheadBehind(branch.Branch.Name, _remoteBranchName)
-                        .GetAwaiter()
-                        .GetResult();
-                    branch.SetAheadBehind(aheadBehind);
-                }
-                catch (Exception)
-                {
-                    branch.SetAheadBehind(new AheadBehind(0, 0));
-                }
-            });
-        }
+                var aheadBehind = _aheadBehindFacade.GetRemoteAheadBehind(branch.Branch.Name, _remoteBranchName)
+                    .GetAwaiter()
+                    .GetResult();
+                branch.SetAheadBehind(aheadBehind);
+            }
+            catch (Exception)
+            {
+                branch.SetAheadBehind(new AheadBehind(0, 0));
+            }
+        });
 
         return branches;
     }
