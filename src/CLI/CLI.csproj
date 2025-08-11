@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="MethodTimer.Fody" Version="3.2.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.8" />
   </ItemGroup>
 
   <PropertyGroup>
