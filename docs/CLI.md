@@ -1,17 +1,17 @@
-# CLI Documentation
+# Cli Documentation
 
 ## Overview
-The CLI project provides a command-line interface for interacting with the application, allowing users to perform various operations on Git repositories through commands. It serves as the main entry point to the system and leverages functionalities from the [GitService](./GitService.md) and [Shared](./Shared.md) components.
+The Cli project provides a command-line interface for interacting with the application, allowing users to perform various operations on Git repositories through commands. It serves as the main entry point to the system and leverages functionalities from the [GitService](./GitService.md) and [Shared](./Shared.md) components.
 
 ## Project Structure
 
-The CLI is composed of several key components:
+The Cli is composed of several key components:
 - **User Input Parsing**: Handles parsing and validation of user arguments.
 - **Branch Assembly**: Manages the construction and sorting of branches.
 - **Output Formatting**: Displays results in a formatted output, with support for pagination.
 
 ### User input parsing
-User input is captured through the `args` array passed to the CLI. These inputs are parsed and converted into typed objects in the `./CLI/Arguments` directory.
+User input is captured through the `args` array passed to the Cli. These inputs are parsed and converted into typed objects in the `./Cli/Arguments` directory.
 
 - **Input Parsing**: The raw string input is parsed and validated. Classes in `Arguments` handle different user commands and options.
 - **Validation**: The parsed arguments are validated to ensure they adhere to expected formats and constraints before further processing.
@@ -48,7 +48,7 @@ private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> opti
 ```
 
 ### Branch assembly
-Once the user input is parsed, the next step is to gather and organize the list of branches. Initially, the CLI creates an empty list of branches containing default or placeholder data. This raw data is then processed and reformatted by the [GitService](./GitService.md), which fetches detailed information about each branch from the Git repository.
+Once the user input is parsed, the next step is to gather and organize the list of branches. Initially, the Cli creates an empty list of branches containing default or placeholder data. This raw data is then processed and reformatted by the [GitService](./GitService.md), which fetches detailed information about each branch from the Git repository.
 
 The CLI is responsible for orchestrating the sequence of operations required to prepare the branch list. For instance, the CLI may apply additional operations such as:
 

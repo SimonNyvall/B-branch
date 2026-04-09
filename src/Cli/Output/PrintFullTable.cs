@@ -1,5 +1,4 @@
 using Bbranch.Shared.TableData;
-using MethodTimer;
 
 namespace Bbranch.CLI.Output;
 

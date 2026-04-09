@@ -27,7 +27,7 @@ updates:
       - "github-actions"
         
   - package-ecosystem: "nuget"
-    directory: "/src/CLI"
+    directory: "/src/Cli"
     schedule:
       interval: "weekly"
     target-branch: "dev"

@@ -9,7 +9,8 @@
                 "build",
                 "${workspaceFolder}/src/CLI/CLI.csproj"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": "build"
         },
         {
             "label": "run-unit-tests",
@@ -19,17 +20,32 @@
                 "test",
                 "${workspaceFolder}/tests/UnitTests/UnitTests.csproj"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": "test"
         },
         {
-            "label": "build-and-test",
+            "label": "docker-build-integration",
+            "type": "process",
+            "command": "docker",
+            "args": ["build", "-t", "b-branch-integration-tests", "."],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "docker-run-integration",
+            "type": "process",
+            "command": "docker",
+            "args": ["run", "--rm", "b-branch-integration-tests"]
+        },
+        {
+            "label": "run-integration-tests",
             "dependsOn": [
-                "build",
+                "docker-build-integration",
+                "docker-run-integration"
             ],
             "dependsOrder": "sequence",
-            "type": "shell",
-            "command": "echo Build and Test Completed",
-            "problemMatcher": []
+            "group": "test"
         },
         {
             "label": "aot-test-build",
@@ -37,14 +53,15 @@
             "command": "dotnet",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/CLI/CLI.csproj",
+                "${workspaceFolder}/src/Cli/Cli.csproj",
                 "-r",
                 "win-x64",
                 "-c",
                 "Release",
                 "-o",
-                "${workspaceFolder}/aot-test-build",
-            ]
+                "${workspaceFolder}/aot-test-build"
+            ],
+            "group": "build"
         }
     ]
 }

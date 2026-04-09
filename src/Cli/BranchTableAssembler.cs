@@ -9,7 +9,6 @@ using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 using Bbranch.GitService.OptionStrategies.Shared.Setters;
 using Bbranch.GitService.OptionStrategies.Shared.Strategies;
 using Bbranch.Shared.TableData;
-using MethodTimer;
 
 namespace Bbranch.CLI;
 
@@ -17,7 +16,6 @@ public static class BranchTableAssembler
 {
     private static readonly IGitRepository GitBase = GitRepository.GetInstance();
 
-    [Time]
     internal static HashSet<GitBranch> AssembleBranchTable(FlagCollection arguments)
     {
         List<IOption> options = CreateOptions(arguments);
