@@ -2,9 +2,9 @@ name: Build and test B-branch.
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "dev"]
+    branches: ["main"]
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore dotnet dependencies
-        run: dotnet restore
+        run: dotnet restore B-branch.slnx
 
       - name: Build Solution
         run: dotnet build --no-restore
