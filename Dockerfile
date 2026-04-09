@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 RUN apt-get update && \
     apt-get install -y git clang gcc zlib1g-dev && \
@@ -23,7 +23,7 @@ RUN git checkout -b test/branch1 && \
     git checkout -b test/branch2 && \
     git checkout -b test/branch3
 
-COPY *.sln ./
+COPY *.slnx ./
 COPY src/ ./src/
 COPY tests/ ./tests/
 
@@ -31,7 +31,7 @@ RUN dotnet restore
 
 RUN dotnet build --no-restore -c Debug
 
-WORKDIR /app/src/CLI
+WORKDIR /app/src/Cli
 RUN dotnet publish -r linux-x64 -c Release -o /app/publish
 
 WORKDIR /app/tests/IntegrationTests

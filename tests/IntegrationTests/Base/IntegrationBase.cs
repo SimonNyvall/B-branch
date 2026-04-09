@@ -7,7 +7,7 @@ namespace Bbranch.IntegrationTests;
 
 public abstract partial class IntegrationBase
 {
-    private static readonly string PublishedArtifactPath = Path.Combine(Directory.GetCurrentDirectory(), "/app/publish/CLI");
+    private static readonly string PublishedArtifactPath = Path.Combine(Directory.GetCurrentDirectory(), "/app/publish/Cli");
 
     protected void WarmUp()
     {

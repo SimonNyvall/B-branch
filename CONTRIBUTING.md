@@ -32,7 +32,7 @@ Prerequisites
 
 - [git](https://git-scm.com/downloads) 2.39.2 or later
 
-- [.NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) SDK
+- [.NET 10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) SDK
 
 - [nerd-fonts](https://www.nerdfonts.com/font-downloads) 2.1.0 or later **(optional)**
 
