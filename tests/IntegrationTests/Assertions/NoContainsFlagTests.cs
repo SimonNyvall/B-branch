@@ -6,7 +6,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoContainsShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-n", "main");
+        using var process = GetBbranchProcess("-n", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -24,7 +24,11 @@ public class NoContainsFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         Assert.Equal(3, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -36,7 +40,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoContainsLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--no-contains", "main");
+        using var process = GetBbranchProcess("--no-contains", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -54,7 +58,11 @@ public class NoContainsFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         Assert.Equal(3, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -66,7 +74,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoContainsShortFlagAndMultiValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-n", "main;test/branch1");
+        using var process = GetBbranchProcess("-n", "main;test/branch1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -84,7 +92,11 @@ public class NoContainsFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         Assert.Equal(2, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -96,7 +108,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoContainsLongFlagAndMultiValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--no-contains", "main;test/branch1");
+        using var process = GetBbranchProcess("--no-contains", "main;test/branch1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -114,7 +126,11 @@ public class NoContainsFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         Assert.Equal(2, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -126,7 +142,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsAndContainsFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--no-contains", "main", "--contains", "main");
+        using var process = GetBbranchProcess("--no-contains", "main", "--contains", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -140,7 +156,7 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsFlagAndNoValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-n");
+        using var process = GetBbranchProcess("-n");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

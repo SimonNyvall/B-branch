@@ -11,10 +11,6 @@ bool foundLessCommand = true;
 if (arguments.Count < 1 || !File.Exists(arguments[0]))
 {
     PrintWarning("Less command does not exist");
-
-    arguments.Remove("--pager");
-    arguments.Add("--no-pager");
-
     foundLessCommand = false;
 }
 

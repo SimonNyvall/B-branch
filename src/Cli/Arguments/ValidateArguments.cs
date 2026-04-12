@@ -18,7 +18,6 @@ public sealed class Validate
             ValidateNoContainsWithNull(options);
             ValidatePrintTopWithNull(options);
             ValidateTrackWithNull(options);
-            ValidatePagerWithNoPager(options);
             ValidateNonValueFlags(options);
 
             return true;
@@ -111,16 +110,6 @@ public sealed class Validate
         if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --track is missing");
     }
 
-    private static void ValidatePagerWithNoPager(FlagCollection options)
-    {
-        if (!(options.Contains<PagerFlag>() || options.Contains<NoPagerFlag>())) return;
-
-        if (options.Contains<PagerFlag>() && options.Contains<NoPagerFlag>())
-        {
-            throw new ArgumentException("fatal: Cannot use both --pager and --no-pager");
-        }
-    }
-
     private static void ValidateNonValueFlags(FlagCollection options)
     {
         if (options.Contains<HelpFlag>(out var helpFlag))
@@ -160,22 +149,6 @@ public sealed class Validate
             if (quietFlag.Value.ToString() != string.Empty)
             {
                 throw new ArgumentException("fatal: Value for --quiet is not allowed");
-            }
-        }
-
-        if (options.Contains<PagerFlag>(out var pagerFlag))
-        {
-            if (pagerFlag.Value.ToString() != string.Empty)
-            {
-                throw new ArgumentException("fatal: Value for --pager is not allowed");
-            }
-        }
-
-        if (options.Contains<NoPagerFlag>(out var noPagerFlag))
-        {
-            if (noPagerFlag.Value.ToString() != string.Empty)
-            {
-                throw new ArgumentException("fatal: Value for --no-pager is not allowed");
             }
         }
     }

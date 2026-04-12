@@ -6,7 +6,7 @@ public class QuietFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-q");
+        using var process = GetBbranchProcess("-q");
        
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -23,7 +23,7 @@ public class QuietFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--quiet");
+        using var process = GetBbranchProcess("--quiet");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -40,7 +40,7 @@ public class QuietFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--quiet", "value");
+        using var process = GetBbranchProcess("--quiet", "value");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

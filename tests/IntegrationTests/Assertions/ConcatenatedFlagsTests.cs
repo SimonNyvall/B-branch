@@ -6,7 +6,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithAllAndQuietFlagsConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qa");
+        using var process = GetBbranchProcess("-qa");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -28,7 +28,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithRemoteAndQuietFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-rq");
+        using var process = GetBbranchProcess("-rq");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -47,7 +47,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithDoubleDashAndQuietAndAllFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("--qa");
+        using var process = GetBbranchProcess("--qa");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -62,7 +62,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithDuplicateFlagsConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qaq");
+        using var process = GetBbranchProcess("-qaq");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -77,7 +77,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithUnkownFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qz");
+        using var process = GetBbranchProcess("-qz");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

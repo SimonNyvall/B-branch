@@ -230,18 +230,6 @@ public class ValidateArgumentTests
     }
 
     [Fact]
-    public void Given_Validate_When_ValidateArgumentsRun_Then_Return_Error_WithPagerAndNoPagerArguments()
-    {
-        FlagCollection options =
-        [
-            IFlag<PagerFlag>.Create(null),
-            IFlag<NoPagerFlag>.Create(null)
-        ];
-
-        Assert.False(Validate.ValidateOptions(options));
-    }
-
-    [Fact]
     public void Given_Validate_When_ValidateArgumentsRun_Then_Return_Error_WithAllAndValueArguments()
     {
         FlagCollection options =
@@ -291,28 +279,6 @@ public class ValidateArgumentTests
         FlagCollection options =
         [
             IFlag<quietFlag>.Create("value")
-        ];
-
-        Assert.False(Validate.ValidateOptions(options));
-    }
-
-    [Fact]
-    public void Given_Validate_When_ValidateArgumentsRun_Then_Return_Error_WithPagerAndValueArguments()
-    {
-        FlagCollection options =
-        [
-            IFlag<PagerFlag>.Create("value")
-        ];
-
-        Assert.False(Validate.ValidateOptions(options));
-    }
-
-    [Fact]
-    public void Given_Validate_When_ValidateArgumentsRun_Then_Return_Error_WithNoPagerAndValueArguments()
-    {
-        FlagCollection options =
-        [
-            IFlag<NoPagerFlag>.Create("value")
         ];
 
         Assert.False(Validate.ValidateOptions(options));

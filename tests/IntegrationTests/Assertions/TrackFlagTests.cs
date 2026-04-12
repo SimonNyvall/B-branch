@@ -6,7 +6,7 @@ public class TrackFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-t", "main");
+        using var process = GetBbranchProcess("-t", "main");
       
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -28,7 +28,7 @@ public class TrackFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--track", "main");
+        using var process = GetBbranchProcess("--track", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -50,7 +50,7 @@ public class TrackFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithTrackFlagAndNoValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--track");
+        using var process = GetBbranchProcess("--track");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

@@ -6,7 +6,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-c", "main");
+        using var process = GetBbranchProcess("-c", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -35,7 +35,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--contains", "main");
+        using var process = GetBbranchProcess("--contains", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -64,7 +64,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithContainsShortFlagAndMultiValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--contains", "main;test/branch1");
+        using var process = GetBbranchProcess("--contains", "main;test/branch1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -94,7 +94,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithContainsLongFlagAndMultiValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-c", "main;test/branch1");
+        using var process = GetBbranchProcess("-c", "main;test/branch1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -124,7 +124,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithContainsAndNoContainsFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-c", "main", "-n", "main");
+        using var process = GetBbranchProcess("-c", "main", "-n", "main");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -138,7 +138,7 @@ public class ContainsFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithContainsFlagAndNoValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--contains");
+        using var process = GetBbranchProcess("--contains");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

@@ -9,7 +9,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndNameValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "name");
+        using var process = GetBbranchProcess("-s", "name");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -27,7 +27,7 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).Select(l => RemoveUnixChars(l).Trim()).ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -37,7 +37,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndNameValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "name");
+        using var process = GetBbranchProcess("--sort", "name");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -55,7 +55,7 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).Select(l => RemoveUnixChars(l).Trim()).ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -65,7 +65,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "ahead");
+        using var process = GetBbranchProcess("-s", "ahead");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -93,7 +93,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndAheadValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "ahead");
+        using var process = GetBbranchProcess("--sort", "ahead");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -121,7 +121,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndBehindValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "behind");
+        using var process = GetBbranchProcess("-s", "behind");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -149,7 +149,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndBehindValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "behind");
+        using var process = GetBbranchProcess("--sort", "behind");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -177,7 +177,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "invalid");
+        using var process = GetBbranchProcess("-s", "invalid");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -191,7 +191,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "date");
+        using var process = GetBbranchProcess("-s", "date");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -242,7 +242,7 @@ public class SortFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "date");
+        using var process = GetBbranchProcess("--sort", "date");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

@@ -6,7 +6,7 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--print-top", "1");
+        using var process = GetBbranchProcess("--print-top", "1");
        
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -22,7 +22,7 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-p", "1");
+        using var process = GetBbranchProcess("-p", "1");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -38,7 +38,7 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndInvalidValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--print-top", "value");
+        using var process = GetBbranchProcess("--print-top", "value");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -52,7 +52,7 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndZeroValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--print-top", "0");
+        using var process = GetBbranchProcess("--print-top", "0");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -66,7 +66,7 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndNoValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--print-top");
+        using var process = GetBbranchProcess("--print-top");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

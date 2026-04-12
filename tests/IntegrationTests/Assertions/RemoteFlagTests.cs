@@ -6,7 +6,7 @@ public class RemoteFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-r");
+        using var process = GetBbranchProcess("-r");
       
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -28,7 +28,7 @@ public class RemoteFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--remote");
+        using var process = GetBbranchProcess("--remote");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -50,7 +50,7 @@ public class RemoteFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithRemoteFlagAndValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--remote", "value");
+        using var process = GetBbranchProcess("--remote", "value");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -64,7 +64,7 @@ public class RemoteFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithRemoteAndAllFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--remote", "--all");
+        using var process = GetBbranchProcess("--remote", "--all");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

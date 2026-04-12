@@ -94,8 +94,6 @@ public sealed class Parse
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
                 "--track" or "-t" => IFlag<TrackFlag>.Create(option.Value),
                 "--version" or "-v" => IFlag<VersionFlag>.Create(option.Value),
-                "--pager" => IFlag<PagerFlag>.Create(option.Value),
-                "--no-pager" => IFlag<NoPagerFlag>.Create(option.Value),
                 _ => null
             };
 

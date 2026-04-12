@@ -14,7 +14,7 @@ public class AllFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-a");
+        using var process = GetBbranchProcess("-a");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -34,7 +34,7 @@ public class AllFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--all");
+        using var process = GetBbranchProcess("--all");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -56,7 +56,7 @@ public class AllFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithAllFlagAndValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--all", "value");
+        using var process = GetBbranchProcess("--all", "value");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -70,7 +70,7 @@ public class AllFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_InvalidOutput_WithAllAndRemoteFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--all", "--remote");
+        using var process = GetBbranchProcess("--all", "--remote");
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 

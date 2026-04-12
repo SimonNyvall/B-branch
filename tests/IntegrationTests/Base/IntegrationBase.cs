@@ -11,28 +11,8 @@ public abstract partial class IntegrationBase
 
     protected void WarmUp()
     {
-        using var warpUpProcess = GetBbranchProcessWithoutPager();
+        using var warpUpProcess = GetBbranchProcess();
         var (output, error) = RunProcessWithTimeoutAsync(warpUpProcess).GetAwaiter().GetResult();
-    }
-
-    protected static Process GetBbranchProcessWithoutPager(params string[] flags)
-    {
-        string combinedFlags = string.Join(" ", flags);
-
-        Process process = new()
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = PublishedArtifactPath,
-                Arguments = $"--no-pager {combinedFlags}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            }
-        };
-
-        return process;
     }
 
     protected static Process GetBbranchProcess(params string[] flags)
@@ -55,9 +35,18 @@ public abstract partial class IntegrationBase
         return process;
     }
 
+    protected static string RemoveUnixChars(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        return input;
+
+        // Matches ANSI escape sequences
+        return Regex.Replace(input, @"\x1B\[[0-9;]*[A-Za-z]", "");
+    }
+
     protected async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process)
     {
-       var outputBuilder = new StringBuilder();
+        var outputBuilder = new StringBuilder();
         var errorBuilder = new StringBuilder();
 
         process.OutputDataReceived += (sender, args) =>
@@ -89,7 +78,7 @@ public abstract partial class IntegrationBase
             throw new Exception("Process timed out");
         }
 
-        string output = outputBuilder.ToString();
+        string output = string.Join("\n", outputBuilder.ToString().Split('\n').Skip(2));
         string error = errorBuilder.ToString();
 
         return (output, error);

@@ -9,7 +9,7 @@ public class NoFlagTests : IntegrationBase
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
-        using var process = GetBbranchProcessWithoutPager();
+        using var process = GetBbranchProcess();
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
