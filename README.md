@@ -43,7 +43,7 @@ Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** w
 **key benefits**
 
 - Quickly identify the branch you need.
-- Access additional branch details not available with git branch.
+- Access additional branch details **not** available with `git branch`.
 - Enjoy reliable, high-performance, cross-platform support.
 
 ### Features
@@ -52,29 +52,32 @@ Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** w
 
 - **Branch description**: Git offers the ability to add a description to a branch. B-branch displays this description in the output.
 
-- **Pager interface**: If the output is too large to fit on the screen, the output will be displayed in a pager interface. While in the pager interface.
-  - `q`: Quit the pager interface.
-  - `j` OR `Down Arrow`: Move down one line.
-  - `k` OR `Up Arrow`: Move up one line.
-  - `f` OR `Space`: Move down one page.
-  - `b`: Move up one page.
-  - `g` OR `HOME`: Move to the top of the output.
-  - `G` OR `END`: Move to the bottom of the output.
-  - `/`: Search for a string in the output.
-  - `Escape`: Clear the search.
+- **Pagination interface**: If the output is too large to fit on the screen, the output will be displayed in a pager interface. While in the pager interface.
+  - `Down arrow`, `Enter`, `e` or `j`: Move forward one line.
+  - `Up arrow`, `y` or `k`: Move backward onw line.
+  - `Space bar` or `f`: Move forward one page.
+  - `b`: Move backward one page.
+  - `/pattern`: Search forward for matching patterns.
+  - `?pattern`: Search backward for matching patterns.
+  - `n`: Repeat previous search.
+  - `N`:	Repeat previous search in reverse direction.
+  - `g`:	Go to the first line in the file.
+  - `Ng`:	Go to the Nth line in the file.
+  - `G`:	Go to the last line in the file.
+  - `p`:	Go to the beginning of the file.
+  - `Np`:	Go to N percent into file.
+  - `h`:	Display help.
+  - `q`:	Exit less.
 
 ### Example
 
-Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
+Explore and analyze your repository branches without making any changes.
+
+For example, list your most recently updated branches, show only those related to a feature:
 
 ```sh
-git bb --no-contains "main;development" -q \
-| awk '{print substr($0, 3)}' \
-| xargs -I {} git branch -D {}
+git bb --sort date --contains "feature" --print-top 10
 ```
-
-> [!IMPORTANT]
-> This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
 
 ---
 
@@ -96,28 +99,22 @@ git bb [<options>] [<additional arguments>]
 ### Options
 
 #### Generic options:
-| Flag                 | Description                                            |
+| Flag                    | Description                                            |
 |-------------------------|--------------------------------------------------------|
 | `-h`, `--help`          | Show the help message.                                 |
 | `-v`, `--version`       | Show the current version of the tool.                  |
 | `-q`, `--quiet`         | Suppress additional output, showing only branch names. |
 
 #### Filtering options:
-| Flag                      | Description                                         |
-|------------------------------|-----------------------------------------------------|
-| `-c`, `--contains` <string>  | List branches containing the specified string.      |
-| `-n`, `--no-contains` <string>| List branches not containing the specified string. |
-| `-s`, `--sort` <criterion>   | Sort branches by `<date|name|ahead|behind>`.        |
-| `-t`, `--track` <branch>     | Show upstream relationship of the specified branch. |
-| `-a`, `--all`                | List both local and remote branches.                |
-| `-r`, `--remote`             | List only remote branches.                          |
-| `-p`, `--print-top` <N>      | Show the top N branches based on sort criterion.    |
-
-#### Display options:
-| Flag        | Description                             |
-|----------------|----------------------------------------|
-| `--pager`      | Force output to display in a pager.    |
-| `--no-pager`   | Display output directly in the console.|
+| Flag                           | Description                                         |
+|--------------------------------|-----------------------------------------------------|
+| `-c`, `--contains` <string>    | List branches containing the specified string.      |
+| `-n`, `--no-contains` <string> | List branches not containing the specified string.  |
+| `-s`, `--sort` <criterion>     | Sort branches by `<date|name|ahead|behind>`.        |
+| `-t`, `--track` <branch>       | Show upstream relationship of the specified branch. |
+| `-a`, `--all`                  | List both local and remote branches.                |
+| `-r`, `--remote`               | List only remote branches.                          |
+| `-p`, `--print-top` <N>        | Show the top N branches based on sort criterion.    |
 
 ---
 
@@ -191,3 +188,8 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 - **Q**: Why does B-branch not show the date of the last commit sometimes?
   - **A**: This can happen if the branch has no commits or if the branch has no objects in the repository. A solution to this is to apply [git maintenance](https://git-scm.com/docs/git-maintenance) to the repository, to clean up and optimize the repository objects.
   
+- **Q**: Why does it say `Blocked by Smart App` on `Windows`?
+  - **A**: This is caused by Windows Smart App Control / SmartScreen, which may block unsigned or newly built executables that do not yet have a reputation. Since B-branch is distributed without a code-signing certificate, Windows may treat it as an unknown application. This is a Windows security feature and not an issue with the tool itself.
+
+- **Q**: How do I turn off `Smart App`?
+  - **A**: On `Windows 11` go to `Settings` -> `Privacy & security` -> `Windows Security` -> `App & browser control` -> `Smart App Control settings` -> `off`

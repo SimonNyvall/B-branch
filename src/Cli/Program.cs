@@ -5,7 +5,20 @@ using Bbranch.CLI.Arguments;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
 using Bbranch.Shared.TableData;
 
-if (!Parse.TryParseOptions(args, out var options))
+var arguments = new List<string>(args);
+bool foundLessCommand = true;
+
+if (arguments.Count < 1 || !File.Exists(arguments[0]))
+{
+    PrintWarning("Less command does not exist");
+
+    arguments.Remove("--pager");
+    arguments.Add("--no-pager");
+
+    foundLessCommand = false;
+}
+
+if (!Parse.TryParseOptions(arguments.ToArray(), out var options))
 {
     HelpOption.Execute();
 }
@@ -27,26 +40,21 @@ if (options.Contains<VersionFlag>())
 
 HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
 
-PageBehaviour shouldPage;
-
-if (options.Contains<PagerFlag>())
-{
-    shouldPage = PageBehaviour.Paginate;
-}
-else if (options.Contains<NoPagerFlag>())
-{
-    shouldPage = PageBehaviour.None;
-}
-else
-{
-    shouldPage = PageBehaviour.Auto;
-}
+var lessCommandPath = foundLessCommand
+    ? arguments[0]
+    : null;
 
 if (options.Contains<quietFlag>())
 {
-    PrintLightTable.Print(branchTable, shouldPage);
-
+    PrintLightTable.Print(branchTable, lessCommandPath);
     return;
 }
 
-PrintFullTable.Print(branchTable, shouldPage);
+PrintFullTable.Print(branchTable, lessCommandPath);
+
+void PrintWarning(string message)
+{
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine($"{message}\n");
+    Console.ResetColor();
+}

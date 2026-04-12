@@ -127,12 +127,12 @@ download_binary() {
 
 # Configure Git Alias
 configure_git_alias() {
-    echo "Linking B-branch CLI to local git..."
+    echo "Linking B-branch Cli to local git..."
 
     if [ "${OS}" = "win" ]; then
-        git config --global alias.bb "!f() { $FINAL_BINARY/CLI.exe \"\$@\"; }; f"
+        git config --global alias.bb "!f() { $FINAL_BINARY/Cli.exe \"\$@\"; }; f"
     else
-        git config --global alias.bb "!bash -c '\"${FINAL_BINARY}/CLI\" \"\$@\"' bash"
+        git config --global alias.bb "!bash -c '\"${FINAL_BINARY}/Cli\" \"\$@\"' bash"
     fi
 
     echo "Git alias 'bb' configured successfully."

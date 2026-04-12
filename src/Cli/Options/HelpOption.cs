@@ -18,10 +18,6 @@ public static class HelpOption
         -a, --all                       List both local and remote branches.
         -r, --remote                    List only remote branches.
         -p, --print-top <N>             Show the top N branches based on sort criterion.
-
-    Display options:
-        --pager                         Force output to display in a pager.
-        --no-pager                      Display output directly in the console.
     """;
 
     public static void Execute()

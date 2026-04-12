@@ -1,19 +1,13 @@
+using System.Text;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
 public static class PrintFullTable
 {
-    public static int ScrollPosition { get => Pager.ScrollPosition; set => Pager.ScrollPosition = value; }
-    private static int ConsoleHeight => Console.WindowHeight - 1;
-    private static int LongestBranchNameLength { get; set; }
-    private static string? currentSearchTerm;
-
-    public static void Print(HashSet<GitBranch> branches, PageBehaviour pageBehaviour)
+    public static void Print(HashSet<GitBranch> branches, string? lessCommandPath)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-        const int minimumBranchNameWidth = 14;
 
         if (branches.Count == 0)
         {
@@ -21,324 +15,78 @@ public static class PrintFullTable
             return;
         }
 
-        LongestBranchNameLength = Math.Max(
-            minimumBranchNameWidth,
-            branches.Max(x => x.Branch.Name.Length + 1)
-        );
+        var output = BuildOutput(branches);
 
-        PrintHeaders();
-
-        if (pageBehaviour == PageBehaviour.Paginate)
+        if (string.IsNullOrEmpty(lessCommandPath))
         {
-            StartPaging(branches);
+            Console.Write(output);
             return;
         }
 
-        if (pageBehaviour == PageBehaviour.None)
-        {
-            PrintBranchRows(branches, null, PageBehaviour.None);
-            return;
-        }
-
-        if (pageBehaviour == PageBehaviour.Auto)
-        {
-            if (DoesOutputFitScreen(branches.Count))
-            {
-                StartPaging(branches);
-                return;
-            }
-
-            PrintBranchRows(branches, null, PageBehaviour.None);
-        }
+        Pager.StartLess(output, lessCommandPath);
     }
 
-    private static void StartPaging(HashSet<GitBranch> branches)
+    private static string BuildOutput(HashSet<GitBranch> branches)
     {
-        Console.Clear();
+        var stringBuilder = new StringBuilder();
 
-        PrintHeaders();
-        PrintBranchRows([.. branches.Take(ConsoleHeight - 2)], currentSearchTerm, PageBehaviour.Paginate);
+        const string reset = "\x1b[0m";
+        const string green = "\x1b[32m";
 
-        Pager.Start(
-            SpawnWindowListenerThread,
-            UpdateView,
-            HandleSearch,
-            branches
-        );
-    }
+        int minWidth = 14;
+        int longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
 
-    private static void SpawnWindowListenerThread(HashSet<GitBranch> branches)
-    {
-        int currentPosition = ScrollPosition;
-        Thread resizeListenerThread = new(() => ListenForWindowResize(branches, ref currentPosition))
-        {
-            IsBackground = true
-        };
+        stringBuilder.AppendLine(BuildHeaders(longest));
 
-        resizeListenerThread.Start();
-    }
-
-    private static void ListenForWindowResize(HashSet<GitBranch> branches, ref int scrollPosition)
-    {
-        int previousHeight = Console.WindowHeight;
-
-        while (true)
-        {
-            if (Console.WindowHeight != previousHeight)
-            {
-                Pager.IsAtBottom = false;
-                previousHeight = Console.WindowHeight;
-
-                Console.Clear();
-                PrintHeaders();
-
-                // Update the scroll position to the bottom branch that is visible
-                if (scrollPosition + ConsoleHeight - 2 > branches.Count)
-                {
-                    scrollPosition = Math.Max(0, branches.Count - ConsoleHeight + 2);
-                }
-
-                UpdateView(branches, string.Empty);
-
-                if (branches.Count < ConsoleHeight - 1)
-                {
-                    Pager.IsAtBottom = true;
-
-                    for (int i = branches.Count; i < ConsoleHeight - 2; i++)
-                    {
-                        Console.SetCursorPosition(0, i + 2);
-                        Console.Write('~');
-                    }
-
-                    Pager.PrintEndPrompt();
-                }
-                else
-                {
-                    Pager.PrintCommandPrompt();
-                }
-            }
-
-            Thread.Sleep(50);
-        }
-    }
-
-    private static void UpdateView(HashSet<GitBranch> branches, string? searchTerm)
-    {
-        if (searchTerm is null)
-        {
-            currentSearchTerm = string.Empty;
-        }
-
-        Console.SetCursorPosition(0, 2);
-        PrintBranchRows([.. branches.Skip(ScrollPosition).Take(ConsoleHeight - 2)], currentSearchTerm, PageBehaviour.Paginate);
-    }
-
-    private static void HandleSearch(HashSet<GitBranch> branches)
-    {
-        Pager.PrintSearchPrompt();
-
-        currentSearchTerm = Console.ReadLine() ?? string.Empty;
-
-        Console.Clear();
-
-        if (string.IsNullOrEmpty(currentSearchTerm)) return;
-
-        Console.SetCursorPosition(0, 0);
-        PrintHeaders();
-
-        GitBranch? firstMatch = branches.FirstOrDefault(x => x.Branch.Name.Contains(currentSearchTerm, StringComparison.OrdinalIgnoreCase));
-
-        if (firstMatch == null) return;
-
-        Pager.IsAtBottom = false;
-
-        int firstMatchIndex = 0;
-        int currentIndex = 0;
+        stringBuilder.AppendLine($"--------- | ---------- | {new string('-', longest)} | ----------------");
 
         foreach (var branch in branches)
         {
-            if (branch.Equals(firstMatch))
+            var ahead = branch.AheadBehind.Ahead.ToString().PadRight(8);
+            var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
+            var name = branch.Branch.Name.PadRight(longest);
+            var lastCommit = PrintFormater.GetTimePrefix(branch.LastCommit, DateTime.Now);
+            var desc = branch.Description ?? "";
+
+            stringBuilder.Append(" ");
+            stringBuilder.Append(ahead);
+            stringBuilder.Append(" |  ");
+            stringBuilder.Append(behind);
+            stringBuilder.Append(" | ");
+
+            if (branch.Branch.IsWorkingBranch)
             {
-                firstMatchIndex = currentIndex;
-                break;
-            }
-            currentIndex++;
-        }
-
-        if (branches.Count > ConsoleHeight)
-        {
-            if (Math.Abs(branches.Count - ConsoleHeight - 1) > firstMatchIndex)
-            {
-                ScrollPosition = firstMatchIndex;
-            }
-            else
-            {
-                ScrollPosition = Math.Abs(branches.Count - ConsoleHeight);
-            }
-        }
-        else
-        {
-            ScrollPosition = 0;
-        }
-
-        currentIndex = 0;
-
-        foreach (var branch in branches)
-        {
-            if (currentIndex >= ScrollPosition && currentIndex < ScrollPosition + ConsoleHeight - 2)
-            {
-                PrintBranchRowWithHighlight(branch, currentSearchTerm, PageBehaviour.Paginate);
-            }
-            currentIndex++;
-        }
-
-        if (branches.Count > ConsoleHeight) return;
-
-        Pager.IsAtBottom = true;
-
-        for (int i = branches.Count; i < ConsoleHeight - 1; i++)
-        {
-            Console.SetCursorPosition(0, i + 2);
-            Console.Write('~');
-        }
-    }
-
-    private static void PrintHeaders()
-    {
-        string branchHeader = string.Empty;
-        string[] headers = [];
-        string underline = new('-', LongestBranchNameLength + 1);
-
-        if (IsUserUsingNerdFonts())
-        {
-            branchHeader = " Branch name  ".PadRight(LongestBranchNameLength + 1);
-            headers = [" Ahead 󰜘 ", " Behind 󰜘 ", branchHeader, " Last commit  "];
-        }
-        else
-        {
-            branchHeader = " Branch name ".PadRight(LongestBranchNameLength + 1);
-            headers = [" Ahead   ", " Behind   ", branchHeader, " Last commit   "];
-        }
-
-        PrintColoredLine(headers, ConsoleColor.Yellow);
-
-        Console.WriteLine(
-            $"\n--------- | ---------- | {underline} | {new string('-', +15)}"
-        );
-    }
-
-    private static void PrintBranchRows(HashSet<GitBranch> branchTable, string? search, PageBehaviour pageBehaviour)
-    {
-        foreach (var branch in branchTable)
-        {
-            PrintBranchRowWithHighlight(branch, search, pageBehaviour);
-        }
-
-        if (pageBehaviour == PageBehaviour.Paginate)
-        {
-            for (int i = branchTable.Count; i < ConsoleHeight - 1; i++)
-            {
-                Console.SetCursorPosition(0, i + 2);
-                Console.Write('~');
-            }
-        }
-    }
-    private static void PrintColoredLine(string[] texts, ConsoleColor color)
-    {
-        for (int i = 0; i < texts.Length; i++)
-        {
-            Console.ForegroundColor = color;
-            Console.Write(texts[i]);
-            Console.ResetColor();
-            if (i < texts.Length - 1)
-            {
-                Console.Write(" | ");
-            }
-        }
-
-        Console.ResetColor();
-    }
-
-    private static void PrintBranchRowWithHighlight(GitBranch branch, string? search, PageBehaviour pageBehaviour)
-    {
-        var aHead = branch.AheadBehind.Ahead.ToString().PadRight(8);
-        var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
-        var branchName = branch.Branch.Name.PadRight(LongestBranchNameLength);
-        var lastCommitText = PrintFormater.GetTimePrefix(branch.LastCommit, DateTime.Now);
-        var description = branch.Description ?? string.Empty;
-
-        if (pageBehaviour == PageBehaviour.Paginate)
-        {
-            Console.Write(new string(' ', Console.WindowWidth - 1) + "\r");
-        }
-
-        Console.Write(' ');
-        HighlightText(aHead.ToString(), search);
-        Console.Write(" |  ");
-        HighlightText(behind.ToString(), search);
-        Console.Write(" |  ");
-
-        if (branch.Branch.IsWorkingBranch)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-        }
-
-        HighlightText(branchName, search);
-
-        Console.ResetColor();
-
-        Console.Write(" |  ");
-
-        HighlightText(lastCommitText, search);
-
-        Console.Write("    ");
-
-        HighlightText(description, search);
-
-        Console.WriteLine();
-    }
-
-    private static void HighlightText(string text, string? search, ConsoleColor? color = null)
-    {
-        int matchIndex;
-
-        if (search is null or "")
-        {
-            matchIndex = -1;
-        }
-        else
-        {
-            matchIndex = text.IndexOf(search, StringComparison.OrdinalIgnoreCase);
-        }
-
-        search = search?.Trim();
-
-        if (matchIndex >= 0)
-        {
-            Console.Write(text[..matchIndex]);
-
-            if (color is not null)
-            {
-                Console.ForegroundColor = color.Value;
+                stringBuilder.Append($"{green} {name}{reset}");
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                stringBuilder.Append($" {name}");
             }
 
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.Write(text.Substring(matchIndex, search!.Length));
+            stringBuilder.Append("|  ");
+            stringBuilder.Append(lastCommit);
+            stringBuilder.Append(" ");
+            stringBuilder.Append(desc);
 
-            Console.ResetColor();
-            Console.Write(text[(matchIndex + search.Length)..]);
+            stringBuilder.AppendLine();
         }
-        else
-        {
-            Console.Write(text);
-        }
+
+        return stringBuilder.ToString();
     }
 
-    private static bool DoesOutputFitScreen(int branchCount) => branchCount > ConsoleHeight;
+    private static string BuildHeaders(int longest)
+    {
+        const string yellow = "\x1b[33m";
+        const string reset = "\x1b[0m";
+
+        string branchHeader = "Branch name".PadRight(longest);
+
+        string line = IsUserUsingNerdFonts()
+            ? $"{yellow} Ahead \ueafc  {reset}|{yellow}  Behind \ueafc  {reset}|{yellow}  {branchHeader}\ue725{reset}|{yellow}  Last commit \ue729 {reset}"
+            : $"{yellow} Ahead    {reset}|{yellow}  Behind    {reset}|{yellow}  {branchHeader}{reset}|{yellow}  Last commit   {reset}";
+
+        return line;
+    }
 
     private static bool IsUserUsingNerdFonts()
     {
