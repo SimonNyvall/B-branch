@@ -55,4 +55,22 @@ public sealed class NoContainsOptionTests
         Assert.Single(result);
         Assert.Equal("feature", result.First().Branch.Name);
     }
+
+    [Fact]
+    public void Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main_ForAllBranches_With_Regex()
+    {
+        var branches = new HashSet<GitBranch>
+        {
+            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new Branch("origin/main", true)),
+            GitBranch.Default().SetBranch(new Branch("feature", true)),
+        };
+
+        var noContainsOption = new NoContainsOption("ma*");
+
+        HashSet<GitBranch> result = noContainsOption.Execute(branches);
+
+        Assert.Single(result);
+        Assert.Equal("feature", result.First().Branch.Name);
+    }
 }
