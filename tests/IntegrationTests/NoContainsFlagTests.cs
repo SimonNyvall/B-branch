@@ -119,7 +119,12 @@ public class NoContainsFlagTests
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsAndContainsFlag()
     {
-        using var process = _fixture.GetBbranchProcess("--no-contains", "main", "--contains", "main");
+        using var process = _fixture.GetBbranchProcess(
+            "--no-contains",
+            "main",
+            "--contains",
+            "main"
+        );
 
         var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
