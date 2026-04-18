@@ -1,6 +1,7 @@
 namespace Bbranch.IntegrationTests;
 
 [Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
 public class NoContainsFlagTests
 {
     private readonly DefaultFixture _fixture;

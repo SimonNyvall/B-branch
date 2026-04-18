@@ -3,6 +3,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 
+[Trait("Category", "Unit")]
 public sealed class NoContainsOptionTests
 {
     [Fact]

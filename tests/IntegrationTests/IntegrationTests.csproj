@@ -11,6 +11,7 @@
         <DisableParallelization>true</DisableParallelization>
         <ParallelizeAssemblies>false</ParallelizeAssemblies>
         <ParallelizeTestCollections>false</ParallelizeTestCollections>
+        <TestCaseFilter>Category==Integration</TestCaseFilter>
       </RunConfiguration>
     </RunSettings>
   </PropertyGroup>

@@ -4,6 +4,7 @@ using Bbranch.Shared.TableData;
 
 namespace Tests.GitService;
 
+[Trait("Category", "Unit")]
 public sealed class WorkingBranchOptionTests
 {
     private readonly IGitRepository _gitBase = new GitRepositoryMock();

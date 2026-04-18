@@ -1,6 +1,7 @@
 namespace Bbranch.IntegrationTests;
 
 [Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
 public class HelpFlagTests
 {
     private readonly DefaultFixture _fixture;

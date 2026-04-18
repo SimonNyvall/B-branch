@@ -4,6 +4,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Shared.Strategies;
 
+[Trait("Category", "Unit")]
 public sealed class DefaultAheadBehindOptionTests
 {
     private readonly IGitRepository _gitBase = new GitRepositoryMock();

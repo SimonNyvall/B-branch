@@ -3,6 +3,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.OptionStrategies;
 
+[Trait("Category", "Unit")]
 public sealed class OptionStrategyTests
 {
     [Fact]

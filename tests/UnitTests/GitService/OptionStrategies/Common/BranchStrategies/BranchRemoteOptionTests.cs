@@ -4,6 +4,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.BranchStrategies;
 
+[Trait("Category", "Unit")]
 public sealed class BranchRemoteOptionTests
 {
     [Fact]

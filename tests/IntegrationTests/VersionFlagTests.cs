@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 namespace Bbranch.IntegrationTests;
 
 [Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
 public class VersionFlagTests
 {
     private readonly DefaultFixture _fixture;

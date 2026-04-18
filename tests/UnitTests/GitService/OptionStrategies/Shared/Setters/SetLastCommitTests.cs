@@ -4,6 +4,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Shared.Setters;
 
+[Trait("Category", "Unit")]
 public sealed class SetLastCommitTests
 {
     private readonly IGitRepository _gitBase = new GitRepositoryMock();

@@ -2,6 +2,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.Shared;
 
+[Trait("Category", "Unit")]
 public sealed class TableDataTests
 {
     [Fact]
