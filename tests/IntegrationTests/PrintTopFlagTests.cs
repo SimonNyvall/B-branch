@@ -1,20 +1,27 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class PrintTopFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class PrintTopFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public PrintTopFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
-        using var process = GetBbranchProcess("--print-top", "1");
+        using var process = _fixture.GetBbranchProcess("--print-top", "1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
@@ -22,15 +29,15 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
-        using var process = GetBbranchProcess("-p", "1");
+        using var process = _fixture.GetBbranchProcess("-p", "1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
@@ -38,9 +45,9 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndInvalidValue()
     {
-        using var process = GetBbranchProcess("--print-top", "value");
+        using var process = _fixture.GetBbranchProcess("--print-top", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -52,9 +59,9 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndZeroValue()
     {
-        using var process = GetBbranchProcess("--print-top", "0");
+        using var process = _fixture.GetBbranchProcess("--print-top", "0");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -66,9 +73,9 @@ public class PrintTopFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndNoValue()
     {
-        using var process = GetBbranchProcess("--print-top");
+        using var process = _fixture.GetBbranchProcess("--print-top");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

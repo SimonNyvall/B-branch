@@ -3,25 +3,32 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class SortFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class SortFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public SortFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndNameValue()
     {
-        using var process = GetBbranchProcess("-s", "name");
+        using var process = _fixture.GetBbranchProcess("-s", "name");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -30,7 +37,7 @@ public class SortFlagTests : IntegrationBase
         string[] branchNames = lines
             .Skip(2)
             .Select(l => l.Split('|')[2].Trim())
-            .Select(l => RemoveUnixChars(l).Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
             .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
@@ -41,19 +48,19 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndNameValue()
     {
-        using var process = GetBbranchProcess("--sort", "name");
+        using var process = _fixture.GetBbranchProcess("--sort", "name");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -62,7 +69,7 @@ public class SortFlagTests : IntegrationBase
         string[] branchNames = lines
             .Skip(2)
             .Select(l => l.Split('|')[2].Trim())
-            .Select(l => RemoveUnixChars(l).Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
             .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
@@ -73,25 +80,28 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
-        using var process = GetBbranchProcess("-s", "ahead");
+        using var process = _fixture.GetBbranchProcess("-s", "ahead");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
+        int[] aheadValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).ahead),
+        ];
 
         int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
@@ -101,25 +111,28 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndAheadValue()
     {
-        using var process = GetBbranchProcess("--sort", "ahead");
+        using var process = _fixture.GetBbranchProcess("--sort", "ahead");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
+        int[] aheadValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).ahead),
+        ];
 
         int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
@@ -129,25 +142,28 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndBehindValue()
     {
-        using var process = GetBbranchProcess("-s", "behind");
+        using var process = _fixture.GetBbranchProcess("-s", "behind");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
+        int[] behindValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).behind),
+        ];
 
         int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
@@ -157,25 +173,28 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndBehindValue()
     {
-        using var process = GetBbranchProcess("--sort", "behind");
+        using var process = _fixture.GetBbranchProcess("--sort", "behind");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
+        int[] behindValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).behind),
+        ];
 
         int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
@@ -185,9 +204,9 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
     {
-        using var process = GetBbranchProcess("-s", "invalid");
+        using var process = _fixture.GetBbranchProcess("-s", "invalid");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -202,19 +221,19 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
-        using var process = GetBbranchProcess("-s", "date");
+        using var process = _fixture.GetBbranchProcess("-s", "date");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -254,19 +273,19 @@ public class SortFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
-        using var process = GetBbranchProcess("--sort", "date");
+        using var process = _fixture.GetBbranchProcess("--sort", "date");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");

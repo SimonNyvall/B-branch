@@ -5,20 +5,17 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-public abstract partial class IntegrationBase
+[CollectionDefinition(Constants.DefaultFixtureName)]
+public class DefaultCollectionDefinition : IClassFixture<DefaultFixture>;
+
+public partial class DefaultFixture
 {
     private static readonly string PublishedArtifactPath = Path.Combine(
         Directory.GetCurrentDirectory(),
         "/app/publish/Cli"
     );
 
-    protected void WarmUp()
-    {
-        using var warpUpProcess = GetBbranchProcess();
-        var (output, error) = RunProcessWithTimeoutAsync(warpUpProcess).GetAwaiter().GetResult();
-    }
-
-    protected static Process GetBbranchProcess(params string[] flags)
+    public Process GetBbranchProcess(params string[] flags)
     {
         string combinedFlags = string.Join(" ", flags);
 
@@ -38,7 +35,7 @@ public abstract partial class IntegrationBase
         return process;
     }
 
-    protected static string RemoveUnixChars(string input)
+    public string RemoveUnixChars(string input)
     {
         if (string.IsNullOrEmpty(input))
             return input;
@@ -47,7 +44,7 @@ public abstract partial class IntegrationBase
         return Regex.Replace(input, @"\x1B\[[0-9;]*[A-Za-z]", "");
     }
 
-    protected async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process)
+    public async Task<(string output, string error)> RunProcessWithTimeoutAsync(Process process)
     {
         var outputBuilder = new StringBuilder();
         var errorBuilder = new StringBuilder();
@@ -89,7 +86,7 @@ public abstract partial class IntegrationBase
         return (output, error);
     }
 
-    protected static void AssertHeader(string[] headerLines)
+    public void AssertHeader(string[] headerLines)
     {
         Assert.True(
             headerLines.Length >= 2,
@@ -104,7 +101,7 @@ public abstract partial class IntegrationBase
         Assert.True(headerLines[1].All(c => c == '|' || c == '-' || c == ' ' || c == '\r'));
     }
 
-    protected static (int ahead, int behind) GetAheadBehindFromString(string line)
+    public (int ahead, int behind) GetAheadBehindFromString(string line)
     {
         int ahead = 0;
         int behind = 0;

@@ -1,8 +1,15 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class NoContainsFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class NoContainsFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public NoContainsFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Theory]
     [InlineData("-n", "main")]
     [InlineData("-n", "ma*")]
@@ -10,19 +17,19 @@ public class NoContainsFlagTests : IntegrationBase
     [InlineData("--no-contains", "ma*")]
     public async Task IntegrationTest_ValidOutput_WithNoContains(string command, string pattern)
     {
-        using var process = GetBbranchProcess(command, pattern);
+        using var process = _fixture.GetBbranchProcess(command, pattern);
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -31,7 +38,7 @@ public class NoContainsFlagTests : IntegrationBase
         string[] branchNames = lines
             .Skip(2)
             .Select(l => l.Split('|')[2].Trim())
-            .Select(l => RemoveUnixChars(l).Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
             .ToArray();
 
         Assert.Equal(3, branchNames.Length);
@@ -44,19 +51,19 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithNoContainsShortFlagAndMultiValue()
     {
-        using var process = GetBbranchProcess("-n", "main;test/branch1");
+        using var process = _fixture.GetBbranchProcess("-n", "main;test/branch1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -65,7 +72,7 @@ public class NoContainsFlagTests : IntegrationBase
         string[] branchNames = lines
             .Skip(2)
             .Select(l => l.Split('|')[2].Trim())
-            .Select(l => RemoveUnixChars(l).Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
             .ToArray();
 
         Assert.Equal(2, branchNames.Length);
@@ -78,19 +85,19 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithNoContainsLongFlagAndMultiValue()
     {
-        using var process = GetBbranchProcess("--no-contains", "main;test/branch1");
+        using var process = _fixture.GetBbranchProcess("--no-contains", "main;test/branch1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -99,7 +106,7 @@ public class NoContainsFlagTests : IntegrationBase
         string[] branchNames = lines
             .Skip(2)
             .Select(l => l.Split('|')[2].Trim())
-            .Select(l => RemoveUnixChars(l).Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
             .ToArray();
 
         Assert.Equal(2, branchNames.Length);
@@ -112,9 +119,9 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsAndContainsFlag()
     {
-        using var process = GetBbranchProcess("--no-contains", "main", "--contains", "main");
+        using var process = _fixture.GetBbranchProcess("--no-contains", "main", "--contains", "main");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -126,9 +133,9 @@ public class NoContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsFlagAndNoValue()
     {
-        using var process = GetBbranchProcess("-n");
+        using var process = _fixture.GetBbranchProcess("-n");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

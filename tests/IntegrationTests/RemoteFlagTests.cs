@@ -1,24 +1,31 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class RemoteFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class RemoteFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public RemoteFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
-        using var process = GetBbranchProcess("-r");
+        using var process = _fixture.GetBbranchProcess("-r");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -28,19 +35,19 @@ public class RemoteFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
-        using var process = GetBbranchProcess("--remote");
+        using var process = _fixture.GetBbranchProcess("--remote");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -50,9 +57,9 @@ public class RemoteFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteFlagAndValue()
     {
-        using var process = GetBbranchProcess("--remote", "value");
+        using var process = _fixture.GetBbranchProcess("--remote", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -64,9 +71,9 @@ public class RemoteFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteAndAllFlag()
     {
-        using var process = GetBbranchProcess("--remote", "--all");
+        using var process = _fixture.GetBbranchProcess("--remote", "--all");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

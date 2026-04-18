@@ -1,8 +1,15 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class HelpFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class HelpFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public HelpFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     private readonly string _helpMessage = """
         usage: git bb [<options>] [<additional arguments>]
 
@@ -24,9 +31,9 @@ public class HelpFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
-        using var process = GetBbranchProcess("-h");
+        using var process = _fixture.GetBbranchProcess("-h");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -38,9 +45,9 @@ public class HelpFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
-        using var process = GetBbranchProcess("--help");
+        using var process = _fixture.GetBbranchProcess("--help");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -52,9 +59,9 @@ public class HelpFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithHelpFlagAndValue()
     {
-        using var process = GetBbranchProcess("--help", "value");
+        using var process = _fixture.GetBbranchProcess("--help", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

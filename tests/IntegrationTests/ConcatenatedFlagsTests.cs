@@ -1,14 +1,21 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class ConcatenatedFlagsTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class ConcatenatedFlagsTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public ConcatenatedFlagsTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithAllAndQuietFlagsConcatenated()
     {
-        using var process = GetBbranchProcess("-qa");
+        using var process = _fixture.GetBbranchProcess("-qa");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -28,9 +35,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteAndQuietFlagConcatenated()
     {
-        using var process = GetBbranchProcess("-rq");
+        using var process = _fixture.GetBbranchProcess("-rq");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -47,9 +54,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithDoubleDashAndQuietAndAllFlagConcatenated()
     {
-        using var process = GetBbranchProcess("--qa");
+        using var process = _fixture.GetBbranchProcess("--qa");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -65,9 +72,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithDuplicateFlagsConcatenated()
     {
-        using var process = GetBbranchProcess("-qaq");
+        using var process = _fixture.GetBbranchProcess("-qaq");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -80,9 +87,9 @@ public class ConcatenatedFlagsTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithUnkownFlagConcatenated()
     {
-        using var process = GetBbranchProcess("-qz");
+        using var process = _fixture.GetBbranchProcess("-qz");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

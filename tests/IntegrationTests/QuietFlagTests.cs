@@ -1,14 +1,21 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class QuietFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class QuietFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public QuietFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
-        using var process = GetBbranchProcess("-q");
+        using var process = _fixture.GetBbranchProcess("-q");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -23,9 +30,9 @@ public class QuietFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
-        using var process = GetBbranchProcess("--quiet");
+        using var process = _fixture.GetBbranchProcess("--quiet");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -40,9 +47,9 @@ public class QuietFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
     {
-        using var process = GetBbranchProcess("--quiet", "value");
+        using var process = _fixture.GetBbranchProcess("--quiet", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

@@ -3,25 +3,32 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class NoFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class NoFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public NoFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
-        using var process = GetBbranchProcess();
+        using var process = _fixture.GetBbranchProcess();
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");

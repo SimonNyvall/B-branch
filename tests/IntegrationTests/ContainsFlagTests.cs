@@ -1,8 +1,15 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class ContainsFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+public class ContainsFlagTests
 {
+    private readonly DefaultFixture _fixture;
+
+    public ContainsFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
     [Theory]
     [InlineData("-c", "main")]
     [InlineData("-c", "ma*")]
@@ -10,19 +17,19 @@ public class ContainsFlagTests : IntegrationBase
     [InlineData("--contains", "ma*")]
     public async Task IntegrationTest_ValidOutput_WithContains(string command, string pattern)
     {
-        using var process = GetBbranchProcess(command, pattern);
+        using var process = _fixture.GetBbranchProcess(command, pattern);
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -39,19 +46,19 @@ public class ContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsShortFlagAndMultiValue()
     {
-        using var process = GetBbranchProcess("--contains", "main;test/branch1");
+        using var process = _fixture.GetBbranchProcess("--contains", "main;test/branch1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -69,19 +76,19 @@ public class ContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsLongFlagAndMultiValue()
     {
-        using var process = GetBbranchProcess("-c", "main;test/branch1");
+        using var process = _fixture.GetBbranchProcess("-c", "main;test/branch1");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -99,9 +106,9 @@ public class ContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithContainsAndNoContainsFlag()
     {
-        using var process = GetBbranchProcess("-c", "main", "-n", "main");
+        using var process = _fixture.GetBbranchProcess("-c", "main", "-n", "main");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -113,9 +120,9 @@ public class ContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_InvalidOutput_WithContainsFlagAndNoValue()
     {
-        using var process = GetBbranchProcess("--contains");
+        using var process = _fixture.GetBbranchProcess("--contains");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -127,19 +134,19 @@ public class ContainsFlagTests : IntegrationBase
     [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsFlagAndRegex()
     {
-        using var process = GetBbranchProcess("-c", "ma*");
+        using var process = _fixture.GetBbranchProcess("-c", "ma*");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
