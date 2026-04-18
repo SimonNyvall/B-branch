@@ -48,7 +48,7 @@ Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** w
 
 ### Features
 
-- **Branch information**: Displays the branch name, the date of the last commit, the number of commits ahead or behind the upstream branch, and the branch description.
+- **Branch information**: Displays the branch name, the date of the last commit, the number of commits ahead or behind the upstream branch, and the branch descriptions.
 
 - **Branch description**: Git offers the ability to add a description to a branch. B-branch displays this description in the output.
 
@@ -60,14 +60,14 @@ Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** w
   - `/pattern`: Search forward for matching patterns.
   - `?pattern`: Search backward for matching patterns.
   - `n`: Repeat previous search.
-  - `N`:	Repeat previous search in reverse direction.
-  - `g`:	Go to the first line in the file.
-  - `Ng`:	Go to the Nth line in the file.
-  - `G`:	Go to the last line in the file.
-  - `p`:	Go to the beginning of the file.
-  - `Np`:	Go to N percent into file.
-  - `h`:	Display help.
-  - `q`:	Exit less.
+  - `N`: Repeat previous search in reverse direction.
+  - `g`: Go to the first line in the file.
+  - `Ng`: Go to the Nth line in the file.
+  - `G`: Go to the last line in the file.
+  - `p`: Go to the beginning of the file.
+  - `Np`: Go to N percent into file.
+  - `h`: Display help.
+  - `q`: Exit less.
 
 ### Example
 
@@ -81,14 +81,25 @@ git bb --sort date --contains "feature" --print-top 10
 
 ---
 
+#### Branch Descriptions
+
 The ability to see the branch description is also a feature that is not available in the standard `git branch` command. To add a description to a branch, use the following command:
 
 ```sh
 git branch --edit-description
 ```
 
-> [!NOTE]
-> Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
+You can define a description for each branch by including the branch name in square brackets (`[]`) followed by a short description on the next line.
+
+``` text
+[main]
+This is the main production branch.
+
+[development]
+This branch is used for ongoing development.
+```
+
+<img align="center" src="./images/description-banner.png"/>
 
 ## Usage
 
@@ -98,14 +109,16 @@ git bb [<options>] [<additional arguments>]
 
 ### Options
 
-#### Generic options:
+#### Generic options
+
 | Flag                    | Description                                            |
 |-------------------------|--------------------------------------------------------|
 | `-h`, `--help`          | Show the help message.                                 |
 | `-v`, `--version`       | Show the current version of the tool.                  |
 | `-q`, `--quiet`         | Suppress additional output, showing only branch names. |
 
-#### Filtering options:
+#### Filtering options
+
 | Flag                           | Description                                         |
 |--------------------------------|-----------------------------------------------------|
 | `-c`, `--contains` <string>    | List branches containing the specified string.      |
@@ -119,19 +132,24 @@ git bb [<options>] [<additional arguments>]
 ---
 
 ## Installation :computer:
+
 Install the latest release for free! If you're using **Cygwin**, **Git Bash**, **MSYS2**, **Bash** in linux or **WSL**, you can also use the install script:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
 ```
 
 >[!NOTE]
 > The install script will also update the tool if it is already installed. If you want to install a specific version, you can use the `--version` flag:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh -s -- --version <version>
 ```
 
 ### Uninstall
+
 If you want to uninstall the tool, you can run the following command:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/uninstall.sh | sh
 ```
@@ -143,11 +161,13 @@ For a manual installation, follow the steps in the [release](https://github.com/
 > [!NOTE]
 > For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
 > If you already have a nerd font installed, you can run the following command to tell B-branch to display characters correctly:
+>
 > ```sh
 > git config --global vars.useNerdFonts true
 > ```
 
 ### Next Release
+
 See the latest work being done in the [project backlog](https://github.com/users/SimonNyvall/projects/10).
 
 - `!command` to pager view to execute commands while in the pager.

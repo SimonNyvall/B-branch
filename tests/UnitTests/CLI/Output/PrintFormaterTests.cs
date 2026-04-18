@@ -67,7 +67,7 @@ public sealed class PrintFormaterTests
     public void Given_PrintFormater_When_GetTimePrefixRun_Then_Return_Months_WithYearDifference()
     {
         DateTime dateTime = _currentTime.AddYears(-1);
-        var expected = $"12     months ago";
+        var expected = $"12    months ago";
 
         var actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
 
@@ -78,7 +78,7 @@ public sealed class PrintFormaterTests
     public void Given_PrintFormater_When_GetTimePrefixRun_Then_Return_Months_WithYearsDifference()
     {
         DateTime dateTime = _currentTime.AddYears(-2);
-        var expected = $"24     months ago";
+        var expected = $"24    months ago";
 
         var actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
 
@@ -99,8 +99,30 @@ public sealed class PrintFormaterTests
     [Fact]
     public void Given_PrintFormater_When_GetTimePrefixRun_Then_Return_Months_WithDaysPassingMonths()
     {
-        DateTime dateTime = _currentTime.AddDays(40);
+        DateTime dateTime = _currentTime.AddDays(-40);
         var expected = "1     month ago";
+
+        var actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Given_PrintFormater_When_GetTimePrefixRun_Then_Return_Months_WithManyMonths()
+    {
+        DateTime dateTime = _currentTime.AddMonths(-11);
+        var expected = "11    months ago";
+
+        var actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Given_PrintFormater_When_GetTimePrefixRun_Then_Return_Months_WithOneAndAHalfMonth()
+    {
+        DateTime dateTime = _currentTime.AddDays(-30 - 15);
+        var expected = "2     months ago";
 
         var actual = PrintFormater.GetTimePrefix(dateTime, _currentTime);
 
