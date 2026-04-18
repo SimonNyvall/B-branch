@@ -9,6 +9,7 @@ GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
 DEFAULT_VERSION="1.1.3"
 VERSION="${DEFAULT_VERSION}"
 FINAL_BINARY=""
+LESS_COMMAND_PATH=""
 
 # Parse command line arguments
 while [ $# -gt 0 ]; do
@@ -109,10 +110,12 @@ download_binary() {
         USERPROFILE_UNIX=$(echo "$USERPROFILE" | sed 's/\\/\//g')
         BIN_DIR_WIN_UNIX=$(echo "$BIN_DIR_WIN" | sed 's/\\/\//g')
         FINAL_BINARY="${USERPROFILE_UNIX}/${BIN_DIR_WIN_UNIX}/b-branch-${OS}-${ARCH}"
+        LESS_COMMAND_PATH=$(where less | head -n 1)
     else
         ZIP_FILE="${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}.zip"
         TARGET_DIR="${BIN_DIR_UNIX}"
         FINAL_BINARY="${BIN_DIR_UNIX}/b-branch-${OS}-${ARCH}"
+        LESS_COMMAND_PATH=$(which less | head -n 1)
     fi
 
     if [ -f "${ZIP_FILE}" ]; then
@@ -130,9 +133,9 @@ configure_git_alias() {
     echo "Linking B-branch Cli to local git..."
 
     if [ "${OS}" = "win" ]; then
-        git config --global alias.bb "!f() { $FINAL_BINARY/Cli.exe \"\$@\"; }; f"
+        git config --global alias.bb "!f() { $FINAL_BINARY/Cli.exe \"$LESS_COMMAND_PATH\" \"\$@\"; }; f"
     else
-        git config --global alias.bb "!bash -c '\"${FINAL_BINARY}/Cli\" \"\$@\"' bash"
+        git config --global alias.bb "!bash -c '\"${FINAL_BINARY}/Cli\" \"$LESS_COMMAND_PATH\" \"\$@\"' bash"
     fi
 
     echo "Git alias 'bb' configured successfully."
