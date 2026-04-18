@@ -1,4 +1,5 @@
 using Bbranch.Shared.TableData;
+using System.Text.RegularExpressions;
 
 namespace Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
 
@@ -10,9 +11,17 @@ public sealed class NoContainsOption(string pattern) : IOption
 
         return
         [
-            .. branches.Where(branch =>
-                patterns.All(pattern => !branch.Branch.Name.Contains(pattern))
-            ),
+            .. branches.Where(branch => patterns.All(p =>
+            {
+                try
+                {
+                    return !Regex.IsMatch(branch.Branch.Name, p, RegexOptions.IgnoreCase);
+                }
+                catch
+                {
+                    return !branch.Branch.Name.Contains(p, StringComparison.OrdinalIgnoreCase);
+                }
+            }))
         ];
     }
 }
