@@ -37,16 +37,10 @@ public static class PrintFullTable
         int minWidth = 14;
         int longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
 
-        //stringBuilder.AppendLine(BuildHeaders(longest));
+        var line = $"--------- | ---------- | {new string('-', longest)} | ----------------";
 
-        //stringBuilder.AppendLine(
-        //    $"--------- | ---------- | {new string('-', longest)} | ----------------"
-        //);
-
-        Console.WriteLine(BuildHeaders(longest));
-        Console.WriteLine(
-            $"--------- | ---------- | {new string('-', longest)} | ----------------"
-        );
+        stringBuilder.AppendLine(BuildHeaders(longest));
+        stringBuilder.AppendLine(line);
 
         foreach (var branch in branches)
         {
@@ -89,13 +83,17 @@ public static class PrintFullTable
 
         const string aheadIcon = "\ueafc";
         const string behindIcon = "\ueafc";
-        const string branchIcon = "⎇";
-        const string commitIcon = "●";
+        const string branchIcon = "\ue725";
+        const string commitIcon = "\ue729";
 
-        string branchHeader = "Branch name".PadRight(longest);
+        var isUsingNerdFonts = IsUserUsingNerdFonts();
 
-        string line = IsUserUsingNerdFonts()
-            ? $"{yellow} Ahead {aheadIcon}  {reset}|{yellow} Behind {behindIcon}  {reset}|{yellow} {branchHeader}{branchIcon}{reset}|{yellow} Last commit {commitIcon} {reset}"
+        string branchHeader = isUsingNerdFonts
+            ? $"Branch name {branchIcon}".PadRight(longest)
+            : "Branch name".PadRight(longest);
+
+        string line = isUsingNerdFonts
+            ? $"{yellow} Ahead {aheadIcon}  {reset}|{yellow}  Behind {behindIcon}  {reset}|{yellow}  {branchHeader}{reset}|{yellow}  Last commit {commitIcon} {reset}"
             : $"{yellow} Ahead    {reset}|{yellow}  Behind    {reset}|{yellow}  {branchHeader}{reset}|{yellow}  Last commit   {reset}";
 
         return line;
@@ -113,11 +111,6 @@ public static class PrintFullTable
 
         string[] gitConfigLines = File.ReadAllLines(gitConfigPath);
 
-        Environment.SetEnvironmentVariable("LESSCHARSET", "utf-8");
-        //Environment.SetEnvironmentVariable("LESSUTFCHARDEF", "8bcccbcc18b95.b:");
-
         return gitConfigLines.Any(line => line.Contains("\tuseNerdFonts = true"));
     }
-
-    private 
 }

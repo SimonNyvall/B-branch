@@ -9,7 +9,7 @@ internal static class Pager
         var processStartInfo = new ProcessStartInfo
         {
             FileName = lessCommandPath,
-            Arguments = "-R -F -X",
+            Arguments = "-R -r -F -X",
 
             RedirectStandardInput = true,
 
