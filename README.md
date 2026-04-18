@@ -168,16 +168,7 @@ For a manual installation, follow the steps in the [release](https://github.com/
 
 ### Next Release
 
-See the latest work being done in the [project backlog](https://github.com/users/SimonNyvall/projects/10).
-
-- `!command` to pager view to execute commands while in the pager.
-- `n` key in pager to jump the next search result.
-- `N` key in pager to jump to the previous search result.
-- `h` key in pager to show the help message.
-- Multi-branch description support.
-- View stale branches.
-- Regex support for contains and no-contains options.
-- Pre-fetch branches to get latest information.
+See the latest work being panned in the [issues](https://github.com/SimonNyvall/B-branch/issues).
 
 ## Contributing
 
@@ -198,6 +189,9 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 
 - **Q**: Can I use this instead of the standard `git branch` command?
   - **A**: B-branch only helps developers view branch information. It does not replace the standard `git branch` command.
+
+- **Q**: Why do I get the warning `Less command does not exist` when git bb is ran?
+  - **A**: This means that the `less` command path has changed on your system, simply run the install scirpt again.
 
 - **Q**: Will B-branch slow down git?
   - **A**: No, the extension works with an alias and does not affect the performance of git.
