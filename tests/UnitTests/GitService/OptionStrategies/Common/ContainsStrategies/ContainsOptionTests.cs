@@ -12,7 +12,7 @@ public sealed class ContainsOptionTests
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),    
+            GitBranch.Default().SetBranch(new Branch("branch", true)),
         };
 
         var option = new ContainsOption("branch");
@@ -30,7 +30,7 @@ public sealed class ContainsOptionTests
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),    
+            GitBranch.Default().SetBranch(new Branch("branch", true)),
         };
 
         var option = new ContainsOption("main;feature;branch");

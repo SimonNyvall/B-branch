@@ -10,7 +10,7 @@ public sealed class TableDataTests
         AheadBehind aheadBehind = new(1, 2);
 
         var gitBranch = GitBranch.Default().SetAheadBehind(aheadBehind);
-        
+
         Assert.Equal(aheadBehind, gitBranch.AheadBehind);
     }
 

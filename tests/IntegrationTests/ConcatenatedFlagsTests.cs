@@ -56,7 +56,10 @@ public class ConcatenatedFlagsTests : IntegrationBase
         output = output.Replace("\r", "");
         string[] outputLines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        Assert.Equal("error: pathspec '--qa' did not match any file(s) known to git", outputLines[0]);
+        Assert.Equal(
+            "error: pathspec '--qa' did not match any file(s) known to git",
+            outputLines[0]
+        );
     }
 
     [Fact(Timeout = 120000)]

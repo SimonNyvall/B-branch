@@ -1,1 +1,0 @@
-This directory contains the AOT (Ahead-of-Time) compilation test builds for the B-branch project. These builds are designed to validate the functionality and performance of the application when compiled with AOT techniques. Use the VS Code task `aot-test-build` to build the aot.

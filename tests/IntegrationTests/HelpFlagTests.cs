@@ -4,22 +4,22 @@ namespace Bbranch.IntegrationTests;
 public class HelpFlagTests : IntegrationBase
 {
     private readonly string _helpMessage = """
-    usage: git bb [<options>] [<additional arguments>]
+        usage: git bb [<options>] [<additional arguments>]
 
-    Generic options:
-        -h, --help              Show the help message.
-        -v, --version           Show the current version of the tool.
-        -q, --quiet             Suppress additional output, showing only branch names.
+        Generic options:
+            -h, --help              Show the help message.
+            -v, --version           Show the current version of the tool.
+            -q, --quiet             Suppress additional output, showing only branch names.
 
-    Filtering options:
-        -c, --contains <string>         List brnches containing the specified string.
-        -n, --no-contains <string>      List branches not containing the specified string.
-        -s, --sort <criterion>          Sort branches by <date|name|ahead|behind>.
-        -t, --track <branch>            Show upstream relationship of the specified branch.
-        -a, --all                       List both local and remote branches.
-        -r, --remote                    List only remote branches.
-        -p, --print-top <N>             Show the top N branches based on sort criterion.
-    """.Replace("\r", "").Replace("\n", "");
+        Filtering options:
+            -c, --contains <string>         List brnches containing the specified string.
+            -n, --no-contains <string>      List branches not containing the specified string.
+            -s, --sort <criterion>          Sort branches by <date|name|ahead|behind>.
+            -t, --track <branch>            Show upstream relationship of the specified branch.
+            -a, --all                       List both local and remote branches.
+            -r, --remote                    List only remote branches.
+            -p, --print-top <N>             Show the top N branches based on sort criterion.
+        """.Replace("\r", "").Replace("\n", "");
 
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()

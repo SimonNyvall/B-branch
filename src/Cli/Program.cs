@@ -1,8 +1,8 @@
 ﻿using Bbranch.CLI;
-using Bbranch.CLI.Output;
-using Bbranch.CLI.Options;
 using Bbranch.CLI.Arguments;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
+using Bbranch.CLI.Options;
+using Bbranch.CLI.Output;
 using Bbranch.Shared.TableData;
 
 var arguments = new List<string>(args);
@@ -36,9 +36,7 @@ if (options.Contains<VersionFlag>())
 
 HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
 
-var lessCommandPath = foundLessCommand
-    ? arguments[0]
-    : null;
+var lessCommandPath = foundLessCommand ? arguments[0] : null;
 
 if (options.Contains<quietFlag>())
 {
@@ -48,7 +46,7 @@ if (options.Contains<quietFlag>())
 
 PrintFullTable.Print(branchTable, lessCommandPath);
 
-void PrintWarning(string message)
+static void PrintWarning(string message)
 {
     Console.ForegroundColor = ConsoleColor.Yellow;
     Console.WriteLine($"{message}\n");

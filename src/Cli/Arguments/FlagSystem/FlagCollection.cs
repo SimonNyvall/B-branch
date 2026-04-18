@@ -10,9 +10,11 @@ public sealed class FlagCollection : IEnumerable<IFlag>
 
     public void Add(IFlag flag) => _flags.Add(flag);
 
-    public bool Contains<T>() where T : IFlag => _flags.Any(f => f is T);
+    public bool Contains<T>()
+        where T : IFlag => _flags.Any(f => f is T);
 
-    public bool Contains<T>(out T flag) where T : IFlag
+    public bool Contains<T>(out T flag)
+        where T : IFlag
     {
         if (_flags.Any(f => f is T))
         {
@@ -27,6 +29,6 @@ public sealed class FlagCollection : IEnumerable<IFlag>
     public IEnumerator<IFlag> GetEnumerator() => _flags.GetEnumerator();
 
     public void Clear() => _flags.Clear();
-   
+
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

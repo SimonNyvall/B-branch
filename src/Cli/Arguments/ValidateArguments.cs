@@ -57,12 +57,19 @@ public sealed class Validate
     {
         if (options.Contains<SortFlag>(out var sortFlag))
         {
-            if (sortFlag.Value.ToString() == "date" || sortFlag.Value.ToString() == "name" || sortFlag.Value.ToString() == "ahead" || sortFlag.Value.ToString() == "behind")
+            if (
+                sortFlag.Value.ToString() == "date"
+                || sortFlag.Value.ToString() == "name"
+                || sortFlag.Value.ToString() == "ahead"
+                || sortFlag.Value.ToString() == "behind"
+            )
             {
                 return;
             }
 
-            throw new ArgumentException("fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'");
+            throw new ArgumentException(
+                "fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'"
+            );
         }
     }
 
@@ -70,7 +77,10 @@ public sealed class Validate
     {
         if (options.Contains<PrintTopFlag>(out var printTopFlag))
         {
-            if (!int.TryParse(printTopFlag.Value.ToString(), out int numberValue) && printTopFlag.Value.ToString() != string.Empty)
+            if (
+                !int.TryParse(printTopFlag.Value.ToString(), out int numberValue)
+                && printTopFlag.Value.ToString() != string.Empty
+            )
             {
                 throw new ArgumentException("fatal: Value for --print-top must be an integer");
             }
@@ -84,30 +94,38 @@ public sealed class Validate
 
     private static void ValidateContainsWithNull(FlagCollection options)
     {
-        if (!options.Contains<ContainsFlag>(out var containsFlag)) return;
+        if (!options.Contains<ContainsFlag>(out var containsFlag))
+            return;
 
-        if (containsFlag.Value is null || containsFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --contains is missing");
+        if (containsFlag.Value is null || containsFlag.Value.ToString() == string.Empty)
+            throw new ArgumentException("fatal: Value for --contains is missing");
     }
 
     private static void ValidateNoContainsWithNull(FlagCollection options)
     {
-        if (!options.Contains<NoContainsFlag>(out var noContainsFlag)) return;
+        if (!options.Contains<NoContainsFlag>(out var noContainsFlag))
+            return;
 
-        if (noContainsFlag.Value is null || noContainsFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --no-contains is missing");
+        if (noContainsFlag.Value is null || noContainsFlag.Value.ToString() == string.Empty)
+            throw new ArgumentException("fatal: Value for --no-contains is missing");
     }
 
     private static void ValidatePrintTopWithNull(FlagCollection options)
     {
-        if (!options.Contains<PrintTopFlag>(out var printTopFlag)) return;
+        if (!options.Contains<PrintTopFlag>(out var printTopFlag))
+            return;
 
-        if (printTopFlag.Value is null || printTopFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --print-top is missing");
+        if (printTopFlag.Value is null || printTopFlag.Value.ToString() == string.Empty)
+            throw new ArgumentException("fatal: Value for --print-top is missing");
     }
 
     private static void ValidateTrackWithNull(FlagCollection options)
     {
-        if (!options.Contains<TrackFlag>(out var trackFlag)) return;
+        if (!options.Contains<TrackFlag>(out var trackFlag))
+            return;
 
-        if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty) throw new ArgumentException("fatal: Value for --track is missing");
+        if (trackFlag.Value is null || trackFlag.Value.ToString() == string.Empty)
+            throw new ArgumentException("fatal: Value for --track is missing");
     }
 
     private static void ValidateNonValueFlags(FlagCollection options)

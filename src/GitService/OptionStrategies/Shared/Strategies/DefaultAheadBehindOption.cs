@@ -8,19 +8,26 @@ public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
     public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        
-        Parallel.ForEach(branches, options, branch =>
-        {
-            try
+
+        Parallel.ForEach(
+            branches,
+            options,
+            branch =>
             {
-                var aheadBehind = gitBase.GetLocalAheadBehind(branch.Branch.Name).GetAwaiter().GetResult();
-                branch.SetAheadBehind(aheadBehind);
+                try
+                {
+                    var aheadBehind = gitBase
+                        .GetLocalAheadBehind(branch.Branch.Name)
+                        .GetAwaiter()
+                        .GetResult();
+                    branch.SetAheadBehind(aheadBehind);
+                }
+                catch (Exception)
+                {
+                    branch.SetAheadBehind(new AheadBehind(0, 0));
+                }
             }
-            catch (Exception)
-            {
-                branch.SetAheadBehind(new AheadBehind(0, 0));
-            }
-        });
+        );
 
         return branches;
     }

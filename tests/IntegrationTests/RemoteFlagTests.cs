@@ -7,7 +7,7 @@ public class RemoteFlagTests : IntegrationBase
     public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
         using var process = GetBbranchProcess("-r");
-      
+
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);

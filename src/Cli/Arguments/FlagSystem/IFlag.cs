@@ -18,7 +18,8 @@ public class ArgumentValue
     public static ArgumentValue Emtpy => new(string.Empty);
 }
 
-public interface IFlag<T> : IFlag where T : IFlag<T>, new()
+public interface IFlag<T> : IFlag
+    where T : IFlag<T>, new()
 {
     static T Create(string? value)
     {
@@ -27,10 +28,7 @@ public interface IFlag<T> : IFlag where T : IFlag<T>, new()
             return new T();
         }
 
-        T flag = new()
-        {
-            Value = value
-        };
+        T flag = new() { Value = value };
 
         return flag;
     }

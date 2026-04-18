@@ -8,11 +8,7 @@ public sealed class OptionStrategyTests
     [Fact]
     public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_OriginalBranches()
     {
-        var originalBranches = new HashSet<GitBranch> 
-        { 
-            GitBranch.Default(),
-            GitBranch.Default()
-        };
+        var originalBranches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
         var strategy = new CompositeOptionStrategy(new List<IOption>());
 
@@ -24,15 +20,8 @@ public sealed class OptionStrategyTests
     [Fact]
     public void Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_ModifiedBranches()
     {
-        var originalBranches = new HashSet<GitBranch> 
-        {
-            GitBranch.Default(),
-            GitBranch.Default()
-        };
-        var modifiedBranches = new HashSet<GitBranch>
-        {
-            GitBranch.Default()
-        };
+        var originalBranches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var modifiedBranches = new HashSet<GitBranch> { GitBranch.Default() };
 
         var mockStrategy = new MockOption(modifiedBranches);
         var strategy = new CompositeOptionStrategy([mockStrategy]);

@@ -1,5 +1,5 @@
-using Bbranch.Shared.TableData;
 using Bbranch.GitService.Base;
+using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 

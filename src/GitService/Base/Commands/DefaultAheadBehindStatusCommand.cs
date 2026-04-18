@@ -2,9 +2,11 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal sealed class DefaultAheadBehindStatusCommand(string localBranchName) : AbstractCommand<string>
+internal sealed class DefaultAheadBehindStatusCommand(string localBranchName)
+    : AbstractCommand<string>
 {
-    public override string CommandArgument => $"rev-list --left-right --count {localBranchName}...origin/{localBranchName}";
+    public override string CommandArgument =>
+        $"rev-list --left-right --count {localBranchName}...origin/{localBranchName}";
 
     public override string Execute()
     {
@@ -16,7 +18,8 @@ internal sealed class DefaultAheadBehindStatusCommand(string localBranchName) : 
 
         process.WaitForExit();
 
-        if (string.IsNullOrWhiteSpace(output)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(output))
+            return string.Empty;
 
         return output;
     }

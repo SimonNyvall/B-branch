@@ -1,10 +1,10 @@
+using System.Buffers;
 using System.Globalization;
-using System.Text.RegularExpressions;
-using Bbranch.Shared.TableData;
-using Bbranch.GitService.Base.Commands;
 using System.IO.Compression;
 using System.Text;
-using System.Buffers;
+using System.Text.RegularExpressions;
+using Bbranch.GitService.Base.Commands;
+using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.Base;
 
@@ -94,7 +94,10 @@ public sealed class GitRepository : IGitRepository
     {
         try
         {
-            string commitHash = File.ReadAllText(Path.Combine(_gitPath, "refs", "heads", branchName)).Trim();
+            string commitHash = File.ReadAllText(
+                    Path.Combine(_gitPath, "refs", "heads", branchName)
+                )
+                .Trim();
 
             string dirName = commitHash[..2];
             commitHash = commitHash[2..];
@@ -104,11 +107,11 @@ public sealed class GitRepository : IGitRepository
                 throw new DirectoryNotFoundException();
             }
 
-            DateTime lastWriteTimeOfCommit =
-                File.GetLastWriteTime(Path.Combine(_gitPath, "objects", dirName, commitHash));
+            DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(
+                Path.Combine(_gitPath, "objects", dirName, commitHash)
+            );
 
-            if (lastWriteTimeOfCommit.Year <=
-                1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
+            if (lastWriteTimeOfCommit.Year <= 1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
             {
                 throw new InvalidDataException();
             }
@@ -123,7 +126,10 @@ public sealed class GitRepository : IGitRepository
         }
     }
 
-    public async Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
+    public async Task<AheadBehind> GetRemoteAheadBehind(
+        string localBranchName,
+        string remoteBranchName
+    )
     {
         try
         {
@@ -131,7 +137,10 @@ public sealed class GitRepository : IGitRepository
         }
         catch (Exception)
         {
-            TrackAheadBehindStatusCommand trackAheadBehindCommand = new(localBranchName, remoteBranchName);
+            TrackAheadBehindStatusCommand trackAheadBehindCommand = new(
+                localBranchName,
+                remoteBranchName
+            );
 
             return ParseAheadBehind(trackAheadBehindCommand.Execute());
         }
@@ -151,7 +160,10 @@ public sealed class GitRepository : IGitRepository
         }
     }
 
-    private async Task<AheadBehind> GetAheadBehind(string localBranchName, string? remoteBranchName = null)
+    private async Task<AheadBehind> GetAheadBehind(
+        string localBranchName,
+        string? remoteBranchName = null
+    )
     {
         string localBranchRefPath = Path.Combine(_gitPath, "refs", "heads", localBranchName);
         string remoteBranchRefPath = remoteBranchName is null
@@ -181,7 +193,7 @@ public sealed class GitRepository : IGitRepository
         // Run ahead/behind counts in parallel
         var aheadTask = CountCommitsBetween(localCommitHash, remoteCommitHash, "ahead");
         var behindTask = CountCommitsBetween(localCommitHash, remoteCommitHash, "behind");
-        
+
         await Task.WhenAll(aheadTask, behindTask);
         return new(aheadTask.Result, behindTask.Result);
     }
@@ -250,10 +262,11 @@ public sealed class GitRepository : IGitRepository
         {
             // Find next line
             int lineEnd = decompressedSpan[pos..].IndexOf((byte)'\n');
-            if (lineEnd == -1) break;
-            
+            if (lineEnd == -1)
+                break;
+
             var line = decompressedSpan.Slice(pos, lineEnd);
-            
+
             if (line.StartsWith(parentPrefix))
             {
                 // Extract parent hash without allocations
@@ -262,7 +275,7 @@ public sealed class GitRepository : IGitRepository
                 _commitParentCache[hash] = parentHash;
                 return parentHash;
             }
-            
+
             pos += lineEnd + 1;
         }
 
@@ -275,7 +288,7 @@ public sealed class GitRepository : IGitRepository
     {
         using var compressedStream = new MemoryStream(compressedData.ToArray());
         await using var zLibStream = new ZLibStream(compressedStream, CompressionMode.Decompress);
-        
+
         // Use ArrayPool for better memory usage
         byte[] buffer = ArrayPool<byte>.Shared.Rent(DecompressionBufferSize);
         try
@@ -286,7 +299,7 @@ public sealed class GitRepository : IGitRepository
             {
                 await decompressedStream.WriteAsync(buffer.AsMemory(0, read));
             }
-            
+
             return decompressedStream.ToArray();
         }
         finally
@@ -337,7 +350,10 @@ public sealed class GitRepository : IGitRepository
         return updatedBranches;
     }
 
-    private HashSet<GitBranch> GetMergedBranchList(HashSet<GitBranch> headBranches, HashSet<GitBranch> refBranches)
+    private HashSet<GitBranch> GetMergedBranchList(
+        HashSet<GitBranch> headBranches,
+        HashSet<GitBranch> refBranches
+    )
     {
         var branchNames = new HashSet<string>(headBranches.Select(b => b.Branch.Name));
 
@@ -357,7 +373,8 @@ public sealed class GitRepository : IGitRepository
     {
         var packedRefsPath = Path.Combine(_gitPath, "packed-refs");
 
-        if (!File.Exists(packedRefsPath)) return [];
+        if (!File.Exists(packedRefsPath))
+            return [];
 
         var branches = new HashSet<GitBranch>();
         var packedRefsLines = File.ReadAllLines(packedRefsPath);
@@ -416,25 +433,53 @@ public sealed class GitRepository : IGitRepository
     public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches)
     {
         const string descriptionFileName = "EDIT_DESCRIPTION";
+        string path = Path.Combine(_gitPath, descriptionFileName);
 
-        if (!File.Exists(Path.Combine(_gitPath, descriptionFileName)))
-        {
+        if (!File.Exists(path))
             return branches;
-        }
 
-        string descriptionFile = File.ReadAllText(Path.Combine(_gitPath, descriptionFileName));
+        var lines = File.ReadAllLines(path);
 
-        foreach (GitBranch branch in branches)
+        var descriptions = new Dictionary<string, string>();
+        string? currentBranch = null;
+        var currentDescription = new List<string>();
+
+        foreach (var rawLine in lines)
         {
-            if (!descriptionFile.Contains(branch.Branch.Name))
+            var line = rawLine.Trim();
+
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                continue;
+
+            if (line.StartsWith("[") && line.EndsWith("]"))
             {
+                if (currentBranch != null)
+                {
+                    descriptions[currentBranch] = string.Join(" ", currentDescription).Trim();
+                }
+
+                currentBranch = line[1..^1];
+                currentDescription.Clear();
                 continue;
             }
 
-            IEnumerable<string> lines = descriptionFile.Split('\n');
-            lines = lines.Where(line => !line.StartsWith('#'));
-            string description = string.Join(" ", lines);
-            branch.SetDescription(description);
+            if (currentBranch != null)
+            {
+                currentDescription.Add(line);
+            }
+        }
+
+        if (currentBranch != null)
+        {
+            descriptions[currentBranch] = string.Join(" ", currentDescription).Trim();
+        }
+
+        foreach (var branch in branches)
+        {
+            if (descriptions.TryGetValue(branch.Branch.Name, out var desc))
+            {
+                branch.SetDescription(desc);
+            }
         }
 
         return branches;

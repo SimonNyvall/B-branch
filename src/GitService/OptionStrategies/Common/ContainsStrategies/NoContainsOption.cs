@@ -8,6 +8,11 @@ public sealed class NoContainsOption(string pattern) : IOption
     {
         string[] patterns = ContainsSplit.SplitArgument(pattern);
 
-        return [.. branches.Where(branch => patterns.All(pattern => !branch.Branch.Name.Contains(pattern)))];
+        return
+        [
+            .. branches.Where(branch =>
+                patterns.All(pattern => !branch.Branch.Name.Contains(pattern))
+            ),
+        ];
     }
 }

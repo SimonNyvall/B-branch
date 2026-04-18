@@ -7,7 +7,7 @@ public class TrackFlagTests : IntegrationBase
     public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
         using var process = GetBbranchProcess("-t", "main");
-      
+
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);

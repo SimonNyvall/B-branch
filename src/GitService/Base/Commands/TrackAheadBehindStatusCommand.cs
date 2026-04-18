@@ -2,9 +2,11 @@ using System.Diagnostics;
 
 namespace Bbranch.GitService.Base.Commands;
 
-internal sealed class TrackAheadBehindStatusCommand(string localBranchName, string remoteBranchName) : AbstractCommand<string>
+internal sealed class TrackAheadBehindStatusCommand(string localBranchName, string remoteBranchName)
+    : AbstractCommand<string>
 {
-    public override string CommandArgument => $"rev-list --left-right --count {localBranchName}...{remoteBranchName}";
+    public override string CommandArgument =>
+        $"rev-list --left-right --count {localBranchName}...{remoteBranchName}";
 
     public override string Execute()
     {
@@ -16,7 +18,8 @@ internal sealed class TrackAheadBehindStatusCommand(string localBranchName, stri
 
         process.WaitForExit();
 
-        if (string.IsNullOrWhiteSpace(output)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(output))
+            return string.Empty;
 
         return output;
     }

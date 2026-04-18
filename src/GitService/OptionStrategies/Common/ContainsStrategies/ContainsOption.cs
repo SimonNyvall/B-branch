@@ -8,6 +8,11 @@ public sealed class ContainsOption(string pattern) : IOption
     {
         string[] patterns = ContainsSplit.SplitArgument(pattern);
 
-        return [.. branches.Where(branch => patterns.Any(pattern => branch.Branch.Name.Contains(pattern)))];
+        return
+        [
+            .. branches.Where(branch =>
+                patterns.Any(pattern => branch.Branch.Name.Contains(pattern))
+            ),
+        ];
     }
 }

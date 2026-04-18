@@ -7,7 +7,7 @@ public class PrintTopFlagTests : IntegrationBase
     public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
         using var process = GetBbranchProcess("--print-top", "1");
-       
+
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);

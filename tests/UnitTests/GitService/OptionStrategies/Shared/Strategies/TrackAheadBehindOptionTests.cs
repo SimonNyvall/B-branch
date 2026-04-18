@@ -23,11 +23,7 @@ public sealed class TrackAheadBehindOptionTests
     {
         var strategy = new TrackAheadBehindOption(_gitBase, "");
 
-        var branches = new HashSet<GitBranch> 
-        {
-            GitBranch.Default(),
-            GitBranch.Default()
-        };
+        var branches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
         var result = strategy.Execute(branches);
 
@@ -36,17 +32,26 @@ public sealed class TrackAheadBehindOptionTests
 
     private sealed class GitRepositoryMock : IGitRepository
     {
-        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName)
+        public Task<AheadBehind> GetRemoteAheadBehind(
+            string localBranchName,
+            string remoteBranchName
+        )
         {
             return Task.FromResult(new AheadBehind(1, 1));
         }
-        
+
         public string GetWorkingBranch() => throw new NotImplementedException();
+
         public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+
         public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
-        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
-        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
+
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) =>
+            throw new NotImplementedException();
+
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) =>
+            throw new NotImplementedException();
+
         public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
-    
     }
 }

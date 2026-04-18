@@ -7,14 +7,14 @@ namespace Tests.GitService;
 public sealed class WorkingBranchOptionTests
 {
     private readonly IGitRepository _gitBase = new GitRepositoryMock();
-    
+
     [Fact]
     public void Given_WorkingBranchOption_When_ExecuteRun_Then_Return_WorkingBranch()
     {
         var branches = new HashSet<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", false)),
-            GitBranch.Default().SetBranch(new Branch("feature", false))
+            GitBranch.Default().SetBranch(new Branch("feature", false)),
         };
 
         var workingBranchOption = new WorkingBranchOption(_gitBase);
@@ -36,7 +36,7 @@ public sealed class WorkingBranchOptionTests
 
         Assert.Empty(result);
     }
-    
+
     private sealed class GitRepositoryMock : IGitRepository
     {
         public string GetWorkingBranch()
@@ -45,10 +45,20 @@ public sealed class WorkingBranchOptionTests
         }
 
         public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+
         public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
-        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) => throw new NotImplementedException();
-        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) => throw new NotImplementedException();
-        public Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName) => throw new NotImplementedException();
+
+        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) =>
+            throw new NotImplementedException();
+
+        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) =>
+            throw new NotImplementedException();
+
+        public Task<AheadBehind> GetRemoteAheadBehind(
+            string localBranchName,
+            string remoteBranchName
+        ) => throw new NotImplementedException();
+
         public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
     }
 }

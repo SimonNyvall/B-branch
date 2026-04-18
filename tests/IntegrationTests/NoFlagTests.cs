@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
@@ -16,7 +16,7 @@ public class NoFlagTests : IntegrationBase
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-    
+
         AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
@@ -42,17 +42,18 @@ public class NoFlagTests : IntegrationBase
                 return dateWithDescription;
             })
             .ToArray();
- 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
@@ -69,14 +70,36 @@ public class NoFlagTests : IntegrationBase
         if (dateStr.Contains("yesterday"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day - 1, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day - 1,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("today"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("day ago") || dateStr.Contains("days ago"))
         {
@@ -103,4 +126,3 @@ public class NoFlagTests : IntegrationBase
             return 5; // Default for unknown formats
     }
 }
-

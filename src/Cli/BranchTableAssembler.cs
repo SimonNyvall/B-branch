@@ -64,7 +64,10 @@ public static class BranchTableAssembler
         optionStrategies.AddStrategyOption(lastCommitOption);
     }
 
-    private static void AddContainsOptions(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddContainsOptions(
+        FlagCollection arguments,
+        CompositeOptionStrategy optionStrategies
+    )
     {
         if (arguments.Contains<ContainsFlag>(out var containsFlag))
         {
@@ -85,7 +88,10 @@ public static class BranchTableAssembler
         }
     }
 
-    private static void AddTrackOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddTrackOption(
+        FlagCollection arguments,
+        CompositeOptionStrategy optionStrategies
+    )
     {
         if (arguments.Contains<TrackFlag>(out var trackFlag))
         {
@@ -107,7 +113,10 @@ public static class BranchTableAssembler
         optionStrategies.AddStrategyOption(workingBranchOption);
     }
 
-    private static void AddSortOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddSortOption(
+        FlagCollection arguments,
+        CompositeOptionStrategy optionStrategies
+    )
     {
         IOption sortOption;
 
@@ -149,13 +158,16 @@ public static class BranchTableAssembler
         optionStrategies.AddStrategyOption(descriptionOption);
     }
 
-    private static void AddPrintTopOption(FlagCollection arguments, CompositeOptionStrategy optionStrategies)
+    private static void AddPrintTopOption(
+        FlagCollection arguments,
+        CompositeOptionStrategy optionStrategies
+    )
     {
-        if (!arguments.Contains<PrintTopFlag>(out var printTopFlag)) return;
+        if (!arguments.Contains<PrintTopFlag>(out var printTopFlag))
+            return;
 
         var topValue = Convert.ToInt32(printTopFlag.Value.ToString());
         IOption printTopOption = new TopOption(topValue);
         optionStrategies.AddStrategyOption(printTopOption);
     }
-
 }

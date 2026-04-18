@@ -27,7 +27,11 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).Select(l => RemoveUnixChars(l).Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -55,7 +59,11 @@ public class SortFlagTests : IntegrationBase
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).Select(l => RemoveUnixChars(l).Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => RemoveUnixChars(l).Trim())
+            .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -185,7 +193,10 @@ public class SortFlagTests : IntegrationBase
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'\n", output);
+        Assert.Equal(
+            "fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'\n",
+            output
+        );
     }
 
     [Fact(Timeout = 120000)]
@@ -225,16 +236,17 @@ public class SortFlagTests : IntegrationBase
             })
             .ToArray();
 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
@@ -276,20 +288,20 @@ public class SortFlagTests : IntegrationBase
             })
             .ToArray();
 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
-
 
     private static string CleanSpaces(string input)
     {
@@ -303,14 +315,36 @@ public class SortFlagTests : IntegrationBase
         if (dateStr.Contains("yesterday"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day - 1, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day - 1,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("today"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("day ago") || dateStr.Contains("days ago"))
         {

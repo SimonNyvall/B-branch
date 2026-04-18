@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -26,5 +25,4 @@
     <ProjectReference Include="../..\src\Cli\Cli.csproj" />
     <ProjectReference Include="../../src/Shared/Shared.csproj" />
   </ItemGroup>
-
 </Project>

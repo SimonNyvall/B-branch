@@ -7,7 +7,7 @@ public class QuietFlagTests : IntegrationBase
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
         using var process = GetBbranchProcess("-q");
-       
+
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
@@ -19,7 +19,7 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Branch Name ", lines[0]);
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
-    
+
     [Fact(Timeout = 120000)]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
