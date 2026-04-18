@@ -3,7 +3,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class TrackFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
         using var process = GetBbranchProcess("-t", "main");
@@ -25,7 +25,7 @@ public class TrackFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
         using var process = GetBbranchProcess("--track", "main");
@@ -47,7 +47,7 @@ public class TrackFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithTrackFlagAndNoValue()
     {
         using var process = GetBbranchProcess("--track");

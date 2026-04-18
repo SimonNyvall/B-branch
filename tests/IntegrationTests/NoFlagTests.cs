@@ -6,7 +6,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class NoFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
         using var process = GetBbranchProcess();

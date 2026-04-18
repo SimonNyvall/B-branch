@@ -3,7 +3,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class QuietFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
         using var process = GetBbranchProcess("-q");
@@ -20,7 +20,7 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
         using var process = GetBbranchProcess("--quiet");
@@ -37,7 +37,7 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
     {
         using var process = GetBbranchProcess("--quiet", "value");

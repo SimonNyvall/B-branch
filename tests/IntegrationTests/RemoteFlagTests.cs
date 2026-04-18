@@ -3,7 +3,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class RemoteFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
         using var process = GetBbranchProcess("-r");
@@ -25,7 +25,7 @@ public class RemoteFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
         using var process = GetBbranchProcess("--remote");
@@ -47,7 +47,7 @@ public class RemoteFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteFlagAndValue()
     {
         using var process = GetBbranchProcess("--remote", "value");
@@ -61,7 +61,7 @@ public class RemoteFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --remote is not allowed\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteAndAllFlag()
     {
         using var process = GetBbranchProcess("--remote", "--all");

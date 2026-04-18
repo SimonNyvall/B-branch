@@ -3,7 +3,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class ConcatenatedFlagsTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithAllAndQuietFlagsConcatenated()
     {
         using var process = GetBbranchProcess("-qa");
@@ -25,7 +25,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.Contains(lines, l => !l.Contains("origin"));
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithRemoteAndQuietFlagConcatenated()
     {
         using var process = GetBbranchProcess("-rq");
@@ -44,7 +44,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.All(lines, l => l.Contains("origin"));
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithDoubleDashAndQuietAndAllFlagConcatenated()
     {
         using var process = GetBbranchProcess("--qa");
@@ -62,7 +62,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
         );
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithDuplicateFlagsConcatenated()
     {
         using var process = GetBbranchProcess("-qaq");
@@ -77,7 +77,7 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.Equal("error: duplicated option: -q", outputLines[0]);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithUnkownFlagConcatenated()
     {
         using var process = GetBbranchProcess("-qz");

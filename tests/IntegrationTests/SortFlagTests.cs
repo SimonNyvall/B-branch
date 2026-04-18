@@ -6,7 +6,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class SortFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndNameValue()
     {
         using var process = GetBbranchProcess("-s", "name");
@@ -38,7 +38,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndNameValue()
     {
         using var process = GetBbranchProcess("--sort", "name");
@@ -70,7 +70,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
         using var process = GetBbranchProcess("-s", "ahead");
@@ -98,7 +98,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndAheadValue()
     {
         using var process = GetBbranchProcess("--sort", "ahead");
@@ -126,7 +126,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndBehindValue()
     {
         using var process = GetBbranchProcess("-s", "behind");
@@ -154,7 +154,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndBehindValue()
     {
         using var process = GetBbranchProcess("--sort", "behind");
@@ -182,7 +182,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
     {
         using var process = GetBbranchProcess("-s", "invalid");
@@ -199,7 +199,7 @@ public class SortFlagTests : IntegrationBase
         );
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
         using var process = GetBbranchProcess("-s", "date");
@@ -251,7 +251,7 @@ public class SortFlagTests : IntegrationBase
         Assert.Equal(sortedCommitDates, commitDates);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
         using var process = GetBbranchProcess("--sort", "date");

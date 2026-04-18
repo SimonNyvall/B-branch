@@ -11,7 +11,7 @@ public class AllFlagTests : IntegrationBase
         WarmUp();
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
         using var process = GetBbranchProcess("-a");
@@ -31,7 +31,7 @@ public class AllFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
         using var process = GetBbranchProcess("--all");
@@ -53,7 +53,7 @@ public class AllFlagTests : IntegrationBase
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithAllFlagAndValue()
     {
         using var process = GetBbranchProcess("--all", "value");
@@ -67,7 +67,7 @@ public class AllFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --all is not allowed\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithAllAndRemoteFlag()
     {
         using var process = GetBbranchProcess("--all", "--remote");

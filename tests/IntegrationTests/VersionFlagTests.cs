@@ -5,7 +5,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class VersionFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
         using var process = GetBbranchProcess("-v");
@@ -21,7 +21,7 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
         using var process = GetBbranchProcess("-v");
@@ -37,7 +37,7 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndValue()
     {
         using var process = GetBbranchProcess("--version", "value");
@@ -51,7 +51,7 @@ public class VersionFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --version is not allowed\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndOtherFlag()
     {
         using var process = GetBbranchProcess("--version", "-a");

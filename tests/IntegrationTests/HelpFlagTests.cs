@@ -21,7 +21,7 @@ public class HelpFlagTests : IntegrationBase
             -p, --print-top <N>             Show the top N branches based on sort criterion.
         """.Replace("\r", "").Replace("\n", "");
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
         using var process = GetBbranchProcess("-h");
@@ -35,7 +35,7 @@ public class HelpFlagTests : IntegrationBase
         Assert.Equal(_helpMessage, output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
         using var process = GetBbranchProcess("--help");
@@ -49,7 +49,7 @@ public class HelpFlagTests : IntegrationBase
         Assert.Equal(_helpMessage, output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithHelpFlagAndValue()
     {
         using var process = GetBbranchProcess("--help", "value");

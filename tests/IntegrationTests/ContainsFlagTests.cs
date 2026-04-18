@@ -3,10 +3,14 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class ContainsFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithContainsShortFlag()
+    [Theory]
+    [InlineData("-c", "main")]
+    [InlineData("-c", "ma*")]
+    [InlineData("--contains", "main")]
+    [InlineData("--contains", "ma*")]
+    public async Task IntegrationTest_ValidOutput_WithContains(string command, string pattern)
     {
-        using var process = GetBbranchProcess("-c", "main");
+        using var process = GetBbranchProcess(command, pattern);
 
         var (output, error) = await RunProcessWithTimeoutAsync(process);
 
@@ -32,36 +36,7 @@ public class ContainsFlagTests : IntegrationBase
         Assert.DoesNotContain("test/branch3", branchNames);
     }
 
-    [Fact(Timeout = 120000)]
-    public async Task IntegrationTest_ValidOutput_WithContainsLongFlag()
-    {
-        using var process = GetBbranchProcess("--contains", "main");
-
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
-
-        Assert.True(string.IsNullOrEmpty(error), error);
-
-        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        AssertHeader(lines);
-
-        foreach (string line in lines.Skip(2))
-        {
-            var (ahead, behind) = GetAheadBehindFromString(line);
-
-            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
-            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
-        }
-
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
-
-        Assert.Contains("main", branchNames);
-        Assert.DoesNotContain("test/branch1", branchNames);
-        Assert.DoesNotContain("test/branch2", branchNames);
-        Assert.DoesNotContain("test/branch3", branchNames);
-    }
-
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsShortFlagAndMultiValue()
     {
         using var process = GetBbranchProcess("--contains", "main;test/branch1");
@@ -91,7 +66,7 @@ public class ContainsFlagTests : IntegrationBase
         Assert.DoesNotContain("test/branch3", branchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithContainsLongFlagAndMultiValue()
     {
         using var process = GetBbranchProcess("-c", "main;test/branch1");
@@ -121,7 +96,7 @@ public class ContainsFlagTests : IntegrationBase
         Assert.DoesNotContain("test/branch3", branchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithContainsAndNoContainsFlag()
     {
         using var process = GetBbranchProcess("-c", "main", "-n", "main");
@@ -135,7 +110,7 @@ public class ContainsFlagTests : IntegrationBase
         Assert.Equal("fatal: Cannot use both --contains and --no-contains\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithContainsFlagAndNoValue()
     {
         using var process = GetBbranchProcess("--contains");
@@ -147,5 +122,34 @@ public class ContainsFlagTests : IntegrationBase
         output = output.Replace("\r", "");
 
         Assert.Equal("fatal: Value for --contains is missing\n", output);
+    }
+
+    [Fact]
+    public async Task IntegrationTest_ValidOutput_WithContainsFlagAndRegex()
+    {
+        using var process = GetBbranchProcess("-c", "ma*");
+
+        var (output, error) = await RunProcessWithTimeoutAsync(process);
+
+        Assert.True(string.IsNullOrEmpty(error), error);
+
+        string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        AssertHeader(lines);
+
+        foreach (string line in lines.Skip(2))
+        {
+            var (ahead, behind) = GetAheadBehindFromString(line);
+
+            Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
+            Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
+        }
+
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+
+        Assert.Contains("main", branchNames);
+        Assert.DoesNotContain("test/branch1", branchNames);
+        Assert.DoesNotContain("test/branch2", branchNames);
+        Assert.DoesNotContain("test/branch3", branchNames);
     }
 }

@@ -3,7 +3,7 @@ namespace Bbranch.IntegrationTests;
 [Collection("Sequential")]
 public class PrintTopFlagTests : IntegrationBase
 {
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
         using var process = GetBbranchProcess("--print-top", "1");
@@ -19,7 +19,7 @@ public class PrintTopFlagTests : IntegrationBase
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
         using var process = GetBbranchProcess("-p", "1");
@@ -35,7 +35,7 @@ public class PrintTopFlagTests : IntegrationBase
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndInvalidValue()
     {
         using var process = GetBbranchProcess("--print-top", "value");
@@ -49,7 +49,7 @@ public class PrintTopFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --print-top must be an integer\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndZeroValue()
     {
         using var process = GetBbranchProcess("--print-top", "0");
@@ -63,7 +63,7 @@ public class PrintTopFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --print-top must be greater than 0\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [Fact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndNoValue()
     {
         using var process = GetBbranchProcess("--print-top");
