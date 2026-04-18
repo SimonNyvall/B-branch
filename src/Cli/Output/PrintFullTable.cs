@@ -23,9 +23,6 @@ public static class PrintFullTable
             return;
         }
 
-        Console.WriteLine(output.Contains(""));
-        Console.WriteLine(output);
-
         Pager.StartLess(output, lessCommandPath);
     }
 
@@ -40,9 +37,14 @@ public static class PrintFullTable
         int minWidth = 14;
         int longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
 
-        stringBuilder.AppendLine(BuildHeaders(longest));
+        //stringBuilder.AppendLine(BuildHeaders(longest));
 
-        stringBuilder.AppendLine(
+        //stringBuilder.AppendLine(
+        //    $"--------- | ---------- | {new string('-', longest)} | ----------------"
+        //);
+
+        Console.WriteLine(BuildHeaders(longest));
+        Console.WriteLine(
             $"--------- | ---------- | {new string('-', longest)} | ----------------"
         );
 
@@ -85,15 +87,12 @@ public static class PrintFullTable
         const string yellow = "\x1b[33m";
         const string reset = "\x1b[0m";
 
-        const string aheadIcon = "";
-        const string behindIcon = "";
-        const string branchIcon = "";
-        const string commitIcon = "";
+        const string aheadIcon = "\ueafc";
+        const string behindIcon = "\ueafc";
+        const string branchIcon = "⎇";
+        const string commitIcon = "●";
 
         string branchHeader = "Branch name".PadRight(longest);
-
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine("TEST:    ");
 
         string line = IsUserUsingNerdFonts()
             ? $"{yellow} Ahead {aheadIcon}  {reset}|{yellow} Behind {behindIcon}  {reset}|{yellow} {branchHeader}{branchIcon}{reset}|{yellow} Last commit {commitIcon} {reset}"
@@ -119,4 +118,6 @@ public static class PrintFullTable
 
         return gitConfigLines.Any(line => line.Contains("\tuseNerdFonts = true"));
     }
+
+    private 
 }

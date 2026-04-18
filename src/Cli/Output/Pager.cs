@@ -10,22 +10,20 @@ internal static class Pager
         {
             FileName = lessCommandPath,
             Arguments = "-R -F -X",
+
             RedirectStandardInput = true,
-            //RedirectStandardOutput = true,
-            StandardInputEncoding = System.Text.Encoding.UTF8,
-            //StandardOutputEncoding = System.Text.Encoding.UTF8,
+
             UseShellExecute = false,
         };
 
-        using var process = Process.Start(processStartInfo);
+        processStartInfo.Environment["LESSCHARSET"] = "utf-8";
 
+        using var process = Process.Start(processStartInfo);
         if (process == null)
             return;
 
-        using (var writer = process.StandardInput)
-        {
-            writer.Write(input);
-        }
+        process.StandardInput.Write(input);
+        process.StandardInput.Close();
 
         process.WaitForExit();
     }
