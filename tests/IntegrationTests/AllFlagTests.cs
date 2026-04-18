@@ -11,7 +11,7 @@ public class AllFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-a");
@@ -31,7 +31,7 @@ public class AllFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--all");
@@ -53,7 +53,7 @@ public class AllFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithAllFlagAndValue()
     {
         using var process = _fixture.GetBbranchProcess("--all", "value");
@@ -67,7 +67,7 @@ public class AllFlagTests
         Assert.Equal("fatal: Value for --all is not allowed\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithAllAndRemoteFlag()
     {
         using var process = _fixture.GetBbranchProcess("--all", "--remote");

@@ -11,7 +11,7 @@ public class NoContainsFlagTests
         _fixture = fixture;
     }
 
-    [Theory]
+    [IntegrationTheory]
     [InlineData("-n", "main")]
     [InlineData("-n", "ma*")]
     [InlineData("--no-contains", "main")]
@@ -49,7 +49,7 @@ public class NoContainsFlagTests
         Assert.Contains("test/branch3", branchNames);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithNoContainsShortFlagAndMultiValue()
     {
         using var process = _fixture.GetBbranchProcess("-n", "main;test/branch1");
@@ -83,7 +83,7 @@ public class NoContainsFlagTests
         Assert.Contains("test/branch3", branchNames);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithNoContainsLongFlagAndMultiValue()
     {
         using var process = _fixture.GetBbranchProcess("--no-contains", "main;test/branch1");
@@ -117,7 +117,7 @@ public class NoContainsFlagTests
         Assert.Contains("test/branch3", branchNames);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsAndContainsFlag()
     {
         using var process = _fixture.GetBbranchProcess(
@@ -136,7 +136,7 @@ public class NoContainsFlagTests
         Assert.Equal("fatal: Cannot use both --contains and --no-contains\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithNoContainsFlagAndNoValue()
     {
         using var process = _fixture.GetBbranchProcess("-n");

@@ -13,7 +13,7 @@ public class VersionFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-v");
@@ -29,7 +29,7 @@ public class VersionFlagTests
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("-v");
@@ -45,7 +45,7 @@ public class VersionFlagTests
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndValue()
     {
         using var process = _fixture.GetBbranchProcess("--version", "value");
@@ -59,7 +59,7 @@ public class VersionFlagTests
         Assert.Equal("fatal: Value for --version is not allowed\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndOtherFlag()
     {
         using var process = _fixture.GetBbranchProcess("--version", "-a");

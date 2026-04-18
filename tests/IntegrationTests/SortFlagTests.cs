@@ -14,7 +14,7 @@ public class SortFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndNameValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "name");
@@ -46,7 +46,7 @@ public class SortFlagTests
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndNameValue()
     {
         using var process = _fixture.GetBbranchProcess("--sort", "name");
@@ -78,7 +78,7 @@ public class SortFlagTests
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "ahead");
@@ -109,7 +109,7 @@ public class SortFlagTests
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndAheadValue()
     {
         using var process = _fixture.GetBbranchProcess("--sort", "ahead");
@@ -140,7 +140,7 @@ public class SortFlagTests
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndBehindValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "behind");
@@ -171,7 +171,7 @@ public class SortFlagTests
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndBehindValue()
     {
         using var process = _fixture.GetBbranchProcess("--sort", "behind");
@@ -202,7 +202,7 @@ public class SortFlagTests
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "invalid");
@@ -219,7 +219,7 @@ public class SortFlagTests
         );
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "date");
@@ -271,7 +271,7 @@ public class SortFlagTests
         Assert.Equal(sortedCommitDates, commitDates);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
         using var process = _fixture.GetBbranchProcess("--sort", "date");

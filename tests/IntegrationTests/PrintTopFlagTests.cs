@@ -11,7 +11,7 @@ public class PrintTopFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--print-top", "1");
@@ -27,7 +27,7 @@ public class PrintTopFlagTests
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithPrintTopShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-p", "1");
@@ -43,7 +43,7 @@ public class PrintTopFlagTests
         Assert.True(lines.Length <= 3, $"Too many lines printed... Actual: {lines.Length}");
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndInvalidValue()
     {
         using var process = _fixture.GetBbranchProcess("--print-top", "value");
@@ -57,7 +57,7 @@ public class PrintTopFlagTests
         Assert.Equal("fatal: Value for --print-top must be an integer\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndZeroValue()
     {
         using var process = _fixture.GetBbranchProcess("--print-top", "0");
@@ -71,7 +71,7 @@ public class PrintTopFlagTests
         Assert.Equal("fatal: Value for --print-top must be greater than 0\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithPrintTopFlagAndNoValue()
     {
         using var process = _fixture.GetBbranchProcess("--print-top");

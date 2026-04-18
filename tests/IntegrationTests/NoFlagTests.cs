@@ -14,7 +14,7 @@ public class NoFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
         using var process = _fixture.GetBbranchProcess();

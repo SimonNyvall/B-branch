@@ -29,7 +29,7 @@ public class HelpFlagTests
             -p, --print-top <N>             Show the top N branches based on sort criterion.
         """.Replace("\r", "").Replace("\n", "");
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithHelpShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-h");
@@ -43,7 +43,7 @@ public class HelpFlagTests
         Assert.Equal(_helpMessage, output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithHelpLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--help");
@@ -57,7 +57,7 @@ public class HelpFlagTests
         Assert.Equal(_helpMessage, output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithHelpFlagAndValue()
     {
         using var process = _fixture.GetBbranchProcess("--help", "value");

@@ -36,4 +36,6 @@ RUN dotnet publish -r linux-x64 -c Release -o /app/publish
 
 WORKDIR /app/tests/IntegrationTests
 
+ENV RUN_INTEGRATION_TESTS=true
+
 ENTRYPOINT ["dotnet", "test", "--no-build", "-v", "n"]

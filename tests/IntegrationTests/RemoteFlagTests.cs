@@ -11,7 +11,7 @@ public class RemoteFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithRemoteShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-r");
@@ -33,7 +33,7 @@ public class RemoteFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithRemoteLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--remote");
@@ -55,7 +55,7 @@ public class RemoteFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteFlagAndValue()
     {
         using var process = _fixture.GetBbranchProcess("--remote", "value");
@@ -69,7 +69,7 @@ public class RemoteFlagTests
         Assert.Equal("fatal: Value for --remote is not allowed\n", output);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithRemoteAndAllFlag()
     {
         using var process = _fixture.GetBbranchProcess("--remote", "--all");

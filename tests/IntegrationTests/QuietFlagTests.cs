@@ -11,7 +11,7 @@ public class QuietFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-q");
@@ -28,7 +28,7 @@ public class QuietFlagTests
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--quiet");
@@ -45,7 +45,7 @@ public class QuietFlagTests
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
     {
         using var process = _fixture.GetBbranchProcess("--quiet", "value");

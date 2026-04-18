@@ -11,7 +11,7 @@ public class TrackFlagTests
         _fixture = fixture;
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
         using var process = _fixture.GetBbranchProcess("-t", "main");
@@ -33,7 +33,7 @@ public class TrackFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
         using var process = _fixture.GetBbranchProcess("--track", "main");
@@ -55,7 +55,7 @@ public class TrackFlagTests
         }
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithTrackFlagAndNoValue()
     {
         using var process = _fixture.GetBbranchProcess("--track");
