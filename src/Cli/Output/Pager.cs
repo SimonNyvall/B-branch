@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 namespace Bbranch.CLI.Output;
 
-internal static class Pager
+internal class Pager : IPager
 {
-    public static void StartLess(string input, string lessCommandPath)
+    public void StartLess(string input, string lessCommandPath)
     {
         var processStartInfo = new ProcessStartInfo
         {

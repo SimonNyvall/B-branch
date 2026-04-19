@@ -38,13 +38,17 @@ HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(option
 
 var lessCommandPath = foundLessCommand ? arguments[0] : null;
 
+var pager = new Pager();
+
 if (options.Contains<quietFlag>())
 {
-    PrintLightTable.Print(branchTable, lessCommandPath);
+    var quietOutput = new PrintLightTable(pager);
+    quietOutput.Print(branchTable, lessCommandPath);
     return;
 }
 
-PrintFullTable.Print(branchTable, lessCommandPath);
+var fullOutput = new PrintFullTable(pager);
+fullOutput.Print(branchTable, lessCommandPath);
 
 static void PrintWarning(string message)
 {

@@ -3,9 +3,16 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
-public static class PrintLightTable
+public class PrintLightTable
 {
-    public static void Print(HashSet<GitBranch> branches, string? lessCommandPath)
+    private readonly IPager _pager;
+
+    public PrintLightTable(IPager pager)
+    {
+        _pager = pager;
+    }
+
+    public void Print(HashSet<GitBranch> branches, string? lessCommandPath)
     {
         if (branches.Count == 0)
         {
@@ -21,7 +28,7 @@ public static class PrintLightTable
             return;
         }
 
-        Pager.StartLess(output, lessCommandPath);
+        _pager.StartLess(output, lessCommandPath);
     }
 
     private static string BuildOutput(HashSet<GitBranch> branches)

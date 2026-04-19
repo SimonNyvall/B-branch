@@ -3,9 +3,16 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
 
-public static class PrintFullTable
+public class PrintFullTable
 {
-    public static void Print(HashSet<GitBranch> branches, string? lessCommandPath)
+    private readonly IPager _pager;
+
+    public PrintFullTable(IPager pager)
+    {
+        _pager = pager;
+    }
+
+    public void Print(HashSet<GitBranch> branches, string? lessCommandPath)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -23,7 +30,7 @@ public static class PrintFullTable
             return;
         }
 
-        Pager.StartLess(output, lessCommandPath);
+        _pager.StartLess(output, lessCommandPath);
     }
 
     private static string BuildOutput(HashSet<GitBranch> branches)
