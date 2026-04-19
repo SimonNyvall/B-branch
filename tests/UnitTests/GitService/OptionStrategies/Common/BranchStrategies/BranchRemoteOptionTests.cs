@@ -1,6 +1,7 @@
 using Bbranch.GitService.Base;
 using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 using Bbranch.Shared.TableData;
+using FakeItEasy;
 
 namespace Bbranch.Tests.GitService.Common.BranchStrategies;
 
@@ -16,10 +17,12 @@ public sealed class BranchRemoteOptionTests
             GitBranch.Default().SetBranch(new Branch("origin/feature/branch", false)),
         };
 
-        IGitRepository mockGitBase = new GitRepositoryMock(remoteBranches);
-        var branchRemoteOptions = new BranchRemoteOptions(mockGitBase);
+        var gitRepositoryFake = A.Fake<IGitRepository>();
+        A.CallTo(() => gitRepositoryFake.GetRemoteBranchNames()).Returns(remoteBranches);
 
-        HashSet<GitBranch> result = branchRemoteOptions.Execute([]);
+        var sut = new BranchRemoteOptions(gitRepositoryFake);
+
+        HashSet<GitBranch> result = sut.Execute([]);
 
         Assert.Equal(2, result.Count);
     }
@@ -27,36 +30,11 @@ public sealed class BranchRemoteOptionTests
     [Fact]
     public void Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoRemoteBranches()
     {
-        IGitRepository mockGitBase = new GitRepositoryMock([]);
-        var branchRemoteOptions = new BranchRemoteOptions(mockGitBase);
+        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var branchRemoteOptions = new BranchRemoteOptions(gitRepositoryFake);
 
         HashSet<GitBranch> result = branchRemoteOptions.Execute([]);
 
         Assert.Empty(result);
-    }
-
-    private sealed class GitRepositoryMock(HashSet<GitBranch> value) : IGitRepository
-    {
-        public HashSet<GitBranch> GetRemoteBranchNames()
-        {
-            return value;
-        }
-
-        public string GetWorkingBranch() => throw new NotImplementedException();
-
-        public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
-
-        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) =>
-            throw new NotImplementedException();
-
-        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) =>
-            throw new NotImplementedException();
-
-        public Task<AheadBehind> GetRemoteAheadBehind(
-            string localBranchName,
-            string remoteBranchName
-        ) => throw new NotImplementedException();
-
-        public DateTime GetLastCommitDate(string branchName) => throw new NotImplementedException();
     }
 }
