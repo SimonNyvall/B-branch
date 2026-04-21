@@ -2,15 +2,23 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class VersionFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class VersionFlagTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public VersionFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithVersionShortFlag()
     {
-        using var process = GetBbranchProcess("-v");
+        using var process = _fixture.GetBbranchProcess("-v");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -21,12 +29,12 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithVersionLongFlag()
     {
-        using var process = GetBbranchProcess("-v");
+        using var process = _fixture.GetBbranchProcess("-v");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -37,12 +45,12 @@ public class VersionFlagTests : IntegrationBase
         Assert.True(match.Success, "Failed to match version pattern.");
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndValue()
     {
-        using var process = GetBbranchProcess("--version", "value");
+        using var process = _fixture.GetBbranchProcess("--version", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -51,12 +59,12 @@ public class VersionFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --version is not allowed\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithVersionFlagAndOtherFlag()
     {
-        using var process = GetBbranchProcess("--version", "-a");
+        using var process = _fixture.GetBbranchProcess("--version", "-a");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

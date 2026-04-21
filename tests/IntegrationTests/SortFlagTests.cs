@@ -3,207 +3,238 @@ using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class SortFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class SortFlagTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public SortFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndNameValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "name");
+        using var process = _fixture.GetBbranchProcess("-s", "name");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
+            .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndNameValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "name");
+        using var process = _fixture.GetBbranchProcess("--sort", "name");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
+        string[] branchNames = lines
+            .Skip(2)
+            .Select(l => l.Split('|')[2].Trim())
+            .Select(l => _fixture.RemoveUnixChars(l).Trim())
+            .ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
         Assert.Equal(branchNames, sortedBranchNames);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndAheadValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "ahead");
+        using var process = _fixture.GetBbranchProcess("-s", "ahead");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
+        int[] aheadValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).ahead),
+        ];
 
         int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndAheadValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "ahead");
+        using var process = _fixture.GetBbranchProcess("--sort", "ahead");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] aheadValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).ahead)];
+        int[] aheadValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).ahead),
+        ];
 
         int[] sortedAheadValues = [.. aheadValues.OrderByDescending(a => a)];
 
         Assert.Equal(aheadValues, sortedAheadValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndBehindValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "behind");
+        using var process = _fixture.GetBbranchProcess("-s", "behind");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
+        int[] behindValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).behind),
+        ];
 
         int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndBehindValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "behind");
+        using var process = _fixture.GetBbranchProcess("--sort", "behind");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        int[] behindValues = [.. lines.Skip(2).Select(l => GetAheadBehindFromString(l).behind)];
+        int[] behindValues =
+        [
+            .. lines.Skip(2).Select(l => _fixture.GetAheadBehindFromString(l).behind),
+        ];
 
         int[] sortedBehindValues = [.. behindValues.OrderByDescending(b => b)];
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithSortFlagAndInvalidValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "invalid");
+        using var process = _fixture.GetBbranchProcess("-s", "invalid");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         output = output.Replace("\r", "");
 
-        Assert.Equal("fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'\n", output);
+        Assert.Equal(
+            "fatal: '--sort' must a criterion of 'date', 'name', 'ahead', or 'behind'\n",
+            output
+        );
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
-        using var process = GetBbranchProcessWithoutPager("-s", "date");
+        using var process = _fixture.GetBbranchProcess("-s", "date");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -225,36 +256,37 @@ public class SortFlagTests : IntegrationBase
             })
             .ToArray();
 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--sort", "date");
+        using var process = _fixture.GetBbranchProcess("--sort", "date");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -276,20 +308,20 @@ public class SortFlagTests : IntegrationBase
             })
             .ToArray();
 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
-
 
     private static string CleanSpaces(string input)
     {
@@ -303,14 +335,36 @@ public class SortFlagTests : IntegrationBase
         if (dateStr.Contains("yesterday"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day - 1, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day - 1,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("today"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("day ago") || dateStr.Contains("days ago"))
         {

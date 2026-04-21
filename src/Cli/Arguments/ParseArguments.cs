@@ -5,7 +5,7 @@ using FlagSystem.Flags;
 
 public sealed class Parse
 {
-    private static FlagCollection _flags = [];
+    private static readonly FlagCollection _flags = [];
 
     public static bool TryParseOptions(string[] args, out FlagCollection options)
     {
@@ -73,12 +73,16 @@ public sealed class Parse
         options.StartsWith("--") || options.StartsWith("-");
 
     private static bool IsNextValueAnOption(string[] arguments, int index) =>
-        (index + 1) < arguments.Length && !(arguments[index + 1].StartsWith("--") || arguments[index + 1].StartsWith("-"));
+        (index + 1) < arguments.Length
+        && !(arguments[index + 1].StartsWith("--") || arguments[index + 1].StartsWith("-"));
 
     private static bool IsOptionDuplicated(string option, Dictionary<string, string> options) =>
         options.ContainsKey(option);
 
-    private static FlagCollection MapOptionsToFlags(Dictionary<string, string?> options, int retry = 1)
+    private static FlagCollection MapOptionsToFlags(
+        Dictionary<string, string?> options,
+        int retry = 1
+    )
     {
         foreach (KeyValuePair<string, string?> option in options)
         {
@@ -94,9 +98,7 @@ public sealed class Parse
                 "--sort" or "-s" => IFlag<SortFlag>.Create(option.Value),
                 "--track" or "-t" => IFlag<TrackFlag>.Create(option.Value),
                 "--version" or "-v" => IFlag<VersionFlag>.Create(option.Value),
-                "--pager" => IFlag<PagerFlag>.Create(option.Value),
-                "--no-pager" => IFlag<NoPagerFlag>.Create(option.Value),
-                _ => null
+                _ => null,
             };
 
             if (retry == 2 && flag is null)
@@ -123,25 +125,34 @@ public sealed class Parse
         return _flags;
     }
 
-    private static Dictionary<string, string?> SplitOptions(Dictionary<string, string?> options, KeyValuePair<string, string?> failOption)
+    private static Dictionary<string, string?> SplitOptions(
+        Dictionary<string, string?> options,
+        KeyValuePair<string, string?> failOption
+    )
     {
         if (!failOption.Key.StartsWith('-'))
         {
-            throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
+            throw new ArgumentException(
+                $"error: pathspec '{failOption.Key}' did not match any file(s) known to git"
+            );
         }
 
         if (failOption.Key.Length == 1)
         {
-            throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
+            throw new ArgumentException(
+                $"error: pathspec '{failOption.Key}' did not match any file(s) known to git"
+            );
         }
 
         if (failOption.Key.Length > 2)
         {
             if (failOption.Key[1] == '-')
             {
-                throw new ArgumentException($"error: pathspec '{failOption.Key}' did not match any file(s) known to git");
+                throw new ArgumentException(
+                    $"error: pathspec '{failOption.Key}' did not match any file(s) known to git"
+                );
             }
-        }        
+        }
 
         foreach (char flag in failOption.Key.TrimStart('-'))
         {

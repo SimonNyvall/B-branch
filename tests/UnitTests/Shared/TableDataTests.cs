@@ -2,6 +2,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.Shared;
 
+[Trait("Category", "Unit")]
 public sealed class TableDataTests
 {
     [Fact]
@@ -10,7 +11,7 @@ public sealed class TableDataTests
         AheadBehind aheadBehind = new(1, 2);
 
         var gitBranch = GitBranch.Default().SetAheadBehind(aheadBehind);
-        
+
         Assert.Equal(aheadBehind, gitBranch.AheadBehind);
     }
 

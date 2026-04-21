@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,6 +11,7 @@
         <DisableParallelization>true</DisableParallelization>
         <ParallelizeAssemblies>false</ParallelizeAssemblies>
         <ParallelizeTestCollections>false</ParallelizeTestCollections>
+        <TestCaseFilter>Category==Integration</TestCaseFilter>
       </RunConfiguration>
     </RunSettings>
   </PropertyGroup>
@@ -32,5 +32,4 @@
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
-
 </Project>

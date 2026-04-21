@@ -1,27 +1,35 @@
-using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class NoFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class NoFlagTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public NoFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
-        using var process = GetBbranchProcessWithoutPager();
+        using var process = _fixture.GetBbranchProcess();
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-    
-        AssertHeader(lines);
+
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -42,17 +50,18 @@ public class NoFlagTests : IntegrationBase
                 return dateWithDescription;
             })
             .ToArray();
- 
-        string[] sortedCommitDates = commitDates.Select(dateStr => new
-        {
-            OriginalString = dateStr,
-            DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
-            OrderPriority = GetOrderPriority(dateStr)
-        })
-       .OrderBy(x => x.OrderPriority)
-       .ThenByDescending(x => x.DateTime)
-       .Select(x => x.OriginalString)
-       .ToArray();
+
+        string[] sortedCommitDates = commitDates
+            .Select(dateStr => new
+            {
+                OriginalString = dateStr,
+                DateTime = ParseRelativeDate(CleanSpaces(dateStr)),
+                OrderPriority = GetOrderPriority(dateStr),
+            })
+            .OrderBy(x => x.OrderPriority)
+            .ThenByDescending(x => x.DateTime)
+            .Select(x => x.OriginalString)
+            .ToArray();
 
         Assert.Equal(sortedCommitDates, commitDates);
     }
@@ -69,14 +78,36 @@ public class NoFlagTests : IntegrationBase
         if (dateStr.Contains("yesterday"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day - 1, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day - 1,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("today"))
         {
             string timePart = dateStr.Split(' ')[0];
-            DateTime parsedTime = DateTime.ParseExact(timePart, "HH:mm", CultureInfo.InvariantCulture);
-            return new DateTime(now.Year, now.Month, now.Day, parsedTime.Hour, parsedTime.Minute, 0);
+            DateTime parsedTime = DateTime.ParseExact(
+                timePart,
+                "HH:mm",
+                CultureInfo.InvariantCulture
+            );
+            return new DateTime(
+                now.Year,
+                now.Month,
+                now.Day,
+                parsedTime.Hour,
+                parsedTime.Minute,
+                0
+            );
         }
         else if (dateStr.Contains("day ago") || dateStr.Contains("days ago"))
         {
@@ -103,4 +134,3 @@ public class NoFlagTests : IntegrationBase
             return 5; // Default for unknown formats
     }
 }
-

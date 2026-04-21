@@ -16,6 +16,9 @@ public sealed class CompositeOptionStrategy(List<IOption> options) : IOption
 
     public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
     {
-        return options.Aggregate(branches, (current, strategyOption) => strategyOption.Execute(current));
+        return options.Aggregate(
+            branches,
+            (current, strategyOption) => strategyOption.Execute(current)
+        );
     }
 }

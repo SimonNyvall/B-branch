@@ -16,7 +16,8 @@ internal sealed class GitRepositoryLocationCommand : AbstractCommand<string>
 
         process.WaitForExit();
 
-        if (string.IsNullOrWhiteSpace(output)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(output))
+            return string.Empty;
 
         return output.Trim();
     }

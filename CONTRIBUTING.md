@@ -1,85 +1,163 @@
 # Contributing to B-branch
 
-Welcome to B-branch! We are thrilled to have you here, and we appreciate your interest in contributing to our project. By contributing, you help make this project even better for everyone.
-How to Contribute
+Welcome to **B-branch** 👋
+We’re glad you’re here and appreciate your interest in contributing! Every contribution helps improve the project for everyone.
 
-## Get Started
+---
 
-- Fork the repository on GitHub.
+## 🚀 Getting Started
 
-- Clone your fork of the repository locally:
+1. **Fork the repository** on GitHub
+
+2. **Clone your fork locally**
 
 ```sh
-git clone https://github.com/<your-username>/B-branch.git && cd B-branch
+git clone https://github.com/<your-username>/B-branch.git
+cd B-branch
 ```
 
-Create a new branch for your changes:
+3. **Create a new branch**
+
 ```sh
 git checkout -b feature/your-feature-name
 ```
-Please use a descriptive branch name that reflects the feature or fix you are working on.
 
-Make your changes and commit them to your branch:
+Use a descriptive branch name that reflects your change.
+
+4. **Make your changes and commit**
 
 ```sh
-git commit -m 'feat: add new feature'
+git commit -m "feat: add new feature"
 ```
 
-## Creating a development environment
+---
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-Prerequisites
+## 🛠 Development Environment
 
-- [git](https://git-scm.com/downloads) 2.39.2 or later
+These instructions will help you set up a local development environment.
 
-- [.NET 10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) SDK
+### Prerequisites
 
-- [nerd-fonts](https://www.nerdfonts.com/font-downloads) 2.1.0 or later **(optional)**
+* [Git](https://git-scm.com/downloads) (2.39.2 or later)
+* [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+* [Docker](https://docs.docker.com/desktop/) *(for integration tests)*
+* [Nerd Fonts](https://www.nerdfonts.com/font-downloads) *(optional but recommended)*
 
-- [docker](https://docs.docker.com/desktop/setup/install/windows-install/) **(Integration Tests)**
+> ℹ️ Nerd Fonts improve how icons are displayed in the terminal.
 
-> [!INFO]
-> Nerd fonts are optional but recommended for the best experience. The font is used to display the icon information in the terminal.
+---
 
-In case on installing B-branch on your system, you can find the alias link in the the `.gitconfig` file. The alias is `bb` and points to the executable. The executable is located in the `bin` folder of the project. Below is the common location of the `.gitconfig` file.
+## ⚙️ Git Alias Setup (Optional)
 
-| OS      | Location of .gitconfig       |
-| ------- | ---------------------------- |
-| Linux   | ~/.gitconfig                 |
-| MacOS   | ~/.gitconfig                 |
-| Windows | C:\Users\USERNAME\.gitconfig |
+B-branch can be used via a Git alias (`bb`).
+This is defined in your `.gitconfig` file.
 
-### Running, building and testing B-branch
-There are multiple ways to run, build and test B-branch. Below are the most common ways to do so.
-- **Run B-branch**: To run B-branch, chnage directory to `./src/CLI` and run the command `dotnet run` in the terminal. Or you can press F5 in VS Code to run the project as well.
-- **Build B-branch**: In the root of the project, is a `B-branch.sln` file that links to the **B-branch** executable, as well as the Unit and Integration tests. You can build the project by running the command `dotnet build` in the terminal.
-- **Run Unit Tests**: Running the command `dotnet test` in the root of the project will not work due to it being linked to the Integration tests. To run the unit tests, navigate to the `./tests/UnitTests` directory and run the command `dotnet test`.
-- **Run Integration Tests**: To run the Integration tests, make sure to have docker install on your system. In the root of the proejct, run the command `docker build -t b-branch-integration-tests .` to build the docker image. Then run the command `docker run b-branch-integration-tests` to run the tests. This will create a container with the right environment to run the tests.
+Common locations:
 
-## Conversations
+| OS      | Path                           |
+| ------- | ------------------------------ |
+| Linux   | `~/.gitconfig`                 |
+| macOS   | `~/.gitconfig`                 |
+| Windows | `C:\Users\USERNAME\.gitconfig` |
 
-- **File nameing**: Please make sure to follow the naming conventions of the project. Where top level directories or files follow the [camelCase](https://en.wikipedia.org/wiki/Camel_case) naming convention, meanwhile project directories and files follow the [PascalCase](https://en.wikipedia.org/wiki/PascalCase) naming convention.
+The alias points to the compiled executable, typically found in the `bin` directory.
 
-- **Commit messages**: Please write clear commit messages, more clear then the one above at least.
-The repo typically follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
+---
 
-- **PRs**: Link your Pull request to an issue if it exists. If it doesn't exist, please motivate why the PR is needed.
+## ▶️ Running, Building & Testing
 
-## Code of Conduct
+### Run the Cli
 
-Please note that we have a Code of Conduct in place to ensure a friendly and welcoming environment for all contributors. By participating in this project, you are expected to uphold this code.
-Help and Support
+```sh
+cd ./src/Cli
+dotnet run
+```
 
-If you need any help or have questions, feel free to open an issue in the repository. We are here to assist you.
+Or press **F5** in VS Code.
 
-## Reporting Bugs
+---
 
-Please help us improve B-branch by reporting any bugs you encounter.
-Bugs can be reported in the projects [issue tracker](https://github.com/SimonNyvall/B-branch/issues).
+### Build the project
 
-## Feature Requests
+```sh
+dotnet build
+```
 
-If you have a feature request, please open an [issue](https://github.com/SimonNyvall/B-branch/issues) and explain the feature you would like to see.
-License.
+Run this from the project root (where `B-branch.sln` is located).
 
-By contributing to B-branch, you agree that your contributions will be licensed under the [GPL-3.0 LICENSE](./LICENSE).
+---
+
+### Run Unit Tests
+
+```sh
+cd ./tests/UnitTests
+dotnet test
+```
+
+---
+
+### Run Integration Tests
+
+Make sure Docker is installed and running:
+
+```sh
+docker build -t b-branch-integration-tests .
+docker run b-branch-integration-tests
+```
+
+---
+
+## 📏 Conventions
+
+### Naming
+
+* Top-level files/folders: **camelCase**
+* Project files/folders: **PascalCase**
+
+---
+
+### Commit Messages
+
+* Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+* Write clear and descriptive messages
+
+Example:
+
+```sh
+feat: add branch filtering
+fix: handle null reference in Cli output
+```
+
+---
+
+### Pull Requests
+
+* Link to an existing issue if possible
+* If no issue exists, explain **why** the change is needed
+* Keep PRs focused and small when possible
+
+---
+
+## 🐛 Reporting Bugs
+
+Found a bug? Please report it in the issue tracker:
+https://github.com/SimonNyvall/B-branch/issues
+
+---
+
+## 💡 Feature Requests
+
+Have an idea? Open an issue and describe the feature you’d like to see:
+https://github.com/SimonNyvall/B-branch/issues
+
+---
+
+## 🤝 Code of Conduct
+
+Please follow the project’s Code of Conduct to help maintain a welcoming and respectful community.
+
+---
+
+## 📄 License
+
+By contributing to B-branch, you agree that your contributions will be licensed under the **GPL-3.0 License**.

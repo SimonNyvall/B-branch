@@ -1,64 +1,64 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class AllFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class AllFlagTests
 {
-    private readonly ITestOutputHelper _output;
+    private readonly DefaultFixture _fixture;
 
-    public AllFlagTests(ITestOutputHelper output)
+    public AllFlagTests(DefaultFixture fixture)
     {
-        _output = output;
-        WarmUp();
+        _fixture = fixture;
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithAllShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-a");
+        using var process = _fixture.GetBbranchProcess("-a");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithAllLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--all");
+        using var process = _fixture.GetBbranchProcess("--all");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithAllFlagAndValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--all", "value");
+        using var process = _fixture.GetBbranchProcess("--all", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -67,12 +67,12 @@ public class AllFlagTests : IntegrationBase
         Assert.Equal("fatal: Value for --all is not allowed\n", output);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithAllAndRemoteFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--all", "--remote");
+        using var process = _fixture.GetBbranchProcess("--all", "--remote");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

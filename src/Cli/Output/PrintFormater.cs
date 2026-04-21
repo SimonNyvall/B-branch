@@ -1,56 +1,34 @@
-using System.Globalization;
-
 namespace Bbranch.CLI.Output;
 
 public static class PrintFormater
 {
+    private const string FiveSpacer = "     ";
+    private const string FourSpacer = "    ";
+
     public static string GetTimePrefix(DateTime lastCommit, DateTime currentTime)
     {
-        CultureInfo culture = CultureInfo.InvariantCulture;
-        DateTimeFormatInfo dateTimeFormat = culture.DateTimeFormat;
-
         if (lastCommit.Year <= 1601)
-        {
             return "--";
-        }
 
-        int days = (currentTime - lastCommit).Days;
+        int days = (currentTime.Date - lastCommit.Date).Days;
 
         if (days == 0)
-        {
-            string timeFormat;
-
-            if (dateTimeFormat.ShortTimePattern.Contains("tt"))
-            {
-                timeFormat = (lastCommit.Hour > 9 && lastCommit.Hour < 13) ? "h:mm tt" : "h:mm  tt";
-            }
-            else
-            {
-                timeFormat = "HH:mm";
-            }
-
-            string time = lastCommit.ToString(timeFormat, culture);
-
-            return $"{time} today";
-        }
+            return $"{lastCommit:HH:mm} today";
 
         if (days == 1)
-        {
-            string time = lastCommit.ToString("HH:mm", culture);
-            return $"{time} yesterday";
-        }
+            return $"{lastCommit:HH:mm} yesterday";
 
-        if (days >= 30)
-        {
-            DateTime pastDate = currentTime.AddDays(-days);
-            int monthDifference = ((currentTime.Year - pastDate.Year) * 12) + currentTime.Month - pastDate.Month;
+        if (days < 30)
+            return $"{days}{FiveSpacer}days ago";
 
-            return monthDifference > 1 ? $"{monthDifference}     months ago" : "1     month ago";
-        }
+        int months = (int)Math.Round(days / 30.0);
 
-        string timeElapsed = days == 1 ? "day" : "days";
+        if (months <= 1)
+            return $"1{FiveSpacer}month ago";
 
-        int padLeft = 5 - days.ToString().Length;
-        return $"{days} {new string(' ', padLeft)}{timeElapsed} ago";
+        if (months <= 9)
+            return $"{months}{FiveSpacer}months ago";
+
+        return $"{months}{FourSpacer}months ago";
     }
 }

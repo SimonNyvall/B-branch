@@ -3,6 +3,7 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 
+[Trait("Category", "Unit")]
 public sealed class ContainsOptionTests
 {
     [Fact]
@@ -12,7 +13,7 @@ public sealed class ContainsOptionTests
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),    
+            GitBranch.Default().SetBranch(new Branch("branch", true)),
         };
 
         var option = new ContainsOption("branch");
@@ -30,10 +31,27 @@ public sealed class ContainsOptionTests
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),    
+            GitBranch.Default().SetBranch(new Branch("branch", true)),
         };
 
         var option = new ContainsOption("main;feature;branch");
+
+        var result = option.Execute(branches);
+
+        Assert.Equal(3, result.Count);
+    }
+
+    [Fact]
+    public void Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfRegexContainsPatter()
+    {
+        var branches = new HashSet<GitBranch>
+        {
+            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new Branch("branch", true)),
+        };
+
+        var option = new ContainsOption("ma*;fea*;bra*");
 
         var result = option.Execute(branches);
 

@@ -1,58 +1,66 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class TrackFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class TrackFlagTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public TrackFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithTrackShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-t", "main");
-      
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        using var process = _fixture.GetBbranchProcess("-t", "main");
+
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithTrackLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--track", "main");
+        using var process = _fixture.GetBbranchProcess("--track", "main");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        AssertHeader(lines);
+        _fixture.AssertHeader(lines);
 
         foreach (string line in lines.Skip(2))
         {
-            var (ahead, behind) = GetAheadBehindFromString(line);
+            var (ahead, behind) = _fixture.GetAheadBehindFromString(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithTrackFlagAndNoValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--track");
+        using var process = _fixture.GetBbranchProcess("--track");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         output = output.Replace("\r", "");
 

@@ -4,6 +4,7 @@ using Bbranch.CLI.Arguments.FlagSystem.Flags;
 
 namespace Bbranch.Tests.CLI.Arguments;
 
+[Trait("Category", "Unit")]
 public class ParseArgumentsTests
 {
     [Fact]

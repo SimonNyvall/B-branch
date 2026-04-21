@@ -1,14 +1,22 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class QuietFlagTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class QuietFlagTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public QuietFlagTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithQuietShortFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("-q");
-       
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        using var process = _fixture.GetBbranchProcess("-q");
+
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -19,13 +27,13 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Branch Name ", lines[0]);
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
-    
-    [Fact(Timeout = 120000)]
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithQuietLongFlag()
     {
-        using var process = GetBbranchProcessWithoutPager("--quiet");
+        using var process = _fixture.GetBbranchProcess("--quiet");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -37,12 +45,12 @@ public class QuietFlagTests : IntegrationBase
         Assert.DoesNotContain("Last commit ", lines[0]);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithQuietFlagAndValue()
     {
-        using var process = GetBbranchProcessWithoutPager("--quiet", "value");
+        using var process = _fixture.GetBbranchProcess("--quiet", "value");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

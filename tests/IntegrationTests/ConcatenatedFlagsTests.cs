@@ -1,14 +1,22 @@
 namespace Bbranch.IntegrationTests;
 
-[Collection("Sequential")]
-public class ConcatenatedFlagsTests : IntegrationBase
+[Collection(Constants.DefaultFixtureName)]
+[Trait("Category", "Integration")]
+public class ConcatenatedFlagsTests
 {
-    [Fact(Timeout = 120000)]
+    private readonly DefaultFixture _fixture;
+
+    public ConcatenatedFlagsTests(DefaultFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithAllAndQuietFlagsConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qa");
+        using var process = _fixture.GetBbranchProcess("-qa");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -25,12 +33,12 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.Contains(lines, l => !l.Contains("origin"));
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_ValidOutput_WithRemoteAndQuietFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-rq");
+        using var process = _fixture.GetBbranchProcess("-rq");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -44,27 +52,30 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.All(lines, l => l.Contains("origin"));
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithDoubleDashAndQuietAndAllFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("--qa");
+        using var process = _fixture.GetBbranchProcess("--qa");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
         output = output.Replace("\r", "");
         string[] outputLines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        Assert.Equal("error: pathspec '--qa' did not match any file(s) known to git", outputLines[0]);
+        Assert.Equal(
+            "error: pathspec '--qa' did not match any file(s) known to git",
+            outputLines[0]
+        );
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithDuplicateFlagsConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qaq");
+        using var process = _fixture.GetBbranchProcess("-qaq");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 
@@ -74,12 +85,12 @@ public class ConcatenatedFlagsTests : IntegrationBase
         Assert.Equal("error: duplicated option: -q", outputLines[0]);
     }
 
-    [Fact(Timeout = 120000)]
+    [IntegrationFact]
     public async Task IntegrationTest_InvalidOutput_WithUnkownFlagConcatenated()
     {
-        using var process = GetBbranchProcessWithoutPager("-qz");
+        using var process = _fixture.GetBbranchProcess("-qz");
 
-        var (output, error) = await RunProcessWithTimeoutAsync(process);
+        var (output, error) = await _fixture.RunProcessWithTimeoutAsync(process);
 
         Assert.True(string.IsNullOrEmpty(error), error);
 

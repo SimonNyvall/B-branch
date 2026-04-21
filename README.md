@@ -43,40 +43,45 @@ Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** w
 **key benefits**
 
 - Quickly identify the branch you need.
-- Access additional branch details not available with git branch.
+- Access additional branch details **not** available with `git branch`.
 - Enjoy reliable, high-performance, cross-platform support.
 
 ### Features
 
-- **Branch information**: Displays the branch name, the date of the last commit, the number of commits ahead or behind the upstream branch, and the branch description.
+- **Branch information**: Displays the branch name, the date of the last commit, the number of commits ahead or behind the upstream branch, and the branch descriptions.
 
 - **Branch description**: Git offers the ability to add a description to a branch. B-branch displays this description in the output.
 
-- **Pager interface**: If the output is too large to fit on the screen, the output will be displayed in a pager interface. While in the pager interface.
-  - `q`: Quit the pager interface.
-  - `j` OR `Down Arrow`: Move down one line.
-  - `k` OR `Up Arrow`: Move up one line.
-  - `f` OR `Space`: Move down one page.
-  - `b`: Move up one page.
-  - `g` OR `HOME`: Move to the top of the output.
-  - `G` OR `END`: Move to the bottom of the output.
-  - `/`: Search for a string in the output.
-  - `Escape`: Clear the search.
+- **Pagination interface**: If the output is too large to fit on the screen, the output will be displayed in a pager interface. While in the pager interface.
+  - `Down arrow`, `Enter`, `e` or `j`: Move forward one line.
+  - `Up arrow`, `y` or `k`: Move backward onw line.
+  - `Space bar` or `f`: Move forward one page.
+  - `b`: Move backward one page.
+  - `/pattern`: Search forward for matching patterns.
+  - `?pattern`: Search backward for matching patterns.
+  - `n`: Repeat previous search.
+  - `N`: Repeat previous search in reverse direction.
+  - `g`: Go to the first line in the file.
+  - `Ng`: Go to the Nth line in the file.
+  - `G`: Go to the last line in the file.
+  - `p`: Go to the beginning of the file.
+  - `Np`: Go to N percent into file.
+  - `h`: Display help.
+  - `q`: Exit less.
 
 ### Example
 
-Let's say you have a git repository with a lot of branches. You want to remove the branches that are no longer needed.
+Explore and analyze your repository branches without making any changes.
+
+For example, list your most recently updated branches, show only those related to a feature:
 
 ```sh
-git bb --no-contains "main;development" -q \
-| awk '{print substr($0, 3)}' \
-| xargs -I {} git branch -D {}
+git bb --sort date --contains "feature" --print-top 10
 ```
 
-> [!IMPORTANT]
-> This command will delete all branches that do not contain the strings "main" or "development". Be careful when using this command.
-
 ---
+
+#### Branch Descriptions
 
 The ability to see the branch description is also a feature that is not available in the standard `git branch` command. To add a description to a branch, use the following command:
 
@@ -84,8 +89,17 @@ The ability to see the branch description is also a feature that is not availabl
 git branch --edit-description
 ```
 
-> [!NOTE]
-> Keep in mind that the description is stored in the `.git/EDIT_DESCRIPTION` and does not support a description on multiple branches.
+You can define a description for each branch by including the branch name in square brackets (`[]`) followed by a short description on the next line.
+
+``` text
+[main]
+This is the main production branch.
+
+[development]
+This branch is used for ongoing development.
+```
+
+<img align="center" src="./images/description-banner.png"/>
 
 ## Usage
 
@@ -95,46 +109,47 @@ git bb [<options>] [<additional arguments>]
 
 ### Options
 
-#### Generic options:
-| Flag                 | Description                                            |
+#### Generic options
+
+| Flag                    | Description                                            |
 |-------------------------|--------------------------------------------------------|
 | `-h`, `--help`          | Show the help message.                                 |
 | `-v`, `--version`       | Show the current version of the tool.                  |
 | `-q`, `--quiet`         | Suppress additional output, showing only branch names. |
 
-#### Filtering options:
-| Flag                      | Description                                         |
-|------------------------------|-----------------------------------------------------|
-| `-c`, `--contains` <string>  | List branches containing the specified string.      |
-| `-n`, `--no-contains` <string>| List branches not containing the specified string. |
-| `-s`, `--sort` <criterion>   | Sort branches by `<date|name|ahead|behind>`.        |
-| `-t`, `--track` <branch>     | Show upstream relationship of the specified branch. |
-| `-a`, `--all`                | List both local and remote branches.                |
-| `-r`, `--remote`             | List only remote branches.                          |
-| `-p`, `--print-top` <N>      | Show the top N branches based on sort criterion.    |
+#### Filtering options
 
-#### Display options:
-| Flag        | Description                             |
-|----------------|----------------------------------------|
-| `--pager`      | Force output to display in a pager.    |
-| `--no-pager`   | Display output directly in the console.|
+| Flag                           | Description                                         |
+|--------------------------------|-----------------------------------------------------|
+| `-c`, `--contains` <string>    | List branches containing the specified string.      |
+| `-n`, `--no-contains` <string> | List branches not containing the specified string.  |
+| `-s`, `--sort` <criterion>     | Sort branches by `<date|name|ahead|behind>`.        |
+| `-t`, `--track` <branch>       | Show upstream relationship of the specified branch. |
+| `-a`, `--all`                  | List both local and remote branches.                |
+| `-r`, `--remote`               | List only remote branches.                          |
+| `-p`, `--print-top` <N>        | Show the top N branches based on sort criterion.    |
 
 ---
 
 ## Installation :computer:
+
 Install the latest release for free! If you're using **Cygwin**, **Git Bash**, **MSYS2**, **Bash** in linux or **WSL**, you can also use the install script:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
 ```
 
 >[!NOTE]
 > The install script will also update the tool if it is already installed. If you want to install a specific version, you can use the `--version` flag:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh -s -- --version <version>
 ```
 
 ### Uninstall
+
 If you want to uninstall the tool, you can run the following command:
+
 ```sh
 curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/uninstall.sh | sh
 ```
@@ -146,21 +161,14 @@ For a manual installation, follow the steps in the [release](https://github.com/
 > [!NOTE]
 > For full experience, download the latest version of the [nerd-fonts](https://www.nerdfonts.com/font-downloads) and install it on your system.
 > If you already have a nerd font installed, you can run the following command to tell B-branch to display characters correctly:
+>
 > ```sh
 > git config --global vars.useNerdFonts true
 > ```
 
 ### Next Release
-See the latest work being done in the [project backlog](https://github.com/users/SimonNyvall/projects/10).
 
-- `!command` to pager view to execute commands while in the pager.
-- `n` key in pager to jump the next search result.
-- `N` key in pager to jump to the previous search result.
-- `h` key in pager to show the help message.
-- Multi-branch description support.
-- View stale branches.
-- Regex support for contains and no-contains options.
-- Pre-fetch branches to get latest information.
+See the latest work being panned in the [issues](https://github.com/SimonNyvall/B-branch/issues).
 
 ## Contributing
 
@@ -182,6 +190,9 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 - **Q**: Can I use this instead of the standard `git branch` command?
   - **A**: B-branch only helps developers view branch information. It does not replace the standard `git branch` command.
 
+- **Q**: Why do I get the warning `Less command does not exist` when git bb is ran?
+  - **A**: This means that the `less` command path has changed on your system, simply run the install scirpt again.
+
 - **Q**: Will B-branch slow down git?
   - **A**: No, the extension works with an alias and does not affect the performance of git.
 
@@ -191,3 +202,8 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 - **Q**: Why does B-branch not show the date of the last commit sometimes?
   - **A**: This can happen if the branch has no commits or if the branch has no objects in the repository. A solution to this is to apply [git maintenance](https://git-scm.com/docs/git-maintenance) to the repository, to clean up and optimize the repository objects.
   
+- **Q**: Why does it say `Blocked by Smart App` on `Windows`?
+  - **A**: This is caused by Windows Smart App Control / SmartScreen, which may block unsigned or newly built executables that do not yet have a reputation. Since B-branch is distributed without a code-signing certificate, Windows may treat it as an unknown application. This is a Windows security feature and not an issue with the tool itself.
+
+- **Q**: How do I turn off `Smart App`?
+  - **A**: On `Windows 11` go to `Settings` -> `Privacy & security` -> `Windows Security` -> `App & browser control` -> `Smart App Control settings` -> `off`

@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <ProjectReference Include="..\GitService\GitService.csproj" />
@@ -12,5 +11,4 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
   </PropertyGroup>
-
 </Project>

@@ -10,18 +10,21 @@ internal abstract class AbstractCommand<T>
 
     protected Process ExecuteCommand(string argument)
     {
-        Process process = new() {
-            StartInfo = {
+        Process process = new()
+        {
+            StartInfo =
+            {
                 FileName = "git",
                 Arguments = argument,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                CreateNoWindow = true
-            }
+                CreateNoWindow = true,
+            },
         };
 
-        if (!Directory.Exists(CurrentWorkingDirectory)) throw new DirectoryNotFoundException();
+        if (!Directory.Exists(CurrentWorkingDirectory))
+            throw new DirectoryNotFoundException();
 
         process.StartInfo.WorkingDirectory = CurrentWorkingDirectory;
 
