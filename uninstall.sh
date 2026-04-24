@@ -6,6 +6,45 @@ BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
 
+maybe_remove_unzip() {
+    # Only relevant for Linux
+    if [ "${OS}" != "Linux" ]; then
+        return 0
+    fi
+
+    # If unzip isn't installed, nothing to do
+    if ! command -v unzip >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "Optional: Remove the 'unzip' package?"
+    echo "Warning: Other programs may depend on it."
+    printf "Do you want to uninstall unzip? [y/N]: "
+    read -r answer
+
+    case "$answer" in
+        y|Y)
+            echo "Uninstalling unzip..."
+
+            if command -v apt >/dev/null 2>&1; then
+                sudo apt remove -y unzip
+            elif command -v dnf >/dev/null 2>&1; then
+                sudo dnf remove -y unzip
+            elif command -v pacman >/dev/null 2>&1; then
+                sudo pacman -R --noconfirm unzip
+            else
+                echo "Unsupported package manager. Please remove 'unzip' manually."
+                return 1
+            fi
+
+            echo "'unzip' removed."
+            ;;
+        *)
+            echo "Keeping 'unzip' installed."
+            ;;
+    esac
+}
+
 # Helper function to detect OS
 detect_os() {
     case "$(uname -s)" in
@@ -38,6 +77,8 @@ main() {
     fi
 
     cleanup || { echo "Cleanup failed"; exit 1; }
+
+    maybe_remove_unzip
 
     echo "B-branch uninstallation completed!"
 }
