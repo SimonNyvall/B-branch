@@ -73,6 +73,7 @@ download_binary() {
     case "${ARCH}" in
         x86_64) ARCH="x64" ;;
         aarch64) ARCH="arm64" ;;
+        arm64) ARCH="arm64" ;;
         *) echo "Unsupported architecture: ${ARCH}" && exit 1 ;;
     esac
 
