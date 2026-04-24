@@ -1,51 +1,10 @@
 #!/bin/bash
 set -e
 
-BIN_DIR_UNIX="/usr/local/bin/b-branch"
+BIN_DIR_UNIX="${HOME}/.local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
-
-maybe_remove_unzip() {
-    if [ "${OS}" != "Linux" ]; then
-        return 0
-    fi
-
-    if ! command -v unzip >/dev/null 2>&1; then
-        return 0
-    fi
-
-    # Detect piped execution
-    if [ ! -t 0 ]; then
-        echo "Non-interactive mode detected. Skipping unzip removal."
-        return 0
-    fi
-
-    echo "Optional: Remove the 'unzip' package?" > /dev/tty
-    echo "Warning: Other programs may depend on it." > /dev/tty
-    printf "Do you want to uninstall unzip? [y/N]: " > /dev/tty
-
-    read -r answer < /dev/tty
-
-    case "$answer" in
-        y|Y)
-            echo "Uninstalling unzip..."
-            if command -v apt >/dev/null 2>&1; then
-                sudo apt remove -y unzip
-            elif command -v dnf >/dev/null 2>&1; then
-                sudo dnf remove -y unzip
-            elif command -v pacman >/dev/null 2>&1; then
-                sudo pacman -R --noconfirm unzip
-            else
-                echo "Unsupported package manager."
-                return 1
-            fi
-            ;;
-        *)
-            echo "Keeping 'unzip' installed."
-            ;;
-    esac
-}
 
 # Helper function to detect OS
 detect_os() {
@@ -79,8 +38,6 @@ main() {
     fi
 
     cleanup || { echo "Cleanup failed"; exit 1; }
-
-    maybe_remove_unzip
 
     echo "B-branch uninstallation completed!"
 }

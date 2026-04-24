@@ -2,7 +2,7 @@
 set -e
 
 # Constants
-BIN_DIR_UNIX="~/.local/bin/b-branch"
+BIN_DIR_UNIX="${HOME}/.local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
@@ -155,9 +155,7 @@ ensure_unzip() {
         return 0
     fi
 
-    echo "The 'unzip' utility is required but not installed."
-    printf "Would you like to install it now? [Y/n]: "
-    read -r answer
+    echo "Installing unzip command."
 
     case "$answer" in
         ""|Y|y)
