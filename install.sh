@@ -2,7 +2,7 @@
 set -e
 
 # Constants
-BIN_DIR_UNIX="/usr/local/bin/b-branch"
+BIN_DIR_UNIX="~/.local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
