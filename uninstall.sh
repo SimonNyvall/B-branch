@@ -15,20 +15,21 @@ maybe_remove_unzip() {
         return 0
     fi
 
-    echo "Optional: Remove the 'unzip' package?"
-    echo "Warning: Other programs may depend on it."
-    printf "Do you want to uninstall unzip? [y/N]: "
-
-    if [ -t 0 ]; then
-        read -r answer
-    else
-        read -r answer < /dev/tty
+    # Detect piped execution
+    if [ ! -t 0 ]; then
+        echo "Non-interactive mode detected. Skipping unzip removal."
+        return 0
     fi
+
+    echo "Optional: Remove the 'unzip' package?" > /dev/tty
+    echo "Warning: Other programs may depend on it." > /dev/tty
+    printf "Do you want to uninstall unzip? [y/N]: " > /dev/tty
+
+    read -r answer < /dev/tty
 
     case "$answer" in
         y|Y)
             echo "Uninstalling unzip..."
-
             if command -v apt >/dev/null 2>&1; then
                 sudo apt remove -y unzip
             elif command -v dnf >/dev/null 2>&1; then
@@ -39,8 +40,6 @@ maybe_remove_unzip() {
                 echo "Unsupported package manager."
                 return 1
             fi
-
-            echo "'unzip' removed."
             ;;
         *)
             echo "Keeping 'unzip' installed."
