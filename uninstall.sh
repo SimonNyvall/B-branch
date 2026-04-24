@@ -7,12 +7,10 @@ GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
 
 maybe_remove_unzip() {
-    # Only relevant for Linux
     if [ "${OS}" != "Linux" ]; then
         return 0
     fi
 
-    # If unzip isn't installed, nothing to do
     if ! command -v unzip >/dev/null 2>&1; then
         return 0
     fi
@@ -20,7 +18,12 @@ maybe_remove_unzip() {
     echo "Optional: Remove the 'unzip' package?"
     echo "Warning: Other programs may depend on it."
     printf "Do you want to uninstall unzip? [y/N]: "
-    read -r answer
+
+    if [ -t 0 ]; then
+        read -r answer
+    else
+        read -r answer < /dev/tty
+    fi
 
     case "$answer" in
         y|Y)
@@ -33,7 +36,7 @@ maybe_remove_unzip() {
             elif command -v pacman >/dev/null 2>&1; then
                 sudo pacman -R --noconfirm unzip
             else
-                echo "Unsupported package manager. Please remove 'unzip' manually."
+                echo "Unsupported package manager."
                 return 1
             fi
 
