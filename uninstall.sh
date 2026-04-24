@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-BIN_DIR_UNIX="/usr/local/bin/b-branch"
+BIN_DIR_UNIX="${HOME}/.local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"

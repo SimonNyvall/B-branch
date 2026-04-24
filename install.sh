@@ -2,7 +2,7 @@
 set -e
 
 # Constants
-BIN_DIR_UNIX="/usr/local/bin/b-branch"
+BIN_DIR_UNIX="${HOME}/.local/bin/b-branch"
 BIN_DIR_WIN="AppData\\Local\\b-branch"
 GITCONFIG_UNIX="${HOME}/.gitconfig"
 GITCONFIG_WIN="$USERPROFILE\\.gitconfig"
@@ -121,7 +121,11 @@ download_binary() {
 
     if [ -f "${ZIP_FILE}" ]; then
         echo "Extracting B-branch archive..."
-        unzip -o "${ZIP_FILE}" -d $"${TARGET_DIR}" || { echo "Unzip failed"; exit 1; }
+        unzip -o "${ZIP_FILE}" -d "${TARGET_DIR}" || { echo "Unzip failed"; exit 1; }
+
+        if [ "${OS}" != "win" ]; then
+            chmod +x "${FINAL_BINARY}/Cli" || { echo "Failed to make binary executable"; exit 1; }
+        fi
 
         rm -f "${ZIP_FILE}"
     else
@@ -143,12 +147,53 @@ configure_git_alias() {
     echo "B-branch installation was successful!"
 }
 
+ensure_unzip() {
+    if [ "$(uname -s)" != "Linux"]; then
+        return 0
+    fi
+
+    # Already installed
+    if command -v unzip >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "Installing unzip command."
+
+    case "$answer" in
+        ""|Y|y)
+            echo "Installing unzip..."
+
+            if command -v apt >/dev/null 2>&1; then
+                sudo apt update && sudo apt install -y unzip
+            elif command -v dnf >/dev/null 2>&1; then
+                sudo dnf install -y unzip
+            elif command -v pacman >/dev/null 2>&1; then
+                sudo pacman -S --noconfirm unzip
+            else
+                echo "Unsupported package manager. Please install 'unzip' manually."
+                exit 1
+            fi
+
+            # Verify installation
+            if ! command -v unzip >/dev/null 2>&1; then
+                echo "Installation failed or unzip still not found."
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Cannot continue without 'unzip'."
+            exit 1
+            ;;
+    esac
+}
+
 main() {
     OS=$(detect_os)
     if [ "${OS}" = "UNKNOWN" ]; then
         echo "Unsupported OS." && exit 1
     fi
 
+    ensure_unzip || { echo "Install of unzip failed"; exit 1; }
     cleanup || { echo "Cleanup failed"; exit 1; }
     download_binary || { echo "Download failed"; exit 1; }
     configure_git_alias || { echo "Git alias configuration failed"; exit 1; }

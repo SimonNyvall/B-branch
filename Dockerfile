@@ -38,4 +38,4 @@ WORKDIR /app/tests/IntegrationTests
 
 ENV RUN_INTEGRATION_TESTS=true
 
-ENTRYPOINT ["dotnet", "test", "--no-build", "-v", "n"]
+ENTRYPOINT ["dotnet", "test", "--no-build", "--results-directory", "/app/TestResults", "--logger", "trx"]
