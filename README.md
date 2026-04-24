@@ -207,6 +207,3 @@ This project is licensed under the [GPL-3.0 License](./LICENSE) - see the LICENS
 
 - **Q**: How do I turn off `Smart App`?
   - **A**: On `Windows 11` go to `Settings` -> `Privacy & security` -> `Windows Security` -> `App & browser control` -> `Smart App Control settings` -> `off`
-
-- **Q**: Why do I get `bash: line 1: /usr/local/bin/b-branch/b-branch-mac-arm64/Cli: Permission denied` on mac?
-  - **A**: Allow permissions for the executable by running `chmod +x /usr/local/bin/b-branch/b-branch-mac-arm64/Cli`

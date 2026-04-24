@@ -123,7 +123,9 @@ download_binary() {
         echo "Extracting B-branch archive..."
         unzip -o "${ZIP_FILE}" -d "${TARGET_DIR}" || { echo "Unzip failed"; exit 1; }
 
-        chmod +x "${FINAL_BINARY}/Cli" || { echo "Failed to make binary executable"; exit 1; }
+        if [ "${OS}" != "win" ]
+            chmod +x "${FINAL_BINARY}/Cli" || { echo "Failed to make binary executable"; exit 1; }
+        fi
 
         rm -f "${ZIP_FILE}"
     else

@@ -27,7 +27,12 @@
             "label": "docker-build-integration",
             "type": "process",
             "command": "docker",
-            "args": ["build", "-t", "b-branch-integration-tests", "."],
+            "args": [
+                "build",
+                "-t",
+                "b-branch-integration-tests",
+                "."
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             }
@@ -36,16 +41,43 @@
             "label": "docker-run-integration",
             "type": "process",
             "command": "docker",
-            "args": ["run", "--rm", "b-branch-integration-tests"]
+            "args": [
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}/TestResults:/app/TestResults",
+                "b-branch-integration-tests"
+            ]
+        },
+        {
+            "label": "docker-clean-integration-container",
+            "type": "process",
+            "command": "docker",
+            "args": [
+                "rm",
+                "-f",
+                "b-branch-integration-tests"
+            ]
+        },
+        {
+            "label": "docker-clean-integration-image",
+            "type": "process",
+            "command": "docker",
+            "args": [
+                "rmi",
+                "b-branch-integration-tests"
+            ]
         },
         {
             "label": "run-integration-tests",
             "dependsOn": [
                 "docker-build-integration",
-                "docker-run-integration"
+                "docker-run-integration",
+                "docker-clean-integration-container",
+                "docker-clean-integration-image"
             ],
             "dependsOrder": "sequence",
-            "group": "test"
+            "group": "build"
         },
         {
             "label": "aot-test-build",
