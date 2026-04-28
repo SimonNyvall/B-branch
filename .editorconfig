@@ -24,6 +24,7 @@ indent_size = 2
 
 #### Core EditorConfig Options ####
 dotnet_diagnostic.IDE0130.severity = none
+dotnet_diagnostic.IDE0005.severity = error
 
 # Indentation and spacing
 indent_size = 4

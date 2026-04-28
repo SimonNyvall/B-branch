@@ -9,11 +9,6 @@ public interface IOption
 
 public sealed class CompositeOptionStrategy(List<IOption> options) : IOption
 {
-    public int Length
-    {
-        get => options.Count;
-    }
-
     public IReadOnlyList<IOption> Options => options;
 
     public void AddStrategyOption(IOption option)

@@ -29,7 +29,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -50,7 +50,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchAllOptions>(flag),
@@ -71,7 +71,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchRemoteOptions>(flag),
@@ -92,7 +92,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -113,7 +113,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(8, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -135,7 +135,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(8, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -157,7 +157,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -178,7 +178,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -199,7 +199,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -220,7 +220,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -241,7 +241,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(8, BranchTableAssembler._optionStrategies.Length);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
