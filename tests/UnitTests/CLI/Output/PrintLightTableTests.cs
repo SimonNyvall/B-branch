@@ -15,8 +15,7 @@ public class PrintLightTableTests
 
         sut.Print(branches, null);
 
-        A.CallTo(() => pagerFake.StartLess(A<string>.Ignored, A<string>.Ignored))
-            .MustNotHaveHappened();
+        A.CallTo(() => pagerFake.StartLess(A<string>._, A<string>._)).MustNotHaveHappened();
     }
 
     [Fact]
@@ -30,7 +29,6 @@ public class PrintLightTableTests
 
         sut.Print(branches, null);
 
-        A.CallTo(() => pagerFake.StartLess(A<string>.Ignored, A<string>.Ignored))
-            .MustNotHaveHappened();
+        A.CallTo(() => pagerFake.StartLess(A<string>._, A<string>._)).MustNotHaveHappened();
     }
 }
