@@ -68,4 +68,25 @@ public sealed class TableDataTests
 
         Assert.Throws<ArgumentException>(() => GitBranch.Default().SetLastCommit(lastCommit));
     }
+
+    [Fact]
+    public void Given_ValidCommitHash_When_SetDetachedHead_Then_SetCommitHash()
+    {
+        var commitHash = "6efb99e";
+
+        var branch = GitBranch.Default().SetDetachedHead(commitHash);
+
+        Assert.Equal(commitHash, branch.DetachedHead.commitHash);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("6efb99e1")]
+    [InlineData("6efb99")]
+    public void Given_InvalidCommitHash_When_SetDetachedHead_Then_Throw_ArgumentException(
+        string commitHash
+    )
+    {
+        Assert.Throws<ArgumentException>(() => GitBranch.Default().SetDetachedHead(commitHash));
+    }
 }

@@ -2,6 +2,7 @@ namespace Bbranch.Shared.TableData;
 
 public sealed class GitBranch
 {
+    private const int ShortCommitHashLength = 7;
     public Branch Branch { get; private set; } = null!;
     public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
@@ -67,6 +68,16 @@ public sealed class GitBranch
 
     public GitBranch SetDetachedHead(string commitHash)
     {
+        if (string.IsNullOrEmpty(commitHash))
+        {
+            throw new ArgumentException("Commit hash cannot be null nor empty");
+        }
+
+        if (commitHash.Length != ShortCommitHashLength)
+        {
+            throw new ArgumentException($"Commit hash must be {ShortCommitHashLength} chats long");
+        }
+
         var detachedHead = new DetachedHead(commitHash);
         DetachedHead = detachedHead;
 
