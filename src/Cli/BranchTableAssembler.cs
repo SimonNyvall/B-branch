@@ -150,6 +150,9 @@ public static class BranchTableAssembler
 
         sortOption = new SortByLastCommitOptions();
         optionStrategies.AddStrategyOption(sortOption);
+
+        var detachedHeadSortOption = new SortDetachedHeadOption();
+        optionStrategies.AddStrategyOption(detachedHeadSortOption);
     }
 
     private static void AddDescriptionOption(CompositeOptionStrategy optionStrategies)

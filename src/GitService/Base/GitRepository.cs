@@ -19,6 +19,8 @@ public sealed class GitRepository : IGitRepository
     private readonly Dictionary<string, string> _commitParentCache = new(MaxCacheSize);
     private readonly Dictionary<string, byte[]> _objectCache = new(MaxCacheSize);
 
+    private string _headContent = string.Empty;
+
     private GitRepository()
     {
         SetGitPath();
@@ -72,8 +74,17 @@ public sealed class GitRepository : IGitRepository
 
     public string GetWorkingBranch()
     {
-        string headFilePath = Path.Combine(_gitPath, "HEAD");
-        string headFileContent = File.ReadAllText(headFilePath).Trim();
+        string headFileContent = string.Empty;
+
+        if (string.IsNullOrEmpty(_headContent))
+        {
+            string headFilePath = Path.Combine(_gitPath, "HEAD");
+            headFileContent = File.ReadAllText(headFilePath).Trim();
+        }
+        else
+        {
+            headFileContent = _headContent;
+        }
 
         if (headFileContent.StartsWith("ref:", StringComparison.Ordinal))
         {
@@ -331,13 +342,42 @@ public sealed class GitRepository : IGitRepository
     public HashSet<GitBranch> GetLocalBranchNames()
     {
         var localBranchPath = Path.Combine("refs", "heads");
-        return FetchBranches(localBranchPath);
+        var localBranches = FetchBranches(localBranchPath);
+
+        var detachedHead = GetDetachedHead();
+
+        if (detachedHead != null)
+        {
+            localBranches.Add(detachedHead);
+        }
+
+        return localBranches;
     }
 
     public HashSet<GitBranch> GetRemoteBranchNames()
     {
         var remoteBranchPath = Path.Combine("refs", "remotes");
         return FetchBranches(remoteBranchPath);
+    }
+
+    private GitBranch? GetDetachedHead()
+    {
+        var headPath = Path.Combine(_gitPath, "HEAD");
+        var headContent = File.ReadAllText(headPath);
+        _headContent = headContent;
+
+        if (headContent.StartsWith("ref: "))
+        {
+            return null;
+        }
+
+        var commitHash = headContent[..7];
+
+        var branchName = $"(HEAD detached at {commitHash})";
+
+        var branch = new Branch(branchName, true);
+
+        return GitBranch.Default().SetBranch(branch).SetDetachedHead(commitHash);
     }
 
     private HashSet<GitBranch> FetchBranches(string path)

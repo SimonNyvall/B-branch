@@ -6,6 +6,7 @@ public sealed class GitBranch
     public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
     public string? Description { get; private set; }
+    public DetachedHead DetachedHead { get; private set; }
 
     public GitBranch(
         AheadBehind aheadBehind,
@@ -18,6 +19,7 @@ public sealed class GitBranch
         SetBranch(branch);
         SetLastCommit(lastCommit);
         SetDescription(description);
+        DetachedHead = new DetachedHead(null);
     }
 
     public GitBranch SetAheadBehind(AheadBehind aheadBehind)
@@ -59,6 +61,14 @@ public sealed class GitBranch
     public GitBranch SetDescription(string description)
     {
         Description = description ?? string.Empty;
+
+        return this;
+    }
+
+    public GitBranch SetDetachedHead(string commitHash)
+    {
+        var detachedHead = new DetachedHead(commitHash);
+        DetachedHead = detachedHead;
 
         return this;
     }
