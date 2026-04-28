@@ -2,7 +2,6 @@ using Bbranch.CLI;
 using Bbranch.CLI.Arguments.FlagSystem;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
 using Bbranch.GitService.Base;
-using Bbranch.GitService.OptionStrategies;
 using Bbranch.GitService.OptionStrategies.Common;
 using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 using Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
@@ -13,6 +12,7 @@ using FakeItEasy;
 
 namespace Bbranch.Tests.CLI;
 
+[Trait("Category", "Unit")]
 public class BranchTableAssemblerTests
 {
     private readonly IGitRepository _repositoryFake;
@@ -38,7 +38,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -59,7 +59,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -80,7 +80,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -101,7 +101,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<TrackAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -122,7 +122,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
             flag => Assert.IsType<ContainsOption>(flag)
         );
         Assert.NotNull(result);
@@ -144,7 +144,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
             flag => Assert.IsType<NoContainsOption>(flag)
         );
         Assert.NotNull(result);
@@ -166,7 +166,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByNameOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -187,7 +187,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByAheadOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -208,7 +208,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByBehindOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -229,7 +229,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
         );
         Assert.NotNull(result);
     }
@@ -250,7 +250,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
             flag => Assert.IsType<TopOption>(flag)
         );
         Assert.NotNull(result);

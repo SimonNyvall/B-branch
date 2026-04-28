@@ -148,7 +148,7 @@ public static class BranchTableAssembler
             _optionStrategies.AddStrategyOption(sortOption);
         }
 
-        var detachedHeadSortOption = new SortDetachedHeadOption();
+        var detachedHeadSortOption = new SortByDetachedHeadOption();
         _optionStrategies.AddStrategyOption(detachedHeadSortOption);
     }
 
