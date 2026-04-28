@@ -1,18 +1,25 @@
 using Bbranch.GitService.Base;
 using Bbranch.GitService.OptionStrategies.Shared.Setters;
 using Bbranch.Shared.TableData;
+using FakeItEasy;
 
 namespace Bbranch.Tests.GitService.Shared.Setters;
 
 [Trait("Category", "Unit")]
 public sealed class SetLastCommitTests
 {
-    private readonly IGitRepository _gitBase = new GitRepositoryMock();
+    private readonly IGitRepository _gitRepositoryFake;
+
+    public SetLastCommitTests()
+    {
+        _gitRepositoryFake = A.Fake<IGitRepository>();
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._)).Returns(DateTime.Now);
+    }
 
     [Fact]
     public void Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_EmptyList()
     {
-        var strategy = new SetLastCommitOptions(_gitBase);
+        var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
         var result = strategy.Execute([]);
 
@@ -22,7 +29,7 @@ public sealed class SetLastCommitTests
     [Fact]
     public void Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_ExpectedValue()
     {
-        var strategy = new SetLastCommitOptions(_gitBase);
+        var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
         var branches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
@@ -31,28 +38,29 @@ public sealed class SetLastCommitTests
         Assert.Equal(branches.Count, result.Count);
     }
 
-    private sealed class GitRepositoryMock : IGitRepository
+    [Fact]
+    public void Given_SetLastCommitOptions_When_ExecuteRunWithDetachedHead_Then_Return_ExpectedValue()
     {
-        public DateTime GetLastCommitDate(string branchName)
-        {
-            return DateTime.Now;
-        }
+        var commitHash = "6efb99e";
+        var detachedBranchName = $"(HEAD detached at {commitHash})";
 
-        public string GetWorkingBranch() => throw new NotImplementedException();
+        var capturedBranchName = string.Empty;
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._))
+            .Invokes((string branchName) => capturedBranchName = branchName)
+            .Returns(DateTime.Now);
 
-        public HashSet<GitBranch> GetLocalBranchNames() => throw new NotImplementedException();
+        var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
-        public HashSet<GitBranch> GetRemoteBranchNames() => throw new NotImplementedException();
+        var gitBranch = GitBranch
+            .Default()
+            .SetBranch(new Branch(detachedBranchName, true))
+            .SetDetachedHead(commitHash);
 
-        public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches) =>
-            throw new NotImplementedException();
+        var branches = new HashSet<GitBranch> { gitBranch };
 
-        public Task<AheadBehind> GetLocalAheadBehind(string localBranchName) =>
-            throw new NotImplementedException();
+        var result = strategy.Execute(branches);
 
-        public Task<AheadBehind> GetRemoteAheadBehind(
-            string localBranchName,
-            string remoteBranchName
-        ) => throw new NotImplementedException();
+        Assert.Equal(branches.Count, result.Count);
+        Assert.Equal(commitHash, capturedBranchName);
     }
 }

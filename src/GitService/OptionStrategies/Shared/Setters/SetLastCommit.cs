@@ -9,7 +9,14 @@ public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
     {
         foreach (GitBranch branch in branches)
         {
-            DateTime lastCommit = gitBase.GetLastCommitDate(branch.Branch.Name);
+            var branchName = branch.Branch.Name;
+
+            if (branch.DetachedHead.commitHash != null)
+            {
+                branchName = branch.DetachedHead.commitHash;
+            }
+
+            DateTime lastCommit = gitBase.GetLastCommitDate(branchName);
 
             branch.SetLastCommit(lastCommit);
         }

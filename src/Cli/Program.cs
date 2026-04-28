@@ -3,6 +3,7 @@ using Bbranch.CLI.Arguments;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
 using Bbranch.CLI.Options;
 using Bbranch.CLI.Output;
+using Bbranch.GitService.Base;
 using Bbranch.Shared.TableData;
 
 var arguments = new List<string>(args);
@@ -34,7 +35,9 @@ if (options.Contains<VersionFlag>())
     VersionOption.Execute();
 }
 
-HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(options);
+var gitRepository = GitRepository.GetInstance();
+
+HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(gitRepository, options);
 
 var lessCommandPath = foundLessCommand ? arguments[0] : null;
 
