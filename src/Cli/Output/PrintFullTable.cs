@@ -39,6 +39,7 @@ public class PrintFullTable
 
         const string reset = "\x1b[0m";
         const string green = "\x1b[32m";
+        const string red = "\x1b[31m";
         const string gray = "\x1b[90m";
 
         int minWidth = 14;
@@ -66,6 +67,10 @@ public class PrintFullTable
             if (branch.Branch.IsWorkingBranch)
             {
                 stringBuilder.Append($"{green} {name}{reset}");
+            }
+            else if (branch.IsRemote)
+            {
+                stringBuilder.Append($"{red} {name}{reset}");
             }
             else
             {
