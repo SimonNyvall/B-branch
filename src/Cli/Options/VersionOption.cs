@@ -4,7 +4,7 @@ public static class VersionOption
 {
     public static void Execute()
     {
-        Console.WriteLine("v1.2.0");
+        Console.WriteLine("v1.3.0");
         Environment.Exit(0);
     }
 }

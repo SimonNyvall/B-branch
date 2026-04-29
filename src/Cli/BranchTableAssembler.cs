@@ -147,12 +147,11 @@ public static class BranchTableAssembler
             sortOption = new SortByLastCommitOptions();
             _optionStrategies.AddStrategyOption(sortOption);
         }
+        var symbolicSortOption = new SortBySymbolic();
+        _optionStrategies.AddStrategyOption(symbolicSortOption);
 
         var detachedHeadSortOption = new SortByDetachedHeadOption();
         _optionStrategies.AddStrategyOption(detachedHeadSortOption);
-
-        var symbolicSortOption = new SortBySymbolic();
-        _optionStrategies.AddStrategyOption(symbolicSortOption);
     }
 
     private static void AddDescriptionOption()

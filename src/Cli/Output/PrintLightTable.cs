@@ -36,12 +36,19 @@ public class PrintLightTable
         var stringBuilder = new StringBuilder();
         const string reset = "\x1b[0m";
         const string green = "\x1b[32m";
+        const string red = "\x1b[31m";
+
+        var longestBranchName = branches.Max(x => x.Branch.Name.Length);
 
         foreach (var branch in branches)
         {
             if (branch.Branch.IsWorkingBranch)
             {
                 stringBuilder.AppendLine($"* {green}{branch.Branch.Name}{reset}");
+            }
+            else if (branch.IsRemote)
+            {
+                stringBuilder.AppendLine($"  {red}{branch.Branch.Name}{reset}");
             }
             else
             {
