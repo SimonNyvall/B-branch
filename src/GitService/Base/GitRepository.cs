@@ -357,7 +357,55 @@ public sealed class GitRepository : IGitRepository
     public HashSet<GitBranch> GetRemoteBranchNames()
     {
         var remoteBranchPath = Path.Combine("refs", "remotes");
-        return FetchBranches(remoteBranchPath);
+
+        var remoteBranches = FetchBranches(remoteBranchPath);
+
+        foreach (var remoteBranch in remoteBranches)
+        {
+            remoteBranch.SetIsRemote(true);
+        }
+
+        var remotesRoot = Path.Combine(_gitPath, "refs", "remotes");
+        var remotes = Directory.GetDirectories(remotesRoot);
+
+        foreach (var remoteDir in remotes)
+        {
+            var remoteName = Path.GetFileName(remoteDir);
+            var remoteHead = GetRemoteHead(remoteName);
+
+            if (remoteHead != null)
+            {
+                remoteBranches.Add(remoteHead);
+            }
+        }
+
+        return remoteBranches;
+    }
+
+    private GitBranch? GetRemoteHead(string remoteName)
+    {
+        var headPath = Path.Combine(_gitPath, "refs", "remotes", remoteName, "HEAD");
+
+        if (!File.Exists(headPath))
+            return null;
+
+        var content = File.ReadAllText(headPath);
+
+        if (!content.StartsWith("ref: "))
+            return null;
+
+        var target = content.Substring(5).Trim();
+        var shortTarget = target.Replace("refs/remotes/", "");
+
+        var displayName = $"{remoteName}/HEAD -> {shortTarget}";
+
+        Branch branch = new(displayName, false);
+
+        return GitBranch
+            .Default()
+            .SetBranch(branch)
+            .SetIsRemote(true)
+            .SetSymLink(new Symbolic(remoteName, shortTarget));
     }
 
     private GitBranch? GetDetachedHead()
@@ -461,6 +509,9 @@ public sealed class GitRepository : IGitRepository
         {
             var relativePath = Path.GetRelativePath(path, file);
             var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+
+            if (branchName.EndsWith("/HEAD"))
+                continue;
 
             Branch branch = new(branchName, false);
 

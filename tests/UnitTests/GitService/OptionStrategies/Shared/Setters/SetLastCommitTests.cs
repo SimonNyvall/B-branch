@@ -63,4 +63,31 @@ public sealed class SetLastCommitTests
         Assert.Equal(branches.Count, result.Count);
         Assert.Equal(commitHash, capturedBranchName);
     }
+
+    [Fact]
+    public void Given_SetLastCommitOptions_When_ExecutingRunWithSymbolicBranch_Then_Return_ExpectedValue()
+    {
+        var capturedBranchName = string.Empty;
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._))
+            .Invokes((string branchName) => capturedBranchName = branchName)
+            .Returns(DateTime.Now);
+
+        var strategy = new SetLastCommitOptions(_gitRepositoryFake);
+
+        var refBranch = "origin/HEAD";
+        var targetBranch = "origin/main";
+
+        var gitBranch = GitBranch
+            .Default()
+            .SetBranch(new Branch($"{refBranch} -> {targetBranch}", false))
+            .SetIsRemote(true)
+            .SetSymLink(new Symbolic(refBranch, targetBranch));
+
+        var branches = new HashSet<GitBranch> { gitBranch };
+
+        var result = strategy.Execute(branches);
+
+        Assert.Equal(branches.Count, result.Count);
+        Assert.Equal(targetBranch, capturedBranchName);
+    }
 }

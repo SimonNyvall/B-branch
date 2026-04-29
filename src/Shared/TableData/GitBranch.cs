@@ -8,6 +8,12 @@ public sealed class GitBranch
     public DateTime LastCommit { get; private set; }
     public string? Description { get; private set; }
     public DetachedHead DetachedHead { get; private set; }
+    public bool IsRemote { get; private set; }
+    public bool IsSymbolic
+    {
+        get => SymLink != null;
+    }
+    public Symbolic? SymLink { get; private set; } = null;
 
     public GitBranch(
         AheadBehind aheadBehind,
@@ -61,7 +67,7 @@ public sealed class GitBranch
 
     public GitBranch SetDescription(string description)
     {
-        Description = description ?? string.Empty;
+        Description = description;
 
         return this;
     }
@@ -81,6 +87,18 @@ public sealed class GitBranch
         var detachedHead = new DetachedHead(commitHash);
         DetachedHead = detachedHead;
 
+        return this;
+    }
+
+    public GitBranch SetIsRemote(bool isRemote)
+    {
+        IsRemote = isRemote;
+        return this;
+    }
+
+    public GitBranch SetSymLink(Symbolic symLink)
+    {
+        SymLink = symLink;
         return this;
     }
 

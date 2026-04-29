@@ -150,6 +150,9 @@ public static class BranchTableAssembler
 
         var detachedHeadSortOption = new SortByDetachedHeadOption();
         _optionStrategies.AddStrategyOption(detachedHeadSortOption);
+
+        var symbolicSortOption = new SortBySymbolic();
+        _optionStrategies.AddStrategyOption(symbolicSortOption);
     }
 
     private static void AddDescriptionOption()
