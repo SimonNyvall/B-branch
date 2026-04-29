@@ -16,6 +16,11 @@ public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
                 branchName = branch.DetachedHead.commitHash;
             }
 
+            if (branch.IsSymbolic)
+            {
+                branchName = branch.SymLink!.Target;
+            }
+
             DateTime lastCommit = gitBase.GetLastCommitDate(branchName);
 
             branch.SetLastCommit(lastCommit);

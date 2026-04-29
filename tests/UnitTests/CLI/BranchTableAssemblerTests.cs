@@ -29,7 +29,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -38,7 +38,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -50,7 +51,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchAllOptions>(flag),
@@ -59,7 +60,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -71,7 +73,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchRemoteOptions>(flag),
@@ -80,7 +82,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -92,7 +95,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -101,7 +104,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<TrackAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -113,7 +117,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -123,6 +127,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
             flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag),
             flag => Assert.IsType<ContainsOption>(flag)
         );
         Assert.NotNull(result);
@@ -135,7 +140,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -145,6 +150,7 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
             flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag),
             flag => Assert.IsType<NoContainsOption>(flag)
         );
         Assert.NotNull(result);
@@ -157,7 +163,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -166,7 +172,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByNameOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -178,7 +185,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -187,7 +194,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByAheadOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -199,7 +207,7 @@ public class BranchTableAssemblerTests
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(8, BranchTableAssembler._optionStrategies.Options.Count);
         Assert.Collection(
             BranchTableAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
@@ -208,7 +216,8 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DescriptionOption>(flag),
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByBehindOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
         );
         Assert.NotNull(result);
     }
@@ -217,27 +226,6 @@ public class BranchTableAssemblerTests
     public void AssembleBranchTable_SortByDate_AddsSortByLastCommitOption()
     {
         var arguments = new FlagCollection { IFlag<SortFlag>.Create("date") };
-
-        var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
-
-        Assert.Equal(7, BranchTableAssembler._optionStrategies.Options.Count);
-        Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
-            flag => Assert.IsType<BranchLocalOptions>(flag),
-            flag => Assert.IsType<SetLastCommitOptions>(flag),
-            flag => Assert.IsType<WorkingBranchOption>(flag),
-            flag => Assert.IsType<DescriptionOption>(flag),
-            flag => Assert.IsType<DefaultAheadBehindOption>(flag),
-            flag => Assert.IsType<SortByLastCommitOptions>(flag),
-            flag => Assert.IsType<SortByDetachedHeadOption>(flag)
-        );
-        Assert.NotNull(result);
-    }
-
-    [Fact]
-    public void AssembleBranchTable_PrintTopFlag_AddsTopOption()
-    {
-        var arguments = new FlagCollection { IFlag<PrintTopFlag>.Create("5") };
 
         var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
@@ -251,6 +239,29 @@ public class BranchTableAssemblerTests
             flag => Assert.IsType<DefaultAheadBehindOption>(flag),
             flag => Assert.IsType<SortByLastCommitOptions>(flag),
             flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag)
+        );
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void AssembleBranchTable_PrintTopFlag_AddsTopOption()
+    {
+        var arguments = new FlagCollection { IFlag<PrintTopFlag>.Create("5") };
+
+        var result = BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+
+        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Collection(
+            BranchTableAssembler._optionStrategies.Options,
+            flag => Assert.IsType<BranchLocalOptions>(flag),
+            flag => Assert.IsType<SetLastCommitOptions>(flag),
+            flag => Assert.IsType<WorkingBranchOption>(flag),
+            flag => Assert.IsType<DescriptionOption>(flag),
+            flag => Assert.IsType<DefaultAheadBehindOption>(flag),
+            flag => Assert.IsType<SortByLastCommitOptions>(flag),
+            flag => Assert.IsType<SortByDetachedHeadOption>(flag),
+            flag => Assert.IsType<SortBySymbolic>(flag),
             flag => Assert.IsType<TopOption>(flag)
         );
         Assert.NotNull(result);
