@@ -1,6 +1,18 @@
 <p align="center"><img src="./images/git-logo.png" alt="logo" width="128px"/></p>
-<h1 align="center">B-branch</h1>
-<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/> Git extension for better branch overview :wrench:</h3>
+<div align="center">
+<pre>
+██████╗       ██████╗ ██████╗  █████╗ ███╗   ██╗ ██████╗██╗  ██╗
+██╔══██╗      ██╔══██╗██╔══██╗██╔══██╗████╗  ██║██╔════╝██║  ██║
+██████╔╝█████╗██████╔╝██████╔╝███████║██╔██╗ ██║██║     ███████║
+██╔══██╗╚════╝██╔══██╗██╔══██╗██╔══██║██║╚██╗██║██║     ██╔══██║
+██████╔╝      ██████╔╝██║  ██║██║  ██║██║ ╚████║╚██████╗██║  ██║
+╚═════╝       ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝
+</pre>
+</div>
+
+
+
+<h3 align="center"><img width="20px" src="./images/mini-git-logo.png" style="vertical-align: middle;"/>  git branch, <strong>but make it better</strong> :wrench:</h3>
 <p align="center"><strong>Download for</strong> macOS (<a href="https://github.com/SimonNyvall/B-branch/releases">Apple Silicon</a>) · Linux (<a href="https://github.com/SimonNyvall/B-branch/releases">x64</a>) · Windows (<a href="https://github.com/SimonNyvall/B-branch/releases">x64</a>)</p>
 
 <div align="center">
@@ -28,13 +40,15 @@
 
 </details>
 
-## Premise :rocket:
+## 🌿 What is B-branch?
 
-B-branch is a tool that enhances Git branch management with a convenient git alias. Inspired by the talk [So You Think You Know Git? by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s), B-branch offers a more organized view of your branches, simplifying your workflow.
+You've been staring at `git branch` output for years, an alphabetical wall of names with zero context. *When was this branch last touched? How far behind is it? What was I even doing here?*
 
-Traditional git branch commands sort branches alphabetically, making it hard to find recent ones. B-branch solves this by displaying branch information like the last commit date and commit differences with the upstream branch, all in a structured format.
+**B-branch fixes that.**
 
-Cross-Platform Support: B-branch runs on **Windows**, **Linux**, and **macOS** with no dependencies required when using the compiled executable. [Download](#download-computer) the latest release for **free**!
+It replaces the blunt `git branch` command with a rich, structured view that shows you what actually metters; **recency, divergence, and description**
+
+    Inspired by Scott Chacon's talk [So You Think You Know Git? by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s) and the workflow philosophy behind **GitButler**
 
 <img align="center" width="100%" src="./images/banner2.png" alt="screen" width="500"/>
 
