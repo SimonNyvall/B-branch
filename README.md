@@ -48,7 +48,8 @@ You've been staring at `git branch` output for years, an alphabetical wall of na
 
 It replaces the blunt `git branch` command with a rich, structured view that shows you what actually metters; **recency, divergence, and description**
 
-    Inspired by Scott Chacon's talk [So You Think You Know Git? by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s) and the workflow philosophy behind **GitButler**
+> [!Shoutout]
+> Inspired by Scott Chacon's talk [So You Think You Know Git? by Scott Chacon](https://www.youtube.com/watch?v=aolI_Rz0ZqY&t=472s) and the workflow philosophy behind **GitButler**
 
 <img align="center" width="100%" src="./images/banner2.png" alt="screen" width="500"/>
 
