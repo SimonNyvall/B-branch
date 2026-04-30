@@ -16,12 +16,6 @@ public class PrintFullTable
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        if (branches.Count == 0)
-        {
-            Console.WriteLine("No branches found");
-            return;
-        }
-
         var output = BuildOutput(branches);
 
         if (string.IsNullOrEmpty(lessCommandPath))
@@ -41,14 +35,25 @@ public class PrintFullTable
         const string green = "\x1b[32m";
         const string red = "\x1b[31m";
         const string gray = "\x1b[90m";
+        const string blue = "\x1b[36m";
 
         int minWidth = 15;
-        int longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
+        int longest = minWidth;
+
+        if (branches.Count > 0)
+        {
+            longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
+        }
 
         var line = $"--------- | ---------- | {new string('-', longest)} | ---------------";
 
         stringBuilder.AppendLine(BuildHeaders(longest));
         stringBuilder.AppendLine(line);
+
+        if (branches.Count == 0)
+        {
+            return stringBuilder.ToString();
+        }
 
         foreach (var branch in branches)
         {
@@ -71,6 +76,10 @@ public class PrintFullTable
             else if (branch.IsRemote)
             {
                 stringBuilder.Append($"{red} {name}{reset}");
+            }
+            else if (branch.IsCheckoutWorktree)
+            {
+                stringBuilder.Append($"{blue} {name}{reset}");
             }
             else
             {

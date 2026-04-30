@@ -34,6 +34,7 @@ public static class BranchTableAssembler
         AddSortOption(arguments);
         AddContainsOptions(arguments);
         AddPrintTopOption(arguments);
+        AddWorktreeOption();
 
         return _optionStrategies.Execute([]);
     }
@@ -168,5 +169,11 @@ public static class BranchTableAssembler
         var topValue = Convert.ToInt32(printTopFlag.Value.ToString());
         IOption printTopOption = new TopOption(topValue);
         _optionStrategies.AddStrategyOption(printTopOption);
+    }
+
+    private static void AddWorktreeOption()
+    {
+        var worktreeOption = new StichWorktreeOption(_gitRepository);
+        _optionStrategies.AddStrategyOption(worktreeOption);
     }
 }

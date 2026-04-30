@@ -15,6 +15,7 @@ public sealed class GitRepository : IGitRepository
     private static GitRepository? _instance;
 
     private string _gitPath = string.Empty;
+    private bool _isWorktreeRepo = false;
 
     private readonly Dictionary<string, string> _commitParentCache = new(MaxCacheSize);
     private readonly Dictionary<string, byte[]> _objectCache = new(MaxCacheSize);
@@ -43,33 +44,49 @@ public sealed class GitRepository : IGitRepository
 
     private void SetGitPath()
     {
-        var currentDirectory = Directory.GetCurrentDirectory();
+        var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        while (!string.IsNullOrEmpty(currentDirectory))
+        while (dir != null)
         {
-            var gitPath = Path.Combine(currentDirectory, ".git");
+            var dotGit = Path.Combine(dir.FullName, ".git");
 
-            if (Directory.Exists(gitPath))
+            if (Directory.Exists(dotGit))
             {
-                _gitPath = gitPath;
+                _gitPath = dotGit;
                 return;
             }
 
-            if (File.Exists(gitPath))
+            if (File.Exists(dotGit))
             {
-                var gitFileContent = File.ReadAllText(gitPath).Trim();
-                if (gitFileContent.StartsWith("gitdir:"))
+                var content = File.ReadAllText(dotGit).Trim();
+
+                if (content.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase))
                 {
-                    _gitPath = Path.GetFullPath(gitFileContent[7..].Trim(), currentDirectory);
+                    var path = content.Substring(7).Trim();
+                    _gitPath = Path.GetFullPath(path, dir.FullName);
                     return;
                 }
             }
 
-            currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+            if (LooksLikeGitDir(dir.FullName))
+            {
+                _gitPath = dir.FullName;
+                _isWorktreeRepo = true;
+                return;
+            }
+
+            dir = dir.Parent;
         }
 
         Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
         Environment.Exit(1);
+    }
+
+    private static bool LooksLikeGitDir(string path)
+    {
+        return File.Exists(Path.Combine(path, "HEAD"))
+            && Directory.Exists(Path.Combine(path, "objects"))
+            && Directory.Exists(Path.Combine(path, "refs"));
     }
 
     public string GetWorkingBranch()
@@ -366,6 +383,12 @@ public sealed class GitRepository : IGitRepository
         }
 
         var remotesRoot = Path.Combine(_gitPath, "refs", "remotes");
+
+        if (!Directory.Exists(remotesRoot))
+        {
+            return remoteBranches;
+        }
+
         var remotes = Directory.GetDirectories(remotesRoot);
 
         foreach (var remoteDir in remotes)
@@ -503,6 +526,12 @@ public sealed class GitRepository : IGitRepository
     {
         HashSet<GitBranch> branches = [];
         var path = Path.Combine(_gitPath, directoryPath);
+
+        if (!Directory.Exists(path))
+        {
+            return branches;
+        }
+
         var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
 
         foreach (var file in files)
@@ -571,6 +600,45 @@ public sealed class GitRepository : IGitRepository
             {
                 branch.SetDescription(desc);
             }
+        }
+
+        return branches;
+    }
+
+    public HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches)
+    {
+        if (!_isWorktreeRepo)
+        {
+            return branches;
+        }
+
+        var worktreePath = Path.Combine(_gitPath, "worktrees");
+
+        var checkedOutBrancheNames = new HashSet<string>();
+
+        foreach (
+            var worktreeDirectory in Directory.GetDirectories(
+                worktreePath,
+                "*",
+                SearchOption.TopDirectoryOnly
+            )
+        )
+        {
+            checkedOutBrancheNames.Add(worktreeDirectory.Split(Path.DirectorySeparatorChar)[^1]);
+        }
+
+        foreach (var branch in branches)
+        {
+            var worktreeBranch = checkedOutBrancheNames.FirstOrDefault(x =>
+                branch.Branch.Name.Equals(x, StringComparison.CurrentCulture)
+            );
+
+            if (worktreeBranch == null)
+            {
+                continue;
+            }
+
+            branch.SetIsCheckoutWorktree(true);
         }
 
         return branches;

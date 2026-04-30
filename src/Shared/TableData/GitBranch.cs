@@ -14,6 +14,7 @@ public sealed class GitBranch
         get => SymLink != null;
     }
     public Symbolic? SymLink { get; private set; } = null;
+    public bool IsCheckoutWorktree { get; private set; }
 
     public GitBranch(
         AheadBehind aheadBehind,
@@ -99,6 +100,12 @@ public sealed class GitBranch
     public GitBranch SetSymLink(Symbolic symLink)
     {
         SymLink = symLink;
+        return this;
+    }
+
+    public GitBranch SetIsCheckoutWorktree(bool isCheckoutWorktree)
+    {
+        IsCheckoutWorktree = isCheckoutWorktree;
         return this;
     }
 

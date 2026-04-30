@@ -11,7 +11,7 @@ bool foundLessCommand = true;
 
 if (arguments.Count < 1 || !File.Exists(arguments[0]))
 {
-    PrintWarning("Less command does not exist");
+    PrintWarning("The less command was not found");
     foundLessCommand = false;
 }
 

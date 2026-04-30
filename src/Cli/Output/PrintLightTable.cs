@@ -16,7 +16,6 @@ public class PrintLightTable
     {
         if (branches.Count == 0)
         {
-            Console.WriteLine("No branches found");
             return;
         }
 
@@ -37,6 +36,7 @@ public class PrintLightTable
         const string reset = "\x1b[0m";
         const string green = "\x1b[32m";
         const string red = "\x1b[31m";
+        const string blue = "\x1b[36m";
 
         var longestBranchName = branches.Max(x => x.Branch.Name.Length);
 
@@ -49,6 +49,10 @@ public class PrintLightTable
             else if (branch.IsRemote)
             {
                 stringBuilder.AppendLine($"  {red}{branch.Branch.Name}{reset}");
+            }
+            else if (branch.IsCheckoutWorktree)
+            {
+                stringBuilder.AppendLine($"+ {blue}{branch.Branch.Name}{reset}");
             }
             else
             {

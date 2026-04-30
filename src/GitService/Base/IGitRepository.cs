@@ -17,4 +17,6 @@ public interface IGitRepository
     Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
 
     DateTime GetLastCommitDate(string branchName);
+
+    HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches);
 }
