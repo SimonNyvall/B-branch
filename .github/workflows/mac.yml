@@ -1,0 +1,30 @@
+name: 🍎 Mac
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    name: 🍎 mac
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dotnet dependencies
+        run: dotnet restore B-branch.slnx
+
+      - name: Build Solution
+        run: dotnet build --no-restore
+
+      - name: Run Unit-Test
+        working-directory: ./tests/UnitTests/
+        run: dotnet test --no-build --verbosity detailed
