@@ -9,7 +9,7 @@ namespace Tests.GitService;
 public sealed class WorkingBranchOptionTests
 {
     [Fact]
-    public void Given_WorkingBranchOption_When_ExecuteRun_Then_Return_WorkingBranch()
+    public async Task Given_WorkingBranchOption_When_ExecuteRun_Then_Return_WorkingBranch()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -22,14 +22,14 @@ public sealed class WorkingBranchOptionTests
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);
 
-        HashSet<GitBranch> result = workingBranchOption.Execute(branches);
+        HashSet<GitBranch> result = await workingBranchOption.Execute(branches);
 
         Assert.True(result.First().Branch.IsWorkingBranch);
         Assert.False(result.ElementAt(1).Branch.IsWorkingBranch);
     }
 
     [Fact]
-    public void Given_WorkingBranchOption_When_ExecuteRun_Then_Return_EmptyList()
+    public async Task Given_WorkingBranchOption_When_ExecuteRun_Then_Return_EmptyList()
     {
         HashSet<GitBranch> branches = [];
 
@@ -38,7 +38,7 @@ public sealed class WorkingBranchOptionTests
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);
 
-        HashSet<GitBranch> result = workingBranchOption.Execute(branches);
+        HashSet<GitBranch> result = await workingBranchOption.Execute(branches);
 
         Assert.Empty(result);
     }

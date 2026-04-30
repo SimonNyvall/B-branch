@@ -9,7 +9,7 @@ namespace Bbranch.Tests.GitService.Common.BranchStrategies;
 public class BranchAllOptionTests
 {
     [Fact]
-    public void Given_BranchAllOptions_When_ExecuteRun_Then_Return_AllBranches()
+    public async Task Given_BranchAllOptions_When_ExecuteRun_Then_Return_AllBranches()
     {
         var localBranches = new HashSet<GitBranch>
         {
@@ -30,18 +30,18 @@ public class BranchAllOptionTests
 
         var branchAllOptions = new BranchAllOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = branchAllOptions.Execute([]);
+        HashSet<GitBranch> result = await branchAllOptions.Execute([]);
 
         Assert.Equal(4, result.Count);
     }
 
     [Fact]
-    public void Given_BranchAllOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoBranches()
+    public async Task Given_BranchAllOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoBranches()
     {
         var gitRepositoryFake = A.Fake<IGitRepository>();
         var sut = new BranchAllOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = sut.Execute([]);
+        HashSet<GitBranch> result = await sut.Execute([]);
 
         Assert.Empty(result);
     }

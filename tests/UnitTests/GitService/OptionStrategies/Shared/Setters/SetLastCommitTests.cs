@@ -17,29 +17,29 @@ public sealed class SetLastCommitTests
     }
 
     [Fact]
-    public void Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_EmptyList()
+    public async Task Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_EmptyList()
     {
         var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
-        var result = strategy.Execute([]);
+        var result = await strategy.Execute([]);
 
         Assert.Empty(result);
     }
 
     [Fact]
-    public void Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_ExpectedValue()
+    public async Task Given_SetLastCommitOptions_When_ExecuteRun_Then_Return_ExpectedValue()
     {
         var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
         var branches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
-        var result = strategy.Execute(branches);
+        var result = await strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
     }
 
     [Fact]
-    public void Given_SetLastCommitOptions_When_ExecuteRunWithDetachedHead_Then_Return_ExpectedValue()
+    public async Task Given_SetLastCommitOptions_When_ExecuteRunWithDetachedHead_Then_Return_ExpectedValue()
     {
         var commitHash = "6efb99e";
         var detachedBranchName = $"(HEAD detached at {commitHash})";
@@ -58,14 +58,14 @@ public sealed class SetLastCommitTests
 
         var branches = new HashSet<GitBranch> { gitBranch };
 
-        var result = strategy.Execute(branches);
+        var result = await strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
         Assert.Equal(commitHash, capturedBranchName);
     }
 
     [Fact]
-    public void Given_SetLastCommitOptions_When_ExecutingRunWithSymbolicBranch_Then_Return_ExpectedValue()
+    public async Task Given_SetLastCommitOptions_When_ExecutingRunWithSymbolicBranch_Then_Return_ExpectedValue()
     {
         var capturedBranchName = string.Empty;
         A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._))
@@ -85,7 +85,7 @@ public sealed class SetLastCommitTests
 
         var branches = new HashSet<GitBranch> { gitBranch };
 
-        var result = strategy.Execute(branches);
+        var result = await strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
         Assert.Equal(targetBranch, capturedBranchName);

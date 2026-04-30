@@ -35,9 +35,12 @@ if (options.Contains<VersionFlag>())
     VersionOption.Execute();
 }
 
-var gitRepository = GitRepository.GetInstance();
+var gitRepository = await GitRepository.GetInstance();
 
-HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(gitRepository, options);
+HashSet<GitBranch> branchTable = await BranchTableAssembler.AssembleBranchTable(
+    gitRepository,
+    options
+);
 
 var lessCommandPath = foundLessCommand ? arguments[0] : null;
 

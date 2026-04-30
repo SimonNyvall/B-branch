@@ -5,8 +5,8 @@ namespace Bbranch.GitService.OptionStrategies.Common;
 
 public sealed class StichWorktreeOption(IGitRepository gitRepository) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        return gitRepository.StichWorkTreeBranches(branches);
+        return Task.FromResult(gitRepository.StichWorkTreeBranches(branches));
     }
 }

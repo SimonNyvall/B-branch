@@ -4,23 +4,34 @@ namespace Bbranch.GitService.OptionStrategies;
 
 public interface IOption
 {
-    HashSet<GitBranch> Execute(HashSet<GitBranch> branches);
+    Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches);
 }
 
-public sealed class CompositeOptionStrategy(List<IOption> options) : IOption
+public sealed class CompositeOptionStrategy : IOption
 {
-    public IReadOnlyList<IOption> Options => options;
+    private readonly List<IOption> _options;
+
+    public CompositeOptionStrategy(List<IOption> options)
+    {
+        _options = options;
+    }
+
+    public IReadOnlyList<IOption> Options => _options;
 
     public void AddStrategyOption(IOption option)
     {
-        options.Add(option);
+        _options.Add(option);
     }
 
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        return options.Aggregate(
-            branches,
-            (current, strategyOption) => strategyOption.Execute(current)
-        );
+        var result = branches;
+
+        foreach (var option in _options)
+        {
+            result = await option.Execute(result);
+        }
+
+        return result;
     }
 }

@@ -7,7 +7,7 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public sealed class SortByNameOptionTests
 {
     [Fact]
-    public void Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches()
+    public async Task Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -18,7 +18,7 @@ public sealed class SortByNameOptionTests
 
         var sortByNameOption = new SortByNameOptions();
 
-        var result = sortByNameOption.Execute(branches);
+        var result = await sortByNameOption.Execute(branches);
 
         Assert.Equal("a_main", result.First().Branch.Name);
         Assert.Equal("b_feature", result.ElementAt(1).Branch.Name);
@@ -26,7 +26,7 @@ public sealed class SortByNameOptionTests
     }
 
     [Fact]
-    public void Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
+    public async Task Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -37,7 +37,7 @@ public sealed class SortByNameOptionTests
 
         var sortByNameOption = new SortByNameOptions();
 
-        var result = sortByNameOption.Execute(branches);
+        var result = await sortByNameOption.Execute(branches);
 
         Assert.Equal("a_main", result.First().Branch.Name);
         Assert.Equal("b_feature", result.ElementAt(1).Branch.Name);

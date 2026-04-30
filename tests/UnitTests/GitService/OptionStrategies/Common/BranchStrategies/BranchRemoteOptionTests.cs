@@ -9,7 +9,7 @@ namespace Bbranch.Tests.GitService.Common.BranchStrategies;
 public sealed class BranchRemoteOptionTests
 {
     [Fact]
-    public void Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_RemoteBranches()
+    public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_RemoteBranches()
     {
         var remoteBranches = new HashSet<GitBranch>
         {
@@ -22,18 +22,18 @@ public sealed class BranchRemoteOptionTests
 
         var sut = new BranchRemoteOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = sut.Execute([]);
+        HashSet<GitBranch> result = await sut.Execute([]);
 
         Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public void Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoRemoteBranches()
+    public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoRemoteBranches()
     {
         var gitRepositoryFake = A.Fake<IGitRepository>();
         var branchRemoteOptions = new BranchRemoteOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = branchRemoteOptions.Execute([]);
+        HashSet<GitBranch> result = await branchRemoteOptions.Execute([]);
 
         Assert.Empty(result);
     }

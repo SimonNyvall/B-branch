@@ -17,7 +17,7 @@ public static class BranchTableAssembler
     private static IGitRepository _gitRepository = null!;
     internal static CompositeOptionStrategy _optionStrategies = null!;
 
-    internal static HashSet<GitBranch> AssembleBranchTable(
+    internal static async Task<HashSet<GitBranch>> AssembleBranchTable(
         IGitRepository gitRepository,
         FlagCollection arguments
     )
@@ -25,7 +25,7 @@ public static class BranchTableAssembler
         _gitRepository = gitRepository;
 
         List<IOption> options = CreateOptions(arguments);
-        _optionStrategies = new(options);
+        _optionStrategies = new CompositeOptionStrategy(options);
 
         AddLastCommitOption();
         AddWorkingBranchOption();
@@ -36,7 +36,7 @@ public static class BranchTableAssembler
         AddPrintTopOption(arguments);
         AddWorktreeOption();
 
-        return _optionStrategies.Execute([]);
+        return await _optionStrategies.Execute([]);
     }
 
     private static List<IOption> CreateOptions(FlagCollection arguments)
@@ -148,7 +148,7 @@ public static class BranchTableAssembler
             sortOption = new SortByLastCommitOptions();
             _optionStrategies.AddStrategyOption(sortOption);
         }
-        var symbolicSortOption = new SortBySymbolic();
+        var symbolicSortOption = new SortBySymbolicOption();
         _optionStrategies.AddStrategyOption(symbolicSortOption);
 
         var detachedHeadSortOption = new SortByDetachedHeadOption();
@@ -157,7 +157,7 @@ public static class BranchTableAssembler
 
     private static void AddDescriptionOption()
     {
-        IOption descriptionOption = new DescriptionOption();
+        IOption descriptionOption = new DescriptionOption(_gitRepository);
         _optionStrategies.AddStrategyOption(descriptionOption);
     }
 

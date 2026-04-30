@@ -7,7 +7,7 @@ namespace Bbranch.Tests.GitService.Common.ContainsStrategies;
 public sealed class ContainsOptionTests
 {
     [Fact]
-    public void Given_ContainsOption_When_ExecuteRun_Then_Return_Branch_IfNameContainsPattern()
+    public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_Branch_IfNameContainsPattern()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -18,14 +18,14 @@ public sealed class ContainsOptionTests
 
         var option = new ContainsOption("branch");
 
-        var result = option.Execute(branches);
+        var result = await option.Execute(branches);
 
         Assert.Single(result);
         Assert.Equal("branch", result.First().Branch.Name);
     }
 
     [Fact]
-    public void Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfNamesContainPattern()
+    public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfNamesContainPattern()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -36,13 +36,13 @@ public sealed class ContainsOptionTests
 
         var option = new ContainsOption("main;feature;branch");
 
-        var result = option.Execute(branches);
+        var result = await option.Execute(branches);
 
         Assert.Equal(3, result.Count);
     }
 
     [Fact]
-    public void Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfRegexContainsPatter()
+    public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfRegexContainsPatter()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -53,7 +53,7 @@ public sealed class ContainsOptionTests
 
         var option = new ContainsOption("ma*;fea*;bra*");
 
-        var result = option.Execute(branches);
+        var result = await option.Execute(branches);
 
         Assert.Equal(3, result.Count);
     }

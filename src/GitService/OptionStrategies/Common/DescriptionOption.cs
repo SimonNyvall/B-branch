@@ -3,12 +3,10 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
-public sealed class DescriptionOption : IOption
+public sealed class DescriptionOption(IGitRepository gitRepository) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        IGitRepository gitBase = GitRepository.GetInstance();
-
-        return gitBase.GetBranchDescription(branches);
+        return await gitRepository.GetBranchDescription(branches);
     }
 }

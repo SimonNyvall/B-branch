@@ -7,7 +7,7 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public sealed class SortByBehindOptionTests
 {
     [Fact]
-    public void Given_SortByBehindOptions_When_ExecuteRun_Then_Return_SortedBranches()
+    public async Task Given_SortByBehindOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -18,7 +18,7 @@ public sealed class SortByBehindOptionTests
 
         var sortByBehindOption = new SortByBehindOptions();
 
-        var result = sortByBehindOption.Execute(branches);
+        var result = await sortByBehindOption.Execute(branches);
 
         Assert.Equal(3, result.First().AheadBehind.Behind);
         Assert.Equal(2, result.ElementAt(1).AheadBehind.Behind);
@@ -26,7 +26,7 @@ public sealed class SortByBehindOptionTests
     }
 
     [Fact]
-    public void Given_SortByBehindOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
+    public async Task Given_SortByBehindOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var branches = new HashSet<GitBranch>
         {
@@ -37,7 +37,7 @@ public sealed class SortByBehindOptionTests
 
         var sortByBehindOption = new SortByBehindOptions();
 
-        var result = sortByBehindOption.Execute(branches);
+        var result = await sortByBehindOption.Execute(branches);
 
         Assert.Equal(3, result.First().AheadBehind.Behind);
         Assert.Equal(2, result.ElementAt(1).AheadBehind.Behind);

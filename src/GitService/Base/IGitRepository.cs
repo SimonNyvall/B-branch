@@ -4,19 +4,19 @@ namespace Bbranch.GitService.Base;
 
 public interface IGitRepository
 {
-    string GetWorkingBranch();
+    Task<string> GetWorkingBranch();
 
-    HashSet<GitBranch> GetLocalBranchNames();
+    Task<HashSet<GitBranch>> GetLocalBranchNames();
 
-    HashSet<GitBranch> GetRemoteBranchNames();
+    Task<HashSet<GitBranch>> GetRemoteBranchNames();
 
-    HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches);
+    Task<HashSet<GitBranch>> GetBranchDescription(HashSet<GitBranch> branches);
 
     Task<AheadBehind> GetLocalAheadBehind(string localBranchName);
 
     Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
 
-    DateTime GetLastCommitDate(string branchName);
+    Task<DateTime> GetLastCommitDate(string branchName);
 
     HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches);
 }

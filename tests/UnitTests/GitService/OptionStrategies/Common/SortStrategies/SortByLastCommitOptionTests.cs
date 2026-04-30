@@ -7,7 +7,7 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public class SortByLastCommitOptionTests()
 {
     [Fact]
-    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches()
+    public async Task Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var currentDateTime = DateTime.Now;
 
@@ -20,7 +20,7 @@ public class SortByLastCommitOptionTests()
 
         var sortByLastCommitOption = new SortByLastCommitOptions();
 
-        var result = sortByLastCommitOption.Execute(branches);
+        var result = await sortByLastCommitOption.Execute(branches);
 
         Assert.Equal(currentDateTime.AddDays(-2), result.ElementAt(2).LastCommit);
         Assert.Equal(currentDateTime.AddDays(-1), result.ElementAt(1).LastCommit);
@@ -28,7 +28,7 @@ public class SortByLastCommitOptionTests()
     }
 
     [Fact]
-    public void Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
+    public async Task Given_SortByLastCommitOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var currentDateTime = DateTime.Now;
 
@@ -41,7 +41,7 @@ public class SortByLastCommitOptionTests()
 
         var sortByLastCommitOption = new SortByLastCommitOptions();
 
-        var result = sortByLastCommitOption.Execute(branches);
+        var result = await sortByLastCommitOption.Execute(branches);
 
         Assert.Equal(currentDateTime.AddDays(-2), result.ElementAt(2).LastCommit);
         Assert.Equal(currentDateTime.AddDays(-1), result.ElementAt(1).LastCommit);

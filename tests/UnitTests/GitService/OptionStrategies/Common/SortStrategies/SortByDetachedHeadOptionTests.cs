@@ -7,7 +7,7 @@ namespace Bbranch.Tests.GitService.Common.SortStrategies;
 public sealed class SortByDetachedHeadOptionTests
 {
     [Fact]
-    public void Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches()
+    public async Task Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
         var commitHash = "6efb99e";
         var detachedHeadName = $"(HEAD detached at {commitHash})";
@@ -23,7 +23,7 @@ public sealed class SortByDetachedHeadOptionTests
 
         var sortByNameOption = new SortByDetachedHeadOption();
 
-        var result = sortByNameOption.Execute(branches);
+        var result = await sortByNameOption.Execute(branches);
 
         Assert.Equal(detachedHeadName, result.First().Branch.Name);
         Assert.Equal("feature", result.ElementAt(1).Branch.Name);
@@ -31,7 +31,7 @@ public sealed class SortByDetachedHeadOptionTests
     }
 
     [Fact]
-    public void Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
+    public async Task Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
         var commitHash = "6efb99e";
         var detachedHeadName = $"(HEAD detached at {commitHash})";
@@ -47,7 +47,7 @@ public sealed class SortByDetachedHeadOptionTests
 
         var sortByNameOption = new SortByNameOptions();
 
-        var result = sortByNameOption.Execute(branches);
+        var result = await sortByNameOption.Execute(branches);
 
         Assert.Equal(detachedHeadName, result.First().Branch.Name);
         Assert.Equal("b_feature", result.ElementAt(1).Branch.Name);
