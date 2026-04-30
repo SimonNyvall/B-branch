@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Shared.Setters;
 
 public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
         foreach (GitBranch branch in branches)
         {
@@ -21,7 +21,7 @@ public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
                 branchName = branch.SymLink!.Target;
             }
 
-            DateTime lastCommit = gitBase.GetLastCommitDate(branchName);
+            DateTime lastCommit = await gitBase.GetLastCommitDate(branchName);
 
             branch.SetLastCommit(lastCommit);
         }

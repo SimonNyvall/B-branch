@@ -6,21 +6,21 @@ namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 public sealed class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName)
     : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 
         Parallel.ForEach(
             branches,
             options,
-            branch =>
+            async branch =>
             {
                 try
                 {
-                    var aheadBehind = gitBase
-                        .GetRemoteAheadBehind(branch.Branch.Name, remoteBranchName)
-                        .GetAwaiter()
-                        .GetResult();
+                    var aheadBehind = await gitBase.GetRemoteAheadBehind(
+                        branch.Branch.Name,
+                        remoteBranchName
+                    );
                     branch.SetAheadBehind(aheadBehind);
                 }
                 catch (Exception)
@@ -30,6 +30,6 @@ public sealed class TrackAheadBehindOption(IGitRepository gitBase, string remote
             }
         );
 
-        return branches;
+        return Task.FromResult(branches);
     }
 }

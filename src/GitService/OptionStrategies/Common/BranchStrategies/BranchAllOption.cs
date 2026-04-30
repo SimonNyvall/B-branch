@@ -3,12 +3,17 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 
-public sealed class BranchAllOptions(IGitRepository gitBase) : IOption
+public sealed class BranchAllOptions(IGitRepository gitRepository) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        HashSet<GitBranch> localBranches = gitBase.GetLocalBranchNames();
-        HashSet<GitBranch> remoteBranches = gitBase.GetRemoteBranchNames();
+        var localBranchesTask = gitRepository.GetLocalBranchNames();
+        var remoteBranchesTask = gitRepository.GetRemoteBranchNames();
+
+        await Task.WhenAll(localBranchesTask, remoteBranchesTask);
+
+        var localBranches = localBranchesTask.Result;
+        var remoteBranches = remoteBranchesTask.Result;
 
         branches.UnionWith(localBranches);
         branches.UnionWith(remoteBranches);

@@ -4,8 +4,9 @@ namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
 public sealed class SortByNameOptions : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        return [.. branches.OrderBy(branch => branch.Branch.Name)];
+        HashSet<GitBranch> sortedBranches = [.. branches.OrderBy(branch => branch.Branch.Name)];
+        return Task.FromResult(sortedBranches);
     }
 }

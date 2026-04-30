@@ -5,21 +5,18 @@ namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
 public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 
         Parallel.ForEach(
             branches,
             options,
-            branch =>
+            async branch =>
             {
                 try
                 {
-                    var aheadBehind = gitBase
-                        .GetLocalAheadBehind(branch.Branch.Name)
-                        .GetAwaiter()
-                        .GetResult();
+                    var aheadBehind = await gitBase.GetLocalAheadBehind(branch.Branch.Name);
                     branch.SetAheadBehind(aheadBehind);
                 }
                 catch (Exception)
@@ -29,6 +26,6 @@ public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
             }
         );
 
-        return branches;
+        return Task.FromResult(branches);
     }
 }

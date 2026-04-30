@@ -3,11 +3,11 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common;
 
-public sealed class WorkingBranchOption(IGitRepository gitBase) : IOption
+public sealed class WorkingBranchOption(IGitRepository _gitRepository) : IOption
 {
-    public HashSet<GitBranch> Execute(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
     {
-        string workingBranchName = gitBase.GetWorkingBranch();
+        string workingBranchName = await _gitRepository.GetWorkingBranch();
 
         if (string.IsNullOrEmpty(workingBranchName))
         {

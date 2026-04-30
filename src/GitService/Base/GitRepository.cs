@@ -12,74 +12,93 @@ public sealed class GitRepository : IGitRepository
 {
     private const int MaxCacheSize = 1000;
     private const int DecompressionBufferSize = 4096;
-    private static GitRepository? _instance;
+    internal static GitRepository? _instance;
+    internal static IIOAbstration _iOAbstration = null!;
 
-    private string _gitPath = string.Empty;
+    internal static string _gitPath = string.Empty;
+    internal static bool _isWorktreeRepo = false;
 
     private readonly Dictionary<string, string> _commitParentCache = new(MaxCacheSize);
     private readonly Dictionary<string, byte[]> _objectCache = new(MaxCacheSize);
 
     private string _headContent = string.Empty;
 
-    private GitRepository()
+    private GitRepository(IIOAbstration? iOAbstration)
     {
-        SetGitPath();
+        iOAbstration ??= new IOAbstraction();
+        _iOAbstration = iOAbstration;
     }
 
-    public static GitRepository GetInstance()
+    public static async Task<GitRepository> GetInstance(IIOAbstration? iOAbstration = null)
     {
-        if (_instance is not null)
-        {
-            return _instance;
-        }
-
-        lock (typeof(GitRepository))
-        {
-            _instance = _instance is null ? new GitRepository() : _instance;
-        }
+        _instance ??= new GitRepository(iOAbstration);
+        await SetGitPath();
 
         return _instance;
     }
 
-    private void SetGitPath()
+    public static GitRepository GetInstanceForTests(IIOAbstration iOAbstration)
     {
-        var currentDirectory = Directory.GetCurrentDirectory();
+        _instance ??= new GitRepository(iOAbstration);
 
-        while (!string.IsNullOrEmpty(currentDirectory))
+        return _instance;
+    }
+
+    private static async Task SetGitPath()
+    {
+        var dir = _iOAbstration.GetCurrentDirectory();
+
+        while (dir != null)
         {
-            var gitPath = Path.Combine(currentDirectory, ".git");
+            var dotGit = Path.Combine(dir.FullName, ".git");
 
-            if (Directory.Exists(gitPath))
+            if (_iOAbstration.DirectoryExists(dotGit))
             {
-                _gitPath = gitPath;
+                _gitPath = dotGit;
                 return;
             }
 
-            if (File.Exists(gitPath))
+            if (_iOAbstration.FileExists(dotGit))
             {
-                var gitFileContent = File.ReadAllText(gitPath).Trim();
-                if (gitFileContent.StartsWith("gitdir:"))
+                var content = (await _iOAbstration.ReadAllText(dotGit)).Trim();
+
+                if (content.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase))
                 {
-                    _gitPath = Path.GetFullPath(gitFileContent[7..].Trim(), currentDirectory);
+                    var path = content.Substring(7).Trim();
+                    _gitPath = Path.GetFullPath(path, dir.FullName);
                     return;
                 }
             }
 
-            currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+            if (LooksLikeGitDir(dir.FullName))
+            {
+                _gitPath = dir.FullName;
+                _isWorktreeRepo = true;
+                return;
+            }
+
+            dir = dir.Parent;
         }
 
         Console.WriteLine("fatal: not a git repository (or any parent up to mount point /)");
         Environment.Exit(1);
     }
 
-    public string GetWorkingBranch()
+    private static bool LooksLikeGitDir(string path)
+    {
+        return _iOAbstration.FileExists(Path.Combine(path, "HEAD"))
+            && _iOAbstration.DirectoryExists(Path.Combine(path, "objects"))
+            && _iOAbstration.DirectoryExists(Path.Combine(path, "refs"));
+    }
+
+    public async Task<string> GetWorkingBranch()
     {
         string headFileContent = string.Empty;
 
         if (string.IsNullOrEmpty(_headContent))
         {
             string headFilePath = Path.Combine(_gitPath, "HEAD");
-            headFileContent = File.ReadAllText(headFilePath).Trim();
+            headFileContent = (await _iOAbstration.ReadAllText(headFilePath)).Trim();
         }
         else
         {
@@ -101,24 +120,23 @@ public sealed class GitRepository : IGitRepository
         return string.Empty;
     }
 
-    public DateTime GetLastCommitDate(string branchName)
+    public async Task<DateTime> GetLastCommitDate(string branchName)
     {
         try
         {
-            string commitHash = File.ReadAllText(
-                    Path.Combine(_gitPath, "refs", "heads", branchName)
-                )
-                .Trim();
+            string commitHash = (
+                await _iOAbstration.ReadAllText(Path.Combine(_gitPath, "refs", "heads", branchName))
+            ).Trim();
 
             string dirName = commitHash[..2];
             commitHash = commitHash[2..];
 
-            if (!Directory.Exists(Path.Combine(_gitPath, "objects", dirName)))
+            if (!_iOAbstration.DirectoryExists(Path.Combine(_gitPath, "objects", dirName)))
             {
                 throw new DirectoryNotFoundException();
             }
 
-            DateTime lastWriteTimeOfCommit = File.GetLastWriteTime(
+            DateTime lastWriteTimeOfCommit = _iOAbstration.GetLastWriteTime(
                 Path.Combine(_gitPath, "objects", dirName, commitHash)
             );
 
@@ -171,7 +189,7 @@ public sealed class GitRepository : IGitRepository
         }
     }
 
-    private async Task<AheadBehind> GetAheadBehind(
+    internal async Task<AheadBehind> GetAheadBehind(
         string localBranchName,
         string? remoteBranchName = null
     )
@@ -181,14 +199,14 @@ public sealed class GitRepository : IGitRepository
             ? Path.Combine(_gitPath, "refs", "remotes", "origin", localBranchName)
             : Path.Combine(_gitPath, "refs", "remotes", "origin", remoteBranchName);
 
-        if (!File.Exists(remoteBranchRefPath))
+        if (!_iOAbstration.FileExists(remoteBranchRefPath))
         {
             return new(0, 0);
         }
 
         // Read files as byte arrays
-        byte[] localContentBytes = await File.ReadAllBytesAsync(localBranchRefPath);
-        byte[] remoteContentBytes = await File.ReadAllBytesAsync(remoteBranchRefPath);
+        byte[] localContentBytes = await _iOAbstration.ReadAllBytes(localBranchRefPath);
+        byte[] remoteContentBytes = await _iOAbstration.ReadAllBytes(remoteBranchRefPath);
 
         // Compare contents
         bool areEqual = localContentBytes.AsSpan().SequenceEqual(remoteContentBytes);
@@ -222,7 +240,7 @@ public sealed class GitRepository : IGitRepository
 
             string commitObjectPath = Path.Combine(_gitPath, "objects", dirName, fileName);
 
-            if (!File.Exists(commitObjectPath))
+            if (!_iOAbstration.FileExists(commitObjectPath))
             {
                 return 0;
             }
@@ -244,7 +262,7 @@ public sealed class GitRepository : IGitRepository
     private async Task<string> GetParentCommitHash(string commitObjectPath)
     {
         // Extract the hash from the path and convert to string immediately
-        string hash = Path.GetFileName(commitObjectPath);
+        string hash = _iOAbstration.GetFileName(commitObjectPath);
 
         // Check cache using string
         if (_commitParentCache.TryGetValue(hash, out var cachedParent))
@@ -259,7 +277,7 @@ public sealed class GitRepository : IGitRepository
         }
         else
         {
-            compressedData = await File.ReadAllBytesAsync(commitObjectPath);
+            compressedData = await _iOAbstration.ReadAllBytes(commitObjectPath);
             _objectCache[hash] = compressedData;
         }
 
@@ -319,7 +337,7 @@ public sealed class GitRepository : IGitRepository
         }
     }
 
-    private static AheadBehind ParseAheadBehind(string result)
+    internal static AheadBehind ParseAheadBehind(string result)
     {
         if (string.IsNullOrWhiteSpace(result))
         {
@@ -339,12 +357,12 @@ public sealed class GitRepository : IGitRepository
         return new AheadBehind(0, 0);
     }
 
-    public HashSet<GitBranch> GetLocalBranchNames()
+    public async Task<HashSet<GitBranch>> GetLocalBranchNames()
     {
         var localBranchPath = Path.Combine("refs", "heads");
-        var localBranches = FetchBranches(localBranchPath);
+        var localBranches = await FetchBranches(localBranchPath);
 
-        var detachedHead = GetDetachedHead();
+        var detachedHead = await GetDetachedHead();
 
         if (detachedHead != null)
         {
@@ -354,11 +372,11 @@ public sealed class GitRepository : IGitRepository
         return localBranches;
     }
 
-    public HashSet<GitBranch> GetRemoteBranchNames()
+    public async Task<HashSet<GitBranch>> GetRemoteBranchNames()
     {
         var remoteBranchPath = Path.Combine("refs", "remotes");
 
-        var remoteBranches = FetchBranches(remoteBranchPath);
+        var remoteBranches = await FetchBranches(remoteBranchPath);
 
         foreach (var remoteBranch in remoteBranches)
         {
@@ -366,12 +384,18 @@ public sealed class GitRepository : IGitRepository
         }
 
         var remotesRoot = Path.Combine(_gitPath, "refs", "remotes");
-        var remotes = Directory.GetDirectories(remotesRoot);
+
+        if (!_iOAbstration.DirectoryExists(remotesRoot))
+        {
+            return remoteBranches;
+        }
+
+        var remotes = _iOAbstration.GetDirectories(remotesRoot);
 
         foreach (var remoteDir in remotes)
         {
-            var remoteName = Path.GetFileName(remoteDir);
-            var remoteHead = GetRemoteHead(remoteName);
+            var remoteName = _iOAbstration.GetFileName(remoteDir);
+            var remoteHead = await GetRemoteHead(remoteName);
 
             if (remoteHead != null)
             {
@@ -382,14 +406,14 @@ public sealed class GitRepository : IGitRepository
         return remoteBranches;
     }
 
-    private GitBranch? GetRemoteHead(string remoteName)
+    private async Task<GitBranch?> GetRemoteHead(string remoteName)
     {
         var headPath = Path.Combine(_gitPath, "refs", "remotes", remoteName, "HEAD");
 
-        if (!File.Exists(headPath))
+        if (!_iOAbstration.FileExists(headPath))
             return null;
 
-        var content = File.ReadAllText(headPath);
+        var content = await _iOAbstration.ReadAllText(headPath);
 
         if (!content.StartsWith("ref: "))
             return null;
@@ -408,10 +432,10 @@ public sealed class GitRepository : IGitRepository
             .SetSymLink(new Symbolic(remoteName, shortTarget));
     }
 
-    private GitBranch? GetDetachedHead()
+    private async Task<GitBranch?> GetDetachedHead()
     {
         var headPath = Path.Combine(_gitPath, "HEAD");
-        var headContent = File.ReadAllText(headPath);
+        var headContent = await _iOAbstration.ReadAllText(headPath);
         _headContent = headContent;
 
         if (headContent.StartsWith("ref: "))
@@ -428,12 +452,12 @@ public sealed class GitRepository : IGitRepository
         return GitBranch.Default().SetBranch(branch).SetDetachedHead(commitHash);
     }
 
-    private HashSet<GitBranch> FetchBranches(string path)
+    private async Task<HashSet<GitBranch>> FetchBranches(string path)
     {
         var updatedBranches = CollectBranchNames(path);
 
         path = path.Replace('\\', '/');
-        updatedBranches = GetMergedBranchList(updatedBranches, GetPackedRefsBranches(path));
+        updatedBranches = GetMergedBranchList(updatedBranches, await GetPackedRefsBranches(path));
 
         return updatedBranches;
     }
@@ -457,15 +481,15 @@ public sealed class GitRepository : IGitRepository
         return headBranches;
     }
 
-    private HashSet<GitBranch> GetPackedRefsBranches(string prefix)
+    private async Task<HashSet<GitBranch>> GetPackedRefsBranches(string prefix)
     {
         var packedRefsPath = Path.Combine(_gitPath, "packed-refs");
 
-        if (!File.Exists(packedRefsPath))
+        if (!_iOAbstration.FileExists(packedRefsPath))
             return [];
 
         var branches = new HashSet<GitBranch>();
-        var packedRefsLines = File.ReadAllLines(packedRefsPath);
+        var packedRefsLines = await _iOAbstration.ReadAllLines(packedRefsPath);
 
         foreach (var line in packedRefsLines)
         {
@@ -503,11 +527,23 @@ public sealed class GitRepository : IGitRepository
     {
         HashSet<GitBranch> branches = [];
         var path = Path.Combine(_gitPath, directoryPath);
-        var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+
+        if (!_iOAbstration.DirectoryExists(path))
+        {
+            return branches;
+        }
+
+        var files = _iOAbstration.GetFiles(path);
 
         foreach (var file in files)
         {
-            var relativePath = Path.GetRelativePath(path, file);
+            var relativePath = _iOAbstration.GetRelativePath(path, file);
+
+            if (relativePath == null)
+            {
+                continue;
+            }
+
             var branchName = relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
             if (branchName.EndsWith("/HEAD"))
@@ -521,15 +557,15 @@ public sealed class GitRepository : IGitRepository
         return branches;
     }
 
-    public HashSet<GitBranch> GetBranchDescription(HashSet<GitBranch> branches)
+    public async Task<HashSet<GitBranch>> GetBranchDescription(HashSet<GitBranch> branches)
     {
         const string descriptionFileName = "EDIT_DESCRIPTION";
         string path = Path.Combine(_gitPath, descriptionFileName);
 
-        if (!File.Exists(path))
+        if (!_iOAbstration.FileExists(path))
             return branches;
 
-        var lines = File.ReadAllLines(path);
+        var lines = await _iOAbstration.ReadAllLines(path);
 
         var descriptions = new Dictionary<string, string>();
         string? currentBranch = null;
@@ -571,6 +607,39 @@ public sealed class GitRepository : IGitRepository
             {
                 branch.SetDescription(desc);
             }
+        }
+
+        return branches;
+    }
+
+    public HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches)
+    {
+        if (!_isWorktreeRepo)
+        {
+            return branches;
+        }
+
+        var worktreePath = Path.Combine(_gitPath, "worktrees");
+
+        var checkedOutBrancheNames = new HashSet<string>();
+
+        foreach (var worktreeDirectory in _iOAbstration.GetDirectories(worktreePath))
+        {
+            checkedOutBrancheNames.Add(worktreeDirectory.Split(Path.DirectorySeparatorChar)[^1]);
+        }
+
+        foreach (var branch in branches)
+        {
+            var worktreeBranch = checkedOutBrancheNames.FirstOrDefault(x =>
+                branch.Branch.Name.Equals(x, StringComparison.CurrentCulture)
+            );
+
+            if (worktreeBranch == null)
+            {
+                continue;
+            }
+
+            branch.SetIsCheckoutWorktree(true);
         }
 
         return branches;

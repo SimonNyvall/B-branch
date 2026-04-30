@@ -11,7 +11,7 @@ bool foundLessCommand = true;
 
 if (arguments.Count < 1 || !File.Exists(arguments[0]))
 {
-    PrintWarning("Less command does not exist");
+    PrintWarning("The less command was not found");
     foundLessCommand = false;
 }
 
@@ -35,9 +35,12 @@ if (options.Contains<VersionFlag>())
     VersionOption.Execute();
 }
 
-var gitRepository = GitRepository.GetInstance();
+var gitRepository = await GitRepository.GetInstance();
 
-HashSet<GitBranch> branchTable = BranchTableAssembler.AssembleBranchTable(gitRepository, options);
+HashSet<GitBranch> branchTable = await BranchTableAssembler.AssembleBranchTable(
+    gitRepository,
+    options
+);
 
 var lessCommandPath = foundLessCommand ? arguments[0] : null;
 
