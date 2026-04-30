@@ -15,7 +15,7 @@ public sealed class WorkingBranchOption(IGitRepository gitBase) : IOption
         }
 
         var branchToUpdate = branches.FirstOrDefault(branch =>
-            branch.Branch.Name.Equals(workingBranchName, StringComparison.Ordinal)
+            branch.Branch.Name.Equals(workingBranchName.Trim(), StringComparison.Ordinal)
         );
 
         if (branchToUpdate is null)

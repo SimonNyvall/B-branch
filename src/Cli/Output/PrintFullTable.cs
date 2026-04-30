@@ -42,10 +42,10 @@ public class PrintFullTable
         const string red = "\x1b[31m";
         const string gray = "\x1b[90m";
 
-        int minWidth = 14;
+        int minWidth = 15;
         int longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
 
-        var line = $"--------- | ---------- | {new string('-', longest)} | ----------------";
+        var line = $"--------- | ---------- | {new string('-', longest)} | ---------------";
 
         stringBuilder.AppendLine(BuildHeaders(longest));
         stringBuilder.AppendLine(line);
@@ -55,7 +55,7 @@ public class PrintFullTable
             var ahead = branch.AheadBehind.Ahead.ToString().PadRight(8);
             var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
             var name = branch.Branch.Name.PadRight(longest);
-            var lastCommit = PrintFormater.GetTimePrefix(branch.LastCommit, DateTime.Now);
+            var lastCommit = PrintFormatter.GetTimePrefix(branch.LastCommit, DateTime.Now);
             var desc = branch.Description ?? "";
 
             stringBuilder.Append(" ");
@@ -78,9 +78,8 @@ public class PrintFullTable
             }
 
             stringBuilder.Append("|  ");
-            stringBuilder.Append(lastCommit);
-            stringBuilder.Append(" ");
-            stringBuilder.Append($"    {gray}{desc}{reset}");
+            stringBuilder.Append(lastCommit.PadRight(20));
+            stringBuilder.Append($"{gray}{desc}{reset}");
 
             stringBuilder.AppendLine();
         }

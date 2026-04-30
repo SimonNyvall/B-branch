@@ -1,6 +1,6 @@
 namespace Bbranch.CLI.Output;
 
-public static class PrintFormater
+public static class PrintFormatter
 {
     private const string FiveSpacer = "     ";
     private const string FourSpacer = "    ";
@@ -17,6 +17,9 @@ public static class PrintFormater
 
         if (days == 1)
             return $"{lastCommit:HH:mm} yesterday";
+
+        if (days > 9 && days < 30)
+            return $"{days}{FourSpacer}days ago";
 
         if (days < 30)
             return $"{days}{FiveSpacer}days ago";
