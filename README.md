@@ -24,19 +24,18 @@
 </div>
 
 <details>
-<summary>Table of content</summary>
+<summary>📚 Table of content</summary>
 
-- [Premise](#premise-rocket)
-  - [Features](#features)
-  - [Example](#example)
-- [Usage](#usage)
-  - [Options](#options)
-- [Download](#download-computer)
-  - [Next Release](#next-release)
+- [🌿 What is B-branch?](#-what-is-b-branch)
+- [✨ Features at a Glance](#-features-at-a-glance)
+- [🚀 Quick Start](#-quick-start)
+- [🔧 Usage](#-usage)
+- [📝 Branch Description](#-branch-description)
+- [🖥️ Pager Keybindings](#️-pager-keybindings)
+- [💡 Nerd Fonts](#-nerd-fonts)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments-mega)
 - [License](#license-book)
-- [FQAs](#fqas)
 
 </details>
 
