@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>B-branch Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="../../images/git-logo.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="banner">
+        <div class="wrapper banner-inner">
+          <img
+            class="logo"
+            src="../../images/git-doc-logo.png"
+            alt="Git Docs Logo"
+          />
+          <img class="heart" src="../../images/heart.png" alt="Heart" />
+          <h2 class="title">B-branch</h2>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <h2>B-branch</h2>
+          <a href="#usage">Usage</a>
+          <a href="#overview">Overview</a>
+          <a href="#generic">Generic Options</a>
+          <a href="#filtering">Filtering Options</a>
+          <a href="#examples">Examples</a>
+          <a href="#branch-description">Branch Description</a>
+          <a href="#pager-keybindings">Pager Keybindings</a>
+          <a href="#nerd-font">Nerd Font</a>
+          <a href="#download">Download</a>
+          <a href="#notes">Notes</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+          <h3 align="center">
+            <img
+              width="20px"
+              src="../../images/mini-git-logo.png"
+              style="vertical-align: middle"
+            />
+            git branch, <strong>but make it better</strong> 🔧
+          </h3>
+          <p align="center">
+            <strong>Download for</strong> macOS (<a
+              href="https://github.com/SimonNyvall/B-branch/releases"
+              >Apple Silicon</a
+            >) · Linux (<a
+              href="https://github.com/SimonNyvall/B-branch/releases"
+              >x64</a
+            >) · Windows (<a
+              href="https://github.com/SimonNyvall/B-branch/releases"
+              >x64</a
+            >)
+          </p>
+
+          <div align="center">
+            <hr />
+            <img
+              src="https://img.shields.io/github/actions/workflow/status/SimonNyvall/B-branch/build-test.yml?style=flat&logoColor=white&label=last%20merge%20build&color=green"
+              alt=".NET"
+            />&nbsp;&nbsp;
+            <img
+              src="https://img.shields.io/github/stars/SimonNyvall/B-branch?style=flat&color=yellow"
+              alt="github stars"
+            />&nbsp;&nbsp;
+            <img
+              src="https://img.shields.io/github/downloads/SimonNyvall/B-branch/total?style=flat&logo=Github&color=blue"
+              alt="download count"
+            />&nbsp;&nbsp
+            <img
+              src="https://img.shields.io/badge/GitButler-%23B9F4F2?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMzkiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAzOSAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI1LjIxNDUgMTIuMTk5N0wyLjg3MTA3IDEuMzg5MTJDMS41NDI5NSAwLjc0NjUzMiAwIDEuNzE0MDYgMCAzLjE4OTQ3VjI0LjgxMDVDMCAyNi4yODU5IDEuNTQyOTUgMjcuMjUzNSAyLjg3MTA3IDI2LjYxMDlMMjUuMjE0NSAxNS44MDAzQzI2LjcxOTcgMTUuMDcyMSAyNi43MTk3IDEyLjkyNzkgMjUuMjE0NSAxMi4xOTk3WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEzLjc4NTUgMTIuMTk5N0wzNi4xMjg5IDEuMzg5MTJDMzcuNDU3MSAwLjc0NjUzMiAzOSAxLjcxNDA2IDM5IDMuMTg5NDdWMjQuODEwNUMzOSAyNi4yODU5IDM3LjQ1NzEgMjcuMjUzNSAzNi4xMjg5IDI2LjYxMDlMMTMuNzg1NSAxNS44MDAzQzEyLjI4MDMgMTUuMDcyMSAxMi4yODAzIDEyLjkyNzkgMTMuNzg1NSAxMi4xOTk3WiIgZmlsbD0idXJsKCNwYWludDBfcmFkaWFsXzMxMF8xMjkpIi8%2BCjxkZWZzPgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50MF9yYWRpYWxfMzEwXzEyOSIgY3g9IjAiIGN5PSIwIiByPSIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSgxNi41NzAxIDE0KSBzY2FsZSgxOS44NjQxIDE5LjgzODMpIj4KPHN0b3Agb2Zmc2V0PSIwLjMwMTA1NiIgc3RvcC1vcGFjaXR5PSIwIi8%2BCjxzdG9wIG9mZnNldD0iMSIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8L2RlZnM%2BCjwvc3ZnPgo%3D"
+              alt="gitbutler"
+            />
+          </div>
+
+          <h1>🌿 What is B-branch?</h1>
+          <p>
+            You've been staring at <code>git branch</code> output for years, an
+            alphabetical wall of names with zero context.
+            <em
+              >When was this branch last touched? How far behind is it? What was
+              I even doing here?</em
+            >
+          </p>
+          <p><strong>B-branch fixes that.</strong></p>
+          <p>
+            It replaces the blunt git branch command with a rich, structured
+            view that shows you what actually matters: recency, divergence, and
+            description.
+          </p>
+          <img src="../../images/banner2.png" class="max-width" />
+          <h2 id="usage">🔧 Usage</h2>
+          <pre><code>git bb [&lt;options&gt;] [&lt;additional arguments&gt;]</code></pre>
+
+          <h2 id="overview">Overview</h2>
+          <p>
+            <code>git bb</code> behaves similarly to <code>git branch</code>,
+            but provides additional capabilities for filtering, sorting, and
+            analyzing branches.
+          </p>
+
+          <h2 id="generic">Generic Options</h2>
+
+          <div class="option">
+            <code>-h, --help</code> — Show the help message.
+          </div>
+          <div class="option">
+            <code>-v, --version</code> — Show the current version.
+          </div>
+          <div class="option">
+            <code>-q, --quiet</code> — Output only branch names.
+          </div>
+
+          <h2 id="filtering">Filtering Options</h2>
+
+          <div class="option">
+            <code>-c, --contains &lt;string&gt;</code> — List branches
+            containing the string.
+          </div>
+          <div class="option">
+            <code>-n, --no-contains &lt;string&gt;</code> — Exclude branches
+            containing the string.
+          </div>
+          <div class="option">
+            <code>-s, --sort &lt;criterion&gt;</code> — Sort by
+            <code>date</code>, <code>name</code>, <code>ahead</code>,
+            <code>behind</code>.
+          </div>
+          <div class="option">
+            <code>-t, --track &lt;branch&gt;</code> — Show upstream
+            relationship.
+          </div>
+          <div class="option">
+            <code>-a, --all</code> — Show local and remote branches.
+          </div>
+          <div class="option">
+            <code>-r, --remote</code> — Show only remote branches.
+          </div>
+          <div class="option">
+            <code>-p, --print-top &lt;N&gt;</code> — Show top N branches.
+          </div>
+
+          <h2 id="examples">Examples</h2>
+
+          <pre><code># List all branches
+git bb
+
+# Only remote branches
+git bb --remote
+
+# Find branches containing "feature"
+git bb --contains feature
+
+# Sort by latest updates
+git bb --sort date
+
+# Top 5 ahead branches
+git bb --sort ahead --print-top 5
+</code></pre>
+
+          <h2 id="branch-description">📝 Branch Description</h2>
+          <p>
+            Git supports per-branch description natively... B-branch actually
+            shows them.
+          </p>
+          <pre>
+# Add a description to the current branch
+git branch --edit-description</pre
+          >
+
+          <p>
+            This will open an editor where you can set descriptions for your
+            branches.
+          </p>
+
+          <pre>
+[main]
+This is the description that will show up on the main branch.
+
+[development]
+This development branch is for incoming work.</pre
+          >
+
+          <h2 id="pager-keybindings">🖥️ Pager Keybindings</h2>
+          <div class="option"><code>j / k</code> Scroll down / up</div>
+          <div class="option"><code>G / END</code> Jump to bottom</div>
+          <div class="option"><code>g / HOME</code> Jump to top</div>
+          <div class="option"><code>/</code> Search</div>
+          <div class="option">
+            <code>n / N</code> Next / previous search result
+          </div>
+          <div class="option"><code>ESC</code> Clear search</div>
+          <div class="option"><code>q</code> Quit</div>
+          <div class="option"><code>!</code> Execute shell command</div>
+
+          <h2 id="nerd-font">💡 Nerd Font</h2>
+          <p>For the full icon experience, install Nerd Font and enable it</p>
+          <pre>git config --global vars.useNerdFonts true</pre>
+
+          <h2 id="download">Download</h2>
+
+          <p>
+            Look through releases on the
+            <a href="https://github.com/SimonNyvall/B-branch/releases"
+              >Release page</a
+            >
+            or download the latest version below!
+          </p>
+
+          <pre>
+curl -sSfL https://raw.githubusercontent.com/SimonNyvall/b-branch/main/install.sh | sh
+</pre
+          >
+
+          <details class="docs-details">
+            <summary>Manual Install</summary>
+
+            <h2>Pre-Installation Cleanup 🧹</h2>
+
+            <p>
+              Before reinstalling <strong>B-branch</strong>, follow these steps
+              to remove previous configurations.
+            </p>
+
+            <ol>
+              <li>
+                <strong>Delete</strong> the <code>bin</code> directory:
+                <ul>
+                  <li>
+                    <strong>Windows</strong>: Delete the
+                    <code>b-branch</code> folder from
+                    <code>C:\Users\&lt;user&gt;\AppData\Local\bin\</code>
+                  </li>
+                  <li><strong>Unix</strong>: Run the following command:</li>
+                </ul>
+
+                <pre><code>sudo rm -rf /usr/local/bin/b-branch</code></pre>
+              </li>
+
+              <li>
+                Remove Git Alias:
+                <ul>
+                  <li>
+                    <strong>Open</strong> the git config file (<code
+                      >~/.gitconfig</code
+                    >
+                    or <code>%USERPROFILE%\.gitconfig</code>)
+                  </li>
+                  <li>
+                    <strong>Delete</strong> the lines for the
+                    <strong>bb</strong> alias
+                  </li>
+                </ul>
+              </li>
+            </ol>
+
+            <h2>Manual Install</h2>
+
+            <ol>
+              <li><strong>Download</strong> the binary for your system.</li>
+
+              <li>
+                <strong>Unzip</strong> the file:
+                <pre><code>unzip b-branch-&lt;arch&gt;.zip</code></pre>
+              </li>
+
+              <li>
+                <strong>Move</strong> the directory to your <code>bin</code>.
+              </li>
+            </ol>
+
+            <div class="note">
+              <strong>Note:</strong> <code>&lt;arch&gt;</code> refers to the
+              architecture of the downloaded binary.
+            </div>
+
+            <h2>Windows 🪟</h2>
+
+            <div class="note">
+              <strong>Note:</strong> Replace <code>&lt;user&gt;</code> with your
+              username.
+            </div>
+
+            <ul>
+              <li>
+                <strong>Move</strong> the folder:
+                <pre><code>move "C:\b-branch-&lt;arch&gt;" "C:\Users\&lt;user&gt;\AppData\Local\bin\b-branch"</code></pre>
+              </li>
+
+              <li>
+                <strong>Link</strong> to Git:
+                <pre><code>git config --global alias.bb '!f() { /c/Users/&lt;user&gt;/AppData/Local/B-branch/CLI.exe "$@"; }; f'</code></pre>
+              </li>
+            </ul>
+
+            <h2>Unix 🐧 🍎</h2>
+
+            <ul>
+              <li>
+                <strong>Move</strong> the directory:
+                <pre><code>sudo mv b-branch-&lt;arch&gt; /usr/local/bin/b-branch</code></pre>
+              </li>
+
+              <li>
+                <strong>Link</strong> to Git:
+                <pre><code>git config --global alias.bb '!bash -c '\''"'/usr/local/bin/b-branch/CLI'" "$@"'\'' bash'</code></pre>
+              </li>
+            </ul>
+          </details>
+
+          <h2 id="notes">Notes</h2>
+          <p>
+            Designed as a drop-in enhancement for developers working with many
+            branches.
+          </p>
+
+          <p>
+            <strong>Pager:</strong> B-branch uses <code>less</code> as its
+            pager. The first argument passed to B-branch is expected to be the
+            path to the <code>less</code> executable. The install script
+            configures this automatically, but manual installs require
+            <code>less</code> to be available in your PATH or explicitly
+            provided.
+          </p>
+
+          <p>
+            <strong>Filtering:</strong> The <code>--contains</code> and
+            <code>--no-contains</code> options first attempt to interpret input
+            as a regular expression. If parsing fails, B-branch falls back to a
+            simple substring match using .NET's string matching.
+          </p>
+
+          <p>
+            <strong>Sorting:</strong> Sorting by <code>ahead</code> or
+            <code>behind</code> depends on upstream tracking information.
+            Branches without an upstream may appear last or be omitted depending
+            on context.
+          </p>
+
+          <p>
+            <strong>Upstream:</strong> Ahead/behind information requires an
+            upstream branch. If none is set, those values will not be shown.
+          </p>
+
+          <p>
+            <strong>Detached HEAD:</strong> When in a detached HEAD state,
+            B-branch may not associate the current state with a branch.
+          </p>
+
+          <p>
+            <strong>Remote branches:</strong> Remote branches are only included
+            when using <code>--all</code> or <code>--remote</code>. Their
+            metadata depends on your local fetch state.
+          </p>
+
+          <p>
+            <strong>Performance:</strong> Performance depends on repository size
+            and number of branches. Large repositories or many remotes may take
+            slightly longer to analyze.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
