@@ -4,7 +4,7 @@ updates:
     directory: "/tests/IntegrationTests"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "integration-tests"
       - "x-unit"
@@ -13,7 +13,7 @@ updates:
     directory: "/tests/UnitTests"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "unit-tests"
       - "x-unit"
@@ -22,7 +22,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "github-actions"
         
@@ -30,7 +30,7 @@ updates:
     directory: "/src/Cli"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "cli"
         
@@ -38,7 +38,7 @@ updates:
     directory: "/src/GitService"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "GitService"
         
@@ -46,6 +46,6 @@ updates:
     directory: "/src/Shared"
     schedule:
       interval: "weekly"
-    target-branch: "dev"
+    target-branch: "main"
     labels:
       - "Shared"
