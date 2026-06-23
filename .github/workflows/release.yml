@@ -1,4 +1,4 @@
-﻿name: Manual Build and Upload Artifacts
+name: Manual Build and Upload Artifacts
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ jobs:
         os: [win-x64, linux-x64, osx-arm64]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
