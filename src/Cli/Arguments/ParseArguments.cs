@@ -2,11 +2,13 @@ namespace Bbranch.CLI.Arguments;
 
 using FlagSystem;
 using FlagSystem.Flags;
+using MethodTimer;
 
 public sealed class Parse
 {
     private static readonly FlagCollection _flags = [];
 
+    [Time]
     public static bool TryParseOptions(string[] args, out FlagCollection options)
     {
         _flags.Clear();
