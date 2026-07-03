@@ -12,7 +12,7 @@ public class PrintLightTable
         _pager = pager;
     }
 
-    public void Print(HashSet<GitBranch> branches, string? lessCommandPath)
+    public void Print(List<GitBranch> branches, string? lessCommandPath)
     {
         if (branches.Count == 0)
         {
@@ -30,7 +30,7 @@ public class PrintLightTable
         _pager.StartLess(output, lessCommandPath);
     }
 
-    private static string BuildOutput(HashSet<GitBranch> branches)
+    private static string BuildOutput(List<GitBranch> branches)
     {
         var stringBuilder = new StringBuilder();
         const string reset = "\x1b[0m";

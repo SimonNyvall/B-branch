@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
 public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
 {
-    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 

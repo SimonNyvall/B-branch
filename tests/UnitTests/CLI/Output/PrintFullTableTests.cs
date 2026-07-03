@@ -9,7 +9,7 @@ public class PrintFullTableTests
     [Fact]
     public void Given_NoBranches_When_PrintFullTableRun_Then_Return_NoBranches()
     {
-        var branches = new HashSet<GitBranch>();
+        var branches = new List<GitBranch>();
         var pagerFake = A.Fake<IPager>();
         var sut = new PrintFullTable(pagerFake);
 
@@ -22,7 +22,7 @@ public class PrintFullTableTests
     public void Given_Brnaches_When_PrintFullTableRun_Then_PrintBranches()
     {
         var mainBranch = GitBranch.Default().SetBranch(new Branch("main", false));
-        var branches = new HashSet<GitBranch> { mainBranch };
+        var branches = new List<GitBranch> { mainBranch };
 
         var pagerFake = A.Fake<IPager>();
         var sut = new PrintFullTable(pagerFake);

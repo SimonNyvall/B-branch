@@ -6,17 +6,17 @@ public interface IGitRepository
 {
     Task<string> GetWorkingBranch();
 
-    Task<HashSet<GitBranch>> GetLocalBranchNames();
+    Task<List<GitBranch>> GetLocalBranchNames();
 
-    Task<HashSet<GitBranch>> GetRemoteBranchNames();
+    Task<List<GitBranch>> GetRemoteBranchNames();
 
-    Task<HashSet<GitBranch>> GetBranchDescription(HashSet<GitBranch> branches);
+    Task<List<GitBranch>> GetBranchDescription(List<GitBranch> branches);
 
     Task<AheadBehind> GetLocalAheadBehind(string localBranchName);
 
     Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
 
-    Task<DateTime> GetLastCommitDate(string branchName);
+    Task<GitBranch> GetLastCommitDate(GitBranch branchName);
 
-    HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches);
+    List<GitBranch> StichWorkTreeBranches(List<GitBranch> branches);
 }

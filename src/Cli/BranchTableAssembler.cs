@@ -17,7 +17,7 @@ public static class BranchTableAssembler
     private static IGitRepository _gitRepository = null!;
     internal static CompositeOptionStrategy _optionStrategies = null!;
 
-    internal static async Task<HashSet<GitBranch>> AssembleBranchTable(
+    internal static async Task<List<GitBranch>> AssembleBranchTable(
         IGitRepository gitRepository,
         FlagCollection arguments
     )

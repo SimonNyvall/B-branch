@@ -13,7 +13,10 @@ public sealed class SetLastCommitTests
     public SetLastCommitTests()
     {
         _gitRepositoryFake = A.Fake<IGitRepository>();
-        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._)).Returns(DateTime.Now);
+
+        var gitBranch = GitBranch.Default();
+
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<GitBranch>._)).Returns(gitBranch);
     }
 
     [Fact]
@@ -31,7 +34,7 @@ public sealed class SetLastCommitTests
     {
         var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
-        var branches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var branches = new List<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
         var result = await strategy.Execute(branches);
 
@@ -45,9 +48,9 @@ public sealed class SetLastCommitTests
         var detachedBranchName = $"(HEAD detached at {commitHash})";
 
         var capturedBranchName = string.Empty;
-        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._))
-            .Invokes((string branchName) => capturedBranchName = branchName)
-            .Returns(DateTime.Now);
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<GitBranch>._))
+            .Invokes((GitBranch gitBranch) => capturedBranchName = gitBranch.Branch.Name)
+            .Returns(GitBranch.Default());
 
         var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
@@ -56,21 +59,21 @@ public sealed class SetLastCommitTests
             .SetBranch(new Branch(detachedBranchName, true))
             .SetDetachedHead(commitHash);
 
-        var branches = new HashSet<GitBranch> { gitBranch };
+        var branches = new List<GitBranch> { gitBranch };
 
         var result = await strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
-        Assert.Equal(commitHash, capturedBranchName);
+        Assert.Equal($"(HEAD detached at {commitHash})", capturedBranchName);
     }
 
     [Fact]
     public async Task Given_SetLastCommitOptions_When_ExecutingRunWithSymbolicBranch_Then_Return_ExpectedValue()
     {
         var capturedBranchName = string.Empty;
-        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<string>._))
-            .Invokes((string branchName) => capturedBranchName = branchName)
-            .Returns(DateTime.Now);
+        A.CallTo(() => _gitRepositoryFake.GetLastCommitDate(A<GitBranch>._))
+            .Invokes((GitBranch gitBranch) => capturedBranchName = gitBranch.Branch.Name)
+            .Returns(GitBranch.Default());
 
         var strategy = new SetLastCommitOptions(_gitRepositoryFake);
 
@@ -83,11 +86,11 @@ public sealed class SetLastCommitTests
             .SetIsRemote(true)
             .SetSymLink(new Symbolic(refBranch, targetBranch));
 
-        var branches = new HashSet<GitBranch> { gitBranch };
+        var branches = new List<GitBranch> { gitBranch };
 
         var result = await strategy.Execute(branches);
 
         Assert.Equal(branches.Count, result.Count);
-        Assert.Equal(targetBranch, capturedBranchName);
+        Assert.Equal("origin/HEAD -> origin/main", capturedBranchName);
     }
 }

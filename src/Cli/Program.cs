@@ -37,7 +37,7 @@ if (options.Contains<VersionFlag>())
 
 var gitRepository = await GitRepository.GetInstance();
 
-HashSet<GitBranch> branchTable = await BranchTableAssembler.AssembleBranchTable(
+List<GitBranch> branchTable = await BranchTableAssembler.AssembleBranchTable(
     gitRepository,
     options
 );

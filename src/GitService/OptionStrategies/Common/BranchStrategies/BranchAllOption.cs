@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 
 public sealed class BranchAllOptions(IGitRepository gitRepository) : IOption
 {
-    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         var localBranchesTask = gitRepository.GetLocalBranchNames();
         var remoteBranchesTask = gitRepository.GetRemoteBranchNames();
@@ -15,8 +15,8 @@ public sealed class BranchAllOptions(IGitRepository gitRepository) : IOption
         var localBranches = localBranchesTask.Result;
         var remoteBranches = remoteBranchesTask.Result;
 
-        branches.UnionWith(localBranches);
-        branches.UnionWith(remoteBranches);
+        branches.AddRange(localBranches);
+        branches.AddRange(remoteBranches);
 
         return branches;
     }

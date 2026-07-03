@@ -9,7 +9,7 @@ public sealed class SortByAheadOptionTests
     [Fact]
     public async Task Given_SortByAheadOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetAheadBehind(new AheadBehind(1, 0)),
             GitBranch.Default().SetAheadBehind(new AheadBehind(2, 0)),
@@ -28,7 +28,7 @@ public sealed class SortByAheadOptionTests
     [Fact]
     public async Task Given_SortByAheadOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetAheadBehind(new AheadBehind(3, 0)),
             GitBranch.Default().SetAheadBehind(new AheadBehind(2, 0)),

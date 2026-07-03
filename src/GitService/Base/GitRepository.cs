@@ -120,39 +120,56 @@ public sealed class GitRepository : IGitRepository
         return string.Empty;
     }
 
-    public async Task<DateTime> GetLastCommitDate(string branchName)
+    public async Task<GitBranch> GetLastCommitDate(GitBranch branch)
     {
-        try
+        var commitPath = branch.IsRemote ? "remotes" : "heads";
+        var refPath = Path.Combine(_gitPath, "refs", commitPath, branch.Branch.Name);
+
+        if (!_iOAbstration.FileExists(refPath))
         {
-            string commitHash = (
-                await _iOAbstration.ReadAllText(Path.Combine(_gitPath, "refs", "heads", branchName))
-            ).Trim();
-
-            string dirName = commitHash[..2];
-            commitHash = commitHash[2..];
-
-            if (!_iOAbstration.DirectoryExists(Path.Combine(_gitPath, "objects", dirName)))
-            {
-                throw new DirectoryNotFoundException();
-            }
-
-            DateTime lastWriteTimeOfCommit = _iOAbstration.GetLastWriteTime(
-                Path.Combine(_gitPath, "objects", dirName, commitHash)
-            );
-
-            if (lastWriteTimeOfCommit.Year <= 1601) // File.GetLastWriteTime returns 1601-01-01 if the file does not exist
-            {
-                throw new InvalidDataException();
-            }
-
-            return lastWriteTimeOfCommit;
+            return RunLastCommitDataFetchCommand(branch);
         }
-        catch
+
+        string commitHash = (await _iOAbstration.ReadAllText(refPath)).Trim();
+
+        if (string.IsNullOrWhiteSpace(commitHash) || commitHash.Length < 3)
         {
-            LastCommitDateFetchCommand lastCommitDateCommand = new(branchName);
-
-            return lastCommitDateCommand.Execute();
+            return RunLastCommitDataFetchCommand(branch);
         }
+
+        string dirName = commitHash[..2];
+        string objectName = commitHash[2..];
+
+        var objectDir = Path.Combine(_gitPath, "objects", dirName);
+
+        if (!_iOAbstration.DirectoryExists(objectDir))
+        {
+            return RunLastCommitDataFetchCommand(branch);
+        }
+
+        var objectPath = Path.Combine(objectDir, objectName);
+
+        if (!_iOAbstration.FileExists(objectPath))
+        {
+            return RunLastCommitDataFetchCommand(branch);
+        }
+
+        DateTime lastWriteTime = _iOAbstration.GetLastWriteTime(objectPath);
+
+        if (lastWriteTime.Year <= 1601)
+        {
+            return RunLastCommitDataFetchCommand(branch);
+        }
+
+        return branch.SetLastCommit(lastWriteTime);
+    }
+
+    private GitBranch RunLastCommitDataFetchCommand(GitBranch branch)
+    {
+        var branchName = branch.IsSymbolic ? branch.Branch.Name.Split(' ')[^1] : branch.Branch.Name;
+
+        var lastWriteTime = new LastCommitDateFetchCommand(branchName).Execute();
+        return branch.SetLastCommit(lastWriteTime);
     }
 
     public async Task<AheadBehind> GetRemoteAheadBehind(
@@ -357,7 +374,7 @@ public sealed class GitRepository : IGitRepository
         return new AheadBehind(0, 0);
     }
 
-    public async Task<HashSet<GitBranch>> GetLocalBranchNames()
+    public async Task<List<GitBranch>> GetLocalBranchNames()
     {
         var localBranchPath = Path.Combine("refs", "heads");
         var localBranches = await FetchBranches(localBranchPath);
@@ -372,7 +389,7 @@ public sealed class GitRepository : IGitRepository
         return localBranches;
     }
 
-    public async Task<HashSet<GitBranch>> GetRemoteBranchNames()
+    public async Task<List<GitBranch>> GetRemoteBranchNames()
     {
         var remoteBranchPath = Path.Combine("refs", "remotes");
 
@@ -452,7 +469,7 @@ public sealed class GitRepository : IGitRepository
         return GitBranch.Default().SetBranch(branch).SetDetachedHead(commitHash);
     }
 
-    private async Task<HashSet<GitBranch>> FetchBranches(string path)
+    private async Task<List<GitBranch>> FetchBranches(string path)
     {
         var updatedBranches = CollectBranchNames(path);
 
@@ -462,12 +479,12 @@ public sealed class GitRepository : IGitRepository
         return updatedBranches;
     }
 
-    private HashSet<GitBranch> GetMergedBranchList(
-        HashSet<GitBranch> headBranches,
-        HashSet<GitBranch> refBranches
+    private List<GitBranch> GetMergedBranchList(
+        List<GitBranch> headBranches,
+        List<GitBranch> refBranches
     )
     {
-        var branchNames = new HashSet<string>(headBranches.Select(b => b.Branch.Name));
+        var branchNames = new List<string>(headBranches.Select(b => b.Branch.Name));
 
         foreach (var branch in refBranches)
         {
@@ -481,14 +498,14 @@ public sealed class GitRepository : IGitRepository
         return headBranches;
     }
 
-    private async Task<HashSet<GitBranch>> GetPackedRefsBranches(string prefix)
+    private async Task<List<GitBranch>> GetPackedRefsBranches(string prefix)
     {
         var packedRefsPath = Path.Combine(_gitPath, "packed-refs");
 
         if (!_iOAbstration.FileExists(packedRefsPath))
             return [];
 
-        var branches = new HashSet<GitBranch>();
+        var branches = new List<GitBranch>();
         var packedRefsLines = await _iOAbstration.ReadAllLines(packedRefsPath);
 
         foreach (var line in packedRefsLines)
@@ -517,15 +534,15 @@ public sealed class GitRepository : IGitRepository
 
             Branch branch = new(branchName.Replace($"{prefix}/", ""), false);
 
-            branches.Add(GitBranch.Default().SetBranch(branch));
+            branches.Add(GitBranch.Default().SetBranch(branch).SetIsPacked(true));
         }
 
         return branches;
     }
 
-    private HashSet<GitBranch> CollectBranchNames(string directoryPath)
+    private List<GitBranch> CollectBranchNames(string directoryPath)
     {
-        HashSet<GitBranch> branches = [];
+        List<GitBranch> branches = [];
         var path = Path.Combine(_gitPath, directoryPath);
 
         if (!_iOAbstration.DirectoryExists(path))
@@ -557,7 +574,7 @@ public sealed class GitRepository : IGitRepository
         return branches;
     }
 
-    public async Task<HashSet<GitBranch>> GetBranchDescription(HashSet<GitBranch> branches)
+    public async Task<List<GitBranch>> GetBranchDescription(List<GitBranch> branches)
     {
         const string descriptionFileName = "EDIT_DESCRIPTION";
         string path = Path.Combine(_gitPath, descriptionFileName);
@@ -612,7 +629,7 @@ public sealed class GitRepository : IGitRepository
         return branches;
     }
 
-    public HashSet<GitBranch> StichWorkTreeBranches(HashSet<GitBranch> branches)
+    public List<GitBranch> StichWorkTreeBranches(List<GitBranch> branches)
     {
         if (!_isWorktreeRepo)
         {
@@ -621,7 +638,7 @@ public sealed class GitRepository : IGitRepository
 
         var worktreePath = Path.Combine(_gitPath, "worktrees");
 
-        var checkedOutBrancheNames = new HashSet<string>();
+        var checkedOutBrancheNames = new List<string>();
 
         foreach (var worktreeDirectory in _iOAbstration.GetDirectories(worktreePath))
         {

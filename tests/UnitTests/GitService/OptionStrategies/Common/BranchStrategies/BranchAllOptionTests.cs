@@ -11,13 +11,13 @@ public class BranchAllOptionTests
     [Fact]
     public async Task Given_BranchAllOptions_When_ExecuteRun_Then_Return_AllBranches()
     {
-        var localBranches = new HashSet<GitBranch>
+        var localBranches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature/branch", false)),
         };
 
-        var remoteBranches = new HashSet<GitBranch>
+        var remoteBranches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("origin/main", false)),
             GitBranch.Default().SetBranch(new Branch("origin/feature/branch", false)),
@@ -30,7 +30,7 @@ public class BranchAllOptionTests
 
         var branchAllOptions = new BranchAllOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await branchAllOptions.Execute([]);
+        List<GitBranch> result = await branchAllOptions.Execute([]);
 
         Assert.Equal(4, result.Count);
     }
@@ -41,7 +41,7 @@ public class BranchAllOptionTests
         var gitRepositoryFake = A.Fake<IGitRepository>();
         var sut = new BranchAllOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await sut.Execute([]);
+        List<GitBranch> result = await sut.Execute([]);
 
         Assert.Empty(result);
     }

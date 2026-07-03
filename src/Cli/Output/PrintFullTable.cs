@@ -12,7 +12,7 @@ public class PrintFullTable
         _pager = pager;
     }
 
-    public void Print(HashSet<GitBranch> branches, string? lessCommandPath)
+    public void Print(List<GitBranch> branches, string? lessCommandPath)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -27,7 +27,7 @@ public class PrintFullTable
         _pager.StartLess(output, lessCommandPath);
     }
 
-    private static string BuildOutput(HashSet<GitBranch> branches)
+    private static string BuildOutput(List<GitBranch> branches)
     {
         var stringBuilder = new StringBuilder();
 

@@ -5,11 +5,11 @@ namespace Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
 
 public sealed class NoContainsOption(string pattern) : IOption
 {
-    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         string[] patterns = ContainsSplit.SplitArgument(pattern);
 
-        HashSet<GitBranch> filteredBranches =
+        List<GitBranch> filteredBranches =
         [
             .. branches.Where(branch =>
                 patterns.All(p =>
