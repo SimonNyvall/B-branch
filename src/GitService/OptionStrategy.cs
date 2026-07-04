@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies;
@@ -30,11 +29,7 @@ public sealed class CompositeOptionStrategy : IOption
 
         foreach (var option in _options)
         {
-            var stopwatch = Stopwatch.StartNew();
             result = await option.Execute(result);
-
-            stopwatch.Stop();
-            Console.WriteLine($"{option.ToString()} took {stopwatch.ElapsedMilliseconds}ms");
         }
 
         return result;

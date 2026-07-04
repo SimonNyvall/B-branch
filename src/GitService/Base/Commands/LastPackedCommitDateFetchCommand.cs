@@ -15,25 +15,23 @@ internal sealed class LastPackedCommitDateFetchCommand(List<GitBranch> branches)
 
         process.Start();
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-
-        await process.WaitForExitAsync();
-
         var branchLookup = branches.ToDictionary(b => $"refs/remotes/{b.Branch.Name}");
 
-        foreach (var line in output.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        while (await process.StandardOutput.ReadLineAsync() is { } line)
         {
-            var parts = line.Split('|', 2);
-
-            if (parts.Length != 2)
+            int separator = line.IndexOf('|');
+            if (separator < 0)
                 continue;
 
-            if (!branchLookup.TryGetValue(parts[0], out var branch))
+            ReadOnlySpan<char> branchRef = line.AsSpan(0, separator);
+            ReadOnlySpan<char> dateText = line.AsSpan(separator + 1);
+
+            if (!branchLookup.TryGetValue(branchRef.ToString(), out var branch))
                 continue;
 
             if (
                 DateTime.TryParse(
-                    parts[1],
+                    dateText,
                     CultureInfo.InvariantCulture,
                     DateTimeStyles.AssumeLocal,
                     out var date
@@ -44,6 +42,7 @@ internal sealed class LastPackedCommitDateFetchCommand(List<GitBranch> branches)
             }
         }
 
+        await process.WaitForExitAsync();
         return branches;
     }
 }
