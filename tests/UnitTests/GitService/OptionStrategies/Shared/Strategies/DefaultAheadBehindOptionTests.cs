@@ -32,7 +32,7 @@ public sealed class DefaultAheadBehindOptionTests
     {
         var strategy = new DefaultAheadBehindOption(_gitRepositoryFake);
 
-        var branches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var branches = new List<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
         var result = await strategy.Execute(branches);
 

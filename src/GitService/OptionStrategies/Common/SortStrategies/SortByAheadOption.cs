@@ -4,9 +4,9 @@ namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
 public sealed class SortByAheadOptions : IOption
 {
-    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
-        HashSet<GitBranch> sortedBranches =
+        List<GitBranch> sortedBranches =
         [
             .. branches.OrderByDescending(branch => branch.AheadBehind.Ahead),
         ];

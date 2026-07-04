@@ -9,7 +9,7 @@ public sealed class NoContainsOptionTests
     [Fact]
     public async Task Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
@@ -17,7 +17,7 @@ public sealed class NoContainsOptionTests
 
         var noContainsOption = new NoContainsOption("main");
 
-        HashSet<GitBranch> result = await noContainsOption.Execute(branches);
+        var result = await noContainsOption.Execute(branches);
 
         Assert.Single(result);
         Assert.Equal("feature", result.First().Branch.Name);
@@ -26,14 +26,14 @@ public sealed class NoContainsOptionTests
     [Fact]
     public async Task Given_NoContainsOption_When_ExecuteRun_Then_Return_AllBranches()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
         };
 
         var noContainsOption = new NoContainsOption("feature");
 
-        HashSet<GitBranch> result = await noContainsOption.Execute(branches);
+        var result = await noContainsOption.Execute(branches);
 
         Assert.Single(result);
         Assert.Equal("main", result.First().Branch.Name);
@@ -42,7 +42,7 @@ public sealed class NoContainsOptionTests
     [Fact]
     public async Task Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main_ForAllBranches()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("origin/main", true)),
@@ -51,7 +51,7 @@ public sealed class NoContainsOptionTests
 
         var noContainsOption = new NoContainsOption("main");
 
-        HashSet<GitBranch> result = await noContainsOption.Execute(branches);
+        var result = await noContainsOption.Execute(branches);
 
         Assert.Single(result);
         Assert.Equal("feature", result.First().Branch.Name);
@@ -60,7 +60,7 @@ public sealed class NoContainsOptionTests
     [Fact]
     public async Task Given_NoContainsOption_When_ExecuteRun_Then_Exclude_Main_ForAllBranches_With_Regex()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("origin/main", true)),
@@ -69,7 +69,7 @@ public sealed class NoContainsOptionTests
 
         var noContainsOption = new NoContainsOption("ma*");
 
-        HashSet<GitBranch> result = await noContainsOption.Execute(branches);
+        var result = await noContainsOption.Execute(branches);
 
         Assert.Single(result);
         Assert.Equal("feature", result.First().Branch.Name);

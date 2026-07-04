@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 
 public sealed class DescriptionOption(IGitRepository gitRepository) : IOption
 {
-    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         return await gitRepository.GetBranchDescription(branches);
     }

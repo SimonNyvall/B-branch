@@ -9,7 +9,7 @@ public sealed class SortByNameOptionTests
     [Fact]
     public async Task Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("b_feature", false)),
             GitBranch.Default().SetBranch(new Branch("a_main", true)),
@@ -28,7 +28,7 @@ public sealed class SortByNameOptionTests
     [Fact]
     public async Task Given_SortByNameOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("a_main", true)),
             GitBranch.Default().SetBranch(new Branch("b_feature", false)),

@@ -6,7 +6,7 @@ namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 public sealed class TrackAheadBehindOption(IGitRepository gitBase, string remoteBranchName)
     : IOption
 {
-    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 

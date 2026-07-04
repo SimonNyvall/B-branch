@@ -7,9 +7,9 @@ namespace Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 /// </summary>
 public sealed class SortByLastCommitOptions : IOption
 {
-    public Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
-        HashSet<GitBranch> sortedBranches =
+        List<GitBranch> sortedBranches =
         [
             .. branches.OrderByDescending(branch => branch.LastCommit),
         ];

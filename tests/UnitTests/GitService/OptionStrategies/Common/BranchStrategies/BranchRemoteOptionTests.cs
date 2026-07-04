@@ -11,7 +11,7 @@ public sealed class BranchRemoteOptionTests
     [Fact]
     public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_RemoteBranches()
     {
-        var remoteBranches = new HashSet<GitBranch>
+        var remoteBranches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("origin/main", false)),
             GitBranch.Default().SetBranch(new Branch("origin/feature/branch", false)),
@@ -22,7 +22,7 @@ public sealed class BranchRemoteOptionTests
 
         var sut = new BranchRemoteOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await sut.Execute([]);
+        List<GitBranch> result = await sut.Execute([]);
 
         Assert.Equal(2, result.Count);
     }
@@ -33,7 +33,7 @@ public sealed class BranchRemoteOptionTests
         var gitRepositoryFake = A.Fake<IGitRepository>();
         var branchRemoteOptions = new BranchRemoteOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await branchRemoteOptions.Execute([]);
+        List<GitBranch> result = await branchRemoteOptions.Execute([]);
 
         Assert.Empty(result);
     }

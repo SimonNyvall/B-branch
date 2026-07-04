@@ -10,7 +10,7 @@ public sealed class OptionStrategyTests
     [Fact]
     public async Task Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_OriginalBranches()
     {
-        var originalBranches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var originalBranches = new List<GitBranch> { GitBranch.Default(), GitBranch.Default() };
 
         var strategy = new CompositeOptionStrategy([]);
 
@@ -22,11 +22,11 @@ public sealed class OptionStrategyTests
     [Fact]
     public async Task Given_CompositeOptionStrategy_When_ExecuteRun_Then_Return_ModifiedBranches()
     {
-        var originalBranches = new HashSet<GitBranch> { GitBranch.Default(), GitBranch.Default() };
-        var modifiedBranches = new HashSet<GitBranch> { GitBranch.Default() };
+        var originalBranches = new List<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var modifiedBranches = new List<GitBranch> { GitBranch.Default() };
 
         var optionFake = A.Fake<IOption>();
-        A.CallTo(() => optionFake.Execute(A<HashSet<GitBranch>>._)).Returns(modifiedBranches);
+        A.CallTo(() => optionFake.Execute(A<List<GitBranch>>._)).Returns(modifiedBranches);
         var strategy = new CompositeOptionStrategy([optionFake]);
 
         var result = await strategy.Execute(originalBranches);

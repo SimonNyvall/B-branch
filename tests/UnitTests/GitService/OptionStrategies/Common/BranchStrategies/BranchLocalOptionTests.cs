@@ -11,7 +11,7 @@ public sealed class BranchLocalOptionTests
     [Fact]
     public async Task Given_BranchLocalOptions_When_ExecuteRun_Then_Return_LocalBranches()
     {
-        var localBranches = new HashSet<GitBranch>
+        var localBranches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature/branch", true)),
@@ -23,7 +23,7 @@ public sealed class BranchLocalOptionTests
 
         var sut = new BranchLocalOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await sut.Execute([]);
+        List<GitBranch> result = await sut.Execute([]);
 
         Assert.Equal(2, result.Count);
     }
@@ -35,7 +35,7 @@ public sealed class BranchLocalOptionTests
 
         var branchLocalOptions = new BranchLocalOptions(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await branchLocalOptions.Execute([]);
+        List<GitBranch> result = await branchLocalOptions.Execute([]);
 
         Assert.Empty(result);
     }

@@ -11,7 +11,7 @@ public sealed class SortByDetachedHeadOptionTests
     {
         var commitHash = "6efb99e";
         var detachedHeadName = $"(HEAD detached at {commitHash})";
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("feature", false)),
             GitBranch.Default().SetBranch(new Branch("main", false)),
@@ -35,7 +35,7 @@ public sealed class SortByDetachedHeadOptionTests
     {
         var commitHash = "6efb99e";
         var detachedHeadName = $"(HEAD detached at {commitHash})";
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch
                 .Default()

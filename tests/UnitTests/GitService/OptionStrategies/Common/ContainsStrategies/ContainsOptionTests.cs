@@ -9,7 +9,7 @@ public sealed class ContainsOptionTests
     [Fact]
     public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_Branch_IfNameContainsPattern()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
@@ -27,7 +27,7 @@ public sealed class ContainsOptionTests
     [Fact]
     public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfNamesContainPattern()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),
@@ -44,7 +44,7 @@ public sealed class ContainsOptionTests
     [Fact]
     public async Task Given_ContainsOption_When_ExecuteRun_Then_Return_AllBranches_IfRegexContainsPatter()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", true)),
             GitBranch.Default().SetBranch(new Branch("feature", true)),

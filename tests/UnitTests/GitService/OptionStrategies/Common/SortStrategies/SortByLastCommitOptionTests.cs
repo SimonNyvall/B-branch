@@ -11,7 +11,7 @@ public class SortByLastCommitOptionTests()
     {
         var currentDateTime = DateTime.Now;
 
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetLastCommit(currentDateTime),
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-1)),
@@ -32,7 +32,7 @@ public class SortByLastCommitOptionTests()
     {
         var currentDateTime = DateTime.Now;
 
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-2)),
             GitBranch.Default().SetLastCommit(currentDateTime.AddDays(-1)),

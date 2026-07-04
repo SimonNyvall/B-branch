@@ -5,7 +5,7 @@ namespace Bbranch.GitService.OptionStrategies.Common;
 
 public sealed class WorkingBranchOption(IGitRepository _gitRepository) : IOption
 {
-    public async Task<HashSet<GitBranch>> Execute(HashSet<GitBranch> branches)
+    public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
         string workingBranchName = await _gitRepository.GetWorkingBranch();
 

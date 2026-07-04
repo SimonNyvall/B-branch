@@ -11,7 +11,7 @@ public sealed class WorkingBranchOptionTests
     [Fact]
     public async Task Given_WorkingBranchOption_When_ExecuteRun_Then_Return_WorkingBranch()
     {
-        var branches = new HashSet<GitBranch>
+        var branches = new List<GitBranch>
         {
             GitBranch.Default().SetBranch(new Branch("main", false)),
             GitBranch.Default().SetBranch(new Branch("feature", false)),
@@ -22,7 +22,7 @@ public sealed class WorkingBranchOptionTests
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await workingBranchOption.Execute(branches);
+        var result = await workingBranchOption.Execute(branches);
 
         Assert.True(result.First().Branch.IsWorkingBranch);
         Assert.False(result.ElementAt(1).Branch.IsWorkingBranch);
@@ -31,14 +31,14 @@ public sealed class WorkingBranchOptionTests
     [Fact]
     public async Task Given_WorkingBranchOption_When_ExecuteRun_Then_Return_EmptyList()
     {
-        HashSet<GitBranch> branches = [];
+        List<GitBranch> branches = [];
 
         var gitRepositoryFake = A.Fake<IGitRepository>();
         A.CallTo(() => gitRepositoryFake.GetWorkingBranch()).Returns("main");
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);
 
-        HashSet<GitBranch> result = await workingBranchOption.Execute(branches);
+        var result = await workingBranchOption.Execute(branches);
 
         Assert.Empty(result);
     }

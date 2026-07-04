@@ -43,8 +43,8 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetInstance_ShouldInitializeSingleton_WhenCalledFirstTime()
     {
-        var firstInstance = await GitRepository.GetInstance(_iOAbstration);
-        var secondInstance = await GitRepository.GetInstance(_iOAbstration);
+        var firstInstance = GitRepository.GetInstanceForTests(_iOAbstration);
+        var secondInstance = GitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.Same(firstInstance, secondInstance);
     }
@@ -59,7 +59,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.DirectoryExists(currentPath)).Returns(false);
         A.CallTo(() => _iOAbstration.DirectoryExists(parentPath)).Returns(true);
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstance(_iOAbstration);
 
         Assert.NotNull(gitRepository);
         Assert.Equal(parentPath, GitRepository._gitPath);
@@ -82,7 +82,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.DirectoryExists(Path.Combine(_directoryInfo.FullName, "refs")))
             .Returns(true);
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstance(_iOAbstration);
 
         Assert.NotNull(gitRepository);
         Assert.True(GitRepository._isWorktreeRepo);
@@ -93,7 +93,7 @@ public class GitRepositoryTests
     {
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._)).Returns("ref: refs/heads/master");
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -107,7 +107,7 @@ public class GitRepositoryTests
     {
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._)).Returns("heads/master");
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -122,7 +122,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._))
             .Returns("c3c88501151013b69bae2a49bbcfc6b6aa85d1c9");
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -137,7 +137,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._))
             .Returns("ref: refs/heads/feature/feature-1");
 
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -149,11 +149,13 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetLastCommit_ShouldReturnFileWriteTime_WhenObjectExists()
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var commitHashPath = Path.Combine(GitRepository._gitPath, "refs", "heads", "main");
         var lastWriteTime = DateTime.Now;
+
+        A.CallTo(() => _iOAbstration.FileExists(A<string>._)).Returns(true);
 
         A.CallTo(() => _iOAbstration.ReadAllText(commitHashPath))
             .Returns("c3c88501151013b69bae2a49bbcfc6b6aa85d1c9");
@@ -162,15 +164,17 @@ public class GitRepositoryTests
 
         A.CallTo(() => _iOAbstration.GetLastWriteTime(A<string>._)).Returns(lastWriteTime);
 
-        var actual = await gitRepository.GetLastCommitDate("main");
+        var gitBranch = GitBranch.Default().SetBranch(new Branch("main", true));
 
-        Assert.Equal(lastWriteTime, actual);
+        var actual = await gitRepository.GetLastCommitDate(gitBranch);
+
+        Assert.Equal(lastWriteTime, actual.LastCommit);
     }
 
     [Fact]
     public async Task GetRemoteAheadBehind_ShouldReturnAheadBehind_WhenComputationSucceeds()
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var remoteBranchName = "remote/branch";
@@ -193,7 +197,7 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetLocalAheadBehind_ShouldReturnAheadBehind_WhenComputationSucceeds()
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var remoteBranchName = "remote/branch";
@@ -292,7 +296,7 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetLocalBranchNames_ShouldReturnBranches_FromHeadsDirectory()
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var headsPath = Path.Combine(GitRepository._gitPath, "refs", "heads");
@@ -344,7 +348,7 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetRemoteBranchNames_ShouldReturnBranches_FromRemotesDirectory()
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var remotePath = Path.Combine(GitRepository._gitPath, "refs", "remotes");
@@ -391,11 +395,11 @@ public class GitRepositoryTests
     public async Task GetBranchDescription_ShouldParseDescriptionsCorrectly(
         bool fileExists,
         string[] fileLines,
-        HashSet<GitBranch> branches,
+        List<GitBranch> branches,
         Dictionary<string, string> expectedDescriptions
     )
     {
-        var gitRepository = await GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
         var descriptionPath = Path.Combine(GitRepository._gitPath, "EDIT_DESCRIPTION");
@@ -431,7 +435,7 @@ public class GitRepositoryTests
             // file lines
             new[] { "[main]", "Main branch description" },
             // input branches
-            new HashSet<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
+            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
             // expected descriptions
             new Dictionary<string, string> { { "main", "Main branch description" } },
         };
@@ -440,7 +444,7 @@ public class GitRepositoryTests
         {
             true,
             new[] { "[feature/test]", "Line one", "Line two" },
-            new HashSet<GitBranch>
+            new List<GitBranch>
             {
                 GitBranch.Default().SetBranch(new Branch("feature/test", false)),
             },
@@ -451,7 +455,7 @@ public class GitRepositoryTests
         {
             true,
             new[] { "# comment", "", "[dev]", "Dev branch" },
-            new HashSet<GitBranch> { GitBranch.Default().SetBranch(new Branch("dev", false)) },
+            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("dev", false)) },
             new Dictionary<string, string> { { "dev", "Dev branch" } },
         };
 
@@ -459,7 +463,7 @@ public class GitRepositoryTests
         {
             true,
             new[] { "[main]", "Main desc", "[dev]", "Dev desc" },
-            new HashSet<GitBranch>
+            new List<GitBranch>
             {
                 GitBranch.Default().SetBranch(new Branch("main", false)),
                 GitBranch.Default().SetBranch(new Branch("dev", false)),
@@ -472,7 +476,7 @@ public class GitRepositoryTests
             // file does NOT exist
             false,
             Array.Empty<string>(),
-            new HashSet<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
+            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
             new Dictionary<string, string>(), // no changes expected
         };
     }

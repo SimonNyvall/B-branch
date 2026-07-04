@@ -9,7 +9,7 @@ public class PrintLightTableTests
     [Fact]
     public void Given_NoBranches_When_PrintLightTableRun_Then_Return_NoBranches()
     {
-        var branches = new HashSet<GitBranch>();
+        var branches = new List<GitBranch>();
         var pagerFake = A.Fake<IPager>();
         var sut = new PrintLightTable(pagerFake);
 
@@ -22,7 +22,7 @@ public class PrintLightTableTests
     public void Given_Brnaches_When_PrintLightTableRun_Then_PrintBranches()
     {
         var mainBranch = GitBranch.Default().SetBranch(new Branch("main", false));
-        var branches = new HashSet<GitBranch> { mainBranch };
+        var branches = new List<GitBranch> { mainBranch };
 
         var pagerFake = A.Fake<IPager>();
         var sut = new PrintLightTable(pagerFake);

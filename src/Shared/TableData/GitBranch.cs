@@ -9,6 +9,7 @@ public sealed class GitBranch
     public string? Description { get; private set; }
     public DetachedHead DetachedHead { get; private set; }
     public bool IsRemote { get; private set; }
+    public bool IsPacked { get; private set; }
     public bool IsSymbolic
     {
         get => SymLink != null;
@@ -16,18 +17,14 @@ public sealed class GitBranch
     public Symbolic? SymLink { get; private set; } = null;
     public bool IsCheckoutWorktree { get; private set; }
 
-    public GitBranch(
-        AheadBehind aheadBehind,
-        Branch branch,
-        DateTime lastCommit,
-        string description
-    )
+    private GitBranch()
     {
-        SetAheadBehind(aheadBehind);
-        SetBranch(branch);
-        SetLastCommit(lastCommit);
-        SetDescription(description);
+        AheadBehind = new AheadBehind(0, 0);
+        Branch = new Branch("branchName", false);
+        LastCommit = DateTime.MinValue;
+        Description = string.Empty;
         DetachedHead = new DetachedHead(null);
+        IsPacked = false;
     }
 
     public GitBranch SetAheadBehind(AheadBehind aheadBehind)
@@ -109,13 +106,14 @@ public sealed class GitBranch
         return this;
     }
 
+    public GitBranch SetIsPacked(bool isPacked)
+    {
+        IsPacked = isPacked;
+        return this;
+    }
+
     public static GitBranch Default()
     {
-        return new GitBranch(
-            new AheadBehind(0, 0),
-            new Branch("branchName", false),
-            DateTime.MinValue,
-            string.Empty
-        );
+        return new GitBranch();
     }
 }
