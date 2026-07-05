@@ -13,14 +13,14 @@ public class BranchAllOptionTests
     {
         var localBranches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature/branch", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature/branch", false)),
         };
 
         var remoteBranches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("origin/main", false)),
-            GitBranch.Default().SetBranch(new Branch("origin/feature/branch", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/main", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/feature/branch", false)),
         };
 
         var gitRepositoryFake = A.Fake<IGitRepository>();

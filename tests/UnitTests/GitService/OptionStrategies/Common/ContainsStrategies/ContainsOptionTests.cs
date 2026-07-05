@@ -11,9 +11,9 @@ public sealed class ContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("branch", true)),
         };
 
         var option = new ContainsOption("branch");
@@ -29,9 +29,9 @@ public sealed class ContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("branch", true)),
         };
 
         var option = new ContainsOption("main;feature;branch");
@@ -46,9 +46,9 @@ public sealed class ContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
-            GitBranch.Default().SetBranch(new Branch("branch", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("branch", true)),
         };
 
         var option = new ContainsOption("ma*;fea*;bra*");

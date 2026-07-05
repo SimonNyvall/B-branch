@@ -16,4 +16,8 @@
   <ItemGroup Condition="'$(timer)' == 'true'">
     <PackageReference Include="MethodTimer.Fody" Version="3.2.3" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
+  </ItemGroup>
 </Project>

@@ -11,8 +11,8 @@ public sealed class NoContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
         };
 
         var noContainsOption = new NoContainsOption("main");
@@ -28,7 +28,7 @@ public sealed class NoContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
         };
 
         var noContainsOption = new NoContainsOption("feature");
@@ -44,9 +44,9 @@ public sealed class NoContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("origin/main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
         };
 
         var noContainsOption = new NoContainsOption("main");
@@ -62,9 +62,9 @@ public sealed class NoContainsOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("origin/main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", true)),
         };
 
         var noContainsOption = new NoContainsOption("ma*");

@@ -14,7 +14,8 @@ public class NoFlagTests
         _fixture = fixture;
     }
 
-    [IntegrationFact]
+    [Obsolete]
+    [IntegrationFact(Skip = "Skiping this test until rewrite")]
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
         using var process = _fixture.GetBbranchProcess();

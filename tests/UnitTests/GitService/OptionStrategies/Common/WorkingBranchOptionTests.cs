@@ -13,8 +13,8 @@ public sealed class WorkingBranchOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", false)),
-            GitBranch.Default().SetBranch(new Branch("feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", false)),
         };
 
         var gitRepositoryFake = A.Fake<IGitRepository>();

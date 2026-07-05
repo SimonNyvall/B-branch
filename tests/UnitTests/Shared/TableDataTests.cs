@@ -26,7 +26,7 @@ public sealed class TableDataTests
     [Fact]
     public void Given_ValidBranch_When_SetBranchRun_Then_Set_Branch()
     {
-        Branch branch = new("main", true);
+        BranchViewModel branch = new("main", true);
 
         GitBranch gitBranch = GitBranch.Default().SetBranch(branch);
 
@@ -36,7 +36,7 @@ public sealed class TableDataTests
     [Fact]
     public void Given_InvalidBranch_When_SetBranchRun_Then_Throw_ArgumentException()
     {
-        Branch branch = new(string.Empty, true);
+        BranchViewModel branch = new(string.Empty, true);
 
         Assert.Throws<ArgumentException>(() => GitBranch.Default().SetBranch(branch));
     }

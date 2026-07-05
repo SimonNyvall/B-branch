@@ -11,9 +11,9 @@ public sealed class SortByNameOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("b_feature", false)),
-            GitBranch.Default().SetBranch(new Branch("a_main", true)),
-            GitBranch.Default().SetBranch(new Branch("c_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("b_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("a_main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("c_feature", false)),
         };
 
         var sortByNameOption = new SortByNameOptions();
@@ -30,9 +30,9 @@ public sealed class SortByNameOptionTests
     {
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("a_main", true)),
-            GitBranch.Default().SetBranch(new Branch("b_feature", false)),
-            GitBranch.Default().SetBranch(new Branch("c_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("a_main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("b_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("c_feature", false)),
         };
 
         var sortByNameOption = new SortByNameOptions();

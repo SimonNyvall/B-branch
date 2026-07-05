@@ -21,7 +21,7 @@ public class PrintLightTableTests
     [Fact]
     public void Given_Brnaches_When_PrintLightTableRun_Then_PrintBranches()
     {
-        var mainBranch = GitBranch.Default().SetBranch(new Branch("main", false));
+        var mainBranch = GitBranch.Default().SetBranch(new BranchViewModel("main", false));
         var branches = new List<GitBranch> { mainBranch };
 
         var pagerFake = A.Fake<IPager>();
