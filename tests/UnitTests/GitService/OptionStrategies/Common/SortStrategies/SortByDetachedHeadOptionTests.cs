@@ -13,11 +13,11 @@ public sealed class SortByDetachedHeadOptionTests
         var detachedHeadName = $"(HEAD detached at {commitHash})";
         var branches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("feature", false)),
-            GitBranch.Default().SetBranch(new Branch("main", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
             GitBranch
                 .Default()
-                .SetBranch(new Branch(detachedHeadName, true))
+                .SetBranch(new BranchViewModel(detachedHeadName, true))
                 .SetDetachedHead(commitHash),
         };
 
@@ -39,10 +39,10 @@ public sealed class SortByDetachedHeadOptionTests
         {
             GitBranch
                 .Default()
-                .SetBranch(new Branch(detachedHeadName, true))
+                .SetBranch(new BranchViewModel(detachedHeadName, true))
                 .SetDetachedHead(commitHash),
-            GitBranch.Default().SetBranch(new Branch("b_feature", false)),
-            GitBranch.Default().SetBranch(new Branch("c_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("b_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("c_feature", false)),
         };
 
         var sortByNameOption = new SortByNameOptions();

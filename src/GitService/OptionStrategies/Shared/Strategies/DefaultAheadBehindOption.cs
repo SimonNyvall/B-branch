@@ -3,29 +3,39 @@ using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
-public sealed class DefaultAheadBehindOption(IGitRepository gitBase) : IOption
+public sealed class DefaultAheadBehindOption(IGitRepository gitRepository) : IOption
 {
-    public Task<List<GitBranch>> Execute(List<GitBranch> branches)
+    public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
-        var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+        var result = new List<GitBranch>();
+        var aheadBehindTasks = new List<Task<GitBranch>>();
 
-        Parallel.ForEach(
-            branches,
-            options,
-            async branch =>
-            {
-                try
-                {
-                    var aheadBehind = await gitBase.GetLocalAheadBehind(branch.Branch.Name);
-                    branch.SetAheadBehind(aheadBehind);
-                }
-                catch (Exception)
-                {
-                    branch.SetAheadBehind(new AheadBehind(0, 0));
-                }
-            }
-        );
+        foreach (var branch in branches)
+        {
+            var aheadBehindTask = gitRepository.GetLocalAheadBehind(branch);
+            aheadBehindTasks.Add(aheadBehindTask);
+        }
 
-        return Task.FromResult(branches);
+        await Task.WhenAll(aheadBehindTasks);
+
+        foreach (var executedBranchTask in aheadBehindTasks)
+        {
+            var executedBranch = executedBranchTask.Result;
+            var targetBranch = branches.FirstOrDefault(x => x.Id == executedBranch.Id);
+
+            if (targetBranch == null)
+                continue;
+
+            result.Add(
+                targetBranch.SetAheadBehind(
+                    new AheadBehind(
+                        executedBranch.AheadBehind.Ahead,
+                        executedBranch.AheadBehind.Behind
+                    )
+                )
+            );
+        }
+
+        return result;
     }
 }

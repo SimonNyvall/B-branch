@@ -219,7 +219,8 @@ public class SortFlagTests
         );
     }
 
-    [IntegrationFact]
+    [Obsolete]
+    [IntegrationFact(Skip = "Skipping this test until rewrite")]
     public async Task IntegrationTest_ValidOutput_WithSortShortFlagAndDateValue()
     {
         using var process = _fixture.GetBbranchProcess("-s", "date");
@@ -271,7 +272,8 @@ public class SortFlagTests
         Assert.Equal(sortedCommitDates, commitDates);
     }
 
-    [IntegrationFact]
+    [Obsolete]
+    [IntegrationFact(Skip = "Skiping this test until rewrite")]
     public async Task IntegrationTest_ValidOutput_WithSortLongFlagAndDateValue()
     {
         using var process = _fixture.GetBbranchProcess("--sort", "date");

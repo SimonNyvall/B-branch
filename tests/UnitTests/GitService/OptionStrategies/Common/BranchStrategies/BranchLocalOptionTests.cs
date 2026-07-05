@@ -13,8 +13,8 @@ public sealed class BranchLocalOptionTests
     {
         var localBranches = new List<GitBranch>
         {
-            GitBranch.Default().SetBranch(new Branch("main", true)),
-            GitBranch.Default().SetBranch(new Branch("feature/branch", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", true)),
+            GitBranch.Default().SetBranch(new BranchViewModel("feature/branch", true)),
         };
 
         var gitRepositoryFake = A.Fake<IGitRepository>();

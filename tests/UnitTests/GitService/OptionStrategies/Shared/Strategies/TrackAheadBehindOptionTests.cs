@@ -9,12 +9,19 @@ namespace Bbranch.Tests.GitService.Shared.Strategies;
 public sealed class TrackAheadBehindOptionTests
 {
     private readonly IGitRepository _gitRepositoryFake;
+    private readonly List<GitBranch> _gitBranches;
 
     public TrackAheadBehindOptionTests()
     {
+        _gitBranches =
+        [
+            GitBranch.Default().SetAheadBehind(new AheadBehind(1, 1)),
+            GitBranch.Default().SetAheadBehind(new AheadBehind(1, 1)),
+        ];
+
         _gitRepositoryFake = A.Fake<IGitRepository>();
-        A.CallTo(() => _gitRepositoryFake.GetRemoteAheadBehind(A<string>._, A<string>._))
-            .Returns(new AheadBehind(1, 1));
+        A.CallTo(() => _gitRepositoryFake.GetRemoteAheadBehind(A<GitBranch>._, A<string>._))
+            .Returns(_gitBranches.First());
     }
 
     [Fact]
@@ -32,10 +39,8 @@ public sealed class TrackAheadBehindOptionTests
     {
         var strategy = new TrackAheadBehindOption(_gitRepositoryFake, "");
 
-        var branches = new List<GitBranch> { GitBranch.Default(), GitBranch.Default() };
+        var result = await strategy.Execute(_gitBranches);
 
-        var result = await strategy.Execute(branches);
-
-        Assert.Equal(branches.Count, result.Count);
+        Assert.Equal(_gitBranches.Count, result.Count);
     }
 }

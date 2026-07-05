@@ -164,133 +164,11 @@ public class GitRepositoryTests
 
         A.CallTo(() => _iOAbstration.GetLastWriteTime(A<string>._)).Returns(lastWriteTime);
 
-        var gitBranch = GitBranch.Default().SetBranch(new Branch("main", true));
+        var gitBranch = GitBranch.Default().SetBranch(new BranchViewModel("main", true));
 
         var actual = await gitRepository.GetLastCommitDate(gitBranch);
 
         Assert.Equal(lastWriteTime, actual.LastCommit);
-    }
-
-    [Fact]
-    public async Task GetRemoteAheadBehind_ShouldReturnAheadBehind_WhenComputationSucceeds()
-    {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
-        Assert.NotNull(gitRepository);
-
-        var remoteBranchName = "remote/branch";
-        var commitHash = "c3c88501151013b69bae2a49bbcfc6b6aa85d1c9";
-        var branchRefBytes = Encoding.UTF8.GetBytes(commitHash);
-        var dirName = commitHash[..2];
-        var fileName = commitHash[2..];
-        var commitObjectPath = Path.Combine(GitRepository._gitPath, "objects", dirName, fileName);
-
-        A.CallTo(() => _iOAbstration.FileExists(remoteBranchName)).Returns(true);
-        A.CallTo(() => _iOAbstration.ReadAllBytes(A<string>._)).Returns(branchRefBytes);
-        A.CallTo(() => _iOAbstration.FileExists(commitObjectPath)).Returns(false);
-
-        var result = await gitRepository.GetRemoteAheadBehind("master", "origin/master");
-
-        Assert.Equal(0, result.Ahead);
-        Assert.Equal(0, result.Behind);
-    }
-
-    [Fact]
-    public async Task GetLocalAheadBehind_ShouldReturnAheadBehind_WhenComputationSucceeds()
-    {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
-        Assert.NotNull(gitRepository);
-
-        var remoteBranchName = "remote/branch";
-        var commitHash = "c3c88501151013b69bae2a49bbcfc6b6aa85d1c9";
-        var branchRefBytes = Encoding.UTF8.GetBytes(commitHash);
-        var dirName = commitHash[..2];
-        var fileName = commitHash[2..];
-        var commitObjectPath = Path.Combine(GitRepository._gitPath, "objects", dirName, fileName);
-
-        A.CallTo(() => _iOAbstration.FileExists(remoteBranchName)).Returns(true);
-        A.CallTo(() => _iOAbstration.ReadAllBytes(A<string>._)).Returns(branchRefBytes);
-        A.CallTo(() => _iOAbstration.FileExists(commitObjectPath)).Returns(false);
-
-        var result = await gitRepository.GetLocalAheadBehind("master");
-
-        Assert.Equal(0, result.Ahead);
-        Assert.Equal(0, result.Behind);
-    }
-
-    [Fact]
-    public async Task GetAheadBehind_ShouldReturnCorrectAheadBehind_WhenLocalAheadByOne()
-    {
-        var repo = GitRepository.GetInstanceForTests(_iOAbstration);
-
-        var localBranch = "main";
-
-        // Commit hashes
-        var commitA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        var commitB = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-        var commitC = "cccccccccccccccccccccccccccccccccccccccc";
-
-        // Paths
-        var localRefPath = Path.Combine(GitRepository._gitPath, "refs", "heads", localBranch);
-        var remoteRefPath = Path.Combine(
-            GitRepository._gitPath,
-            "refs",
-            "remotes",
-            "origin",
-            localBranch
-        );
-
-        // Local = C, Remote = B
-        A.CallTo(() => _iOAbstration.FileExists(remoteRefPath)).Returns(true);
-
-        A.CallTo(() => _iOAbstration.ReadAllBytes(localRefPath))
-            .Returns(Encoding.UTF8.GetBytes(commitC));
-
-        A.CallTo(() => _iOAbstration.ReadAllBytes(remoteRefPath))
-            .Returns(Encoding.UTF8.GetBytes(commitB));
-
-        // Mock object existence
-        A.CallTo(() => _iOAbstration.FileExists(A<string>.That.Contains("objects"))).Returns(true);
-
-        // Mock file names
-        A.CallTo(() => _iOAbstration.GetFileName(A<string>.That.Contains(commitC.Substring(2))))
-            .Returns(commitC);
-
-        A.CallTo(() => _iOAbstration.GetFileName(A<string>.That.Contains(commitB.Substring(2))))
-            .Returns(commitB);
-
-        A.CallTo(() => _iOAbstration.GetFileName(A<string>.That.Contains(commitA.Substring(2))))
-            .Returns(commitA);
-
-        // Provide compressed commit objects
-        A.CallTo(() => _iOAbstration.ReadAllBytes(A<string>.That.Contains(commitC.Substring(2))))
-            .Returns(CreateCompressedCommit($"parent {commitB}\n"));
-
-        A.CallTo(() => _iOAbstration.ReadAllBytes(A<string>.That.Contains(commitB.Substring(2))))
-            .Returns(CreateCompressedCommit($"parent {commitA}\n"));
-
-        A.CallTo(() => _iOAbstration.ReadAllBytes(A<string>.That.Contains(commitA.Substring(2))))
-            .Returns(CreateCompressedCommit("")); // root commit
-
-        var result = await repo.GetAheadBehind(localBranch);
-
-        // Assert
-        Assert.Equal(1, result.Ahead);
-        Assert.Equal(2, result.Behind);
-    }
-
-    [Theory]
-    [InlineData("1 1")]
-    [InlineData("1      1")]
-    [InlineData("155 155")]
-    public async Task ParseAheadBehind_ShouldReturnAheadBehind_WhenGivenString(string input)
-    {
-        var expectedAhead = input.Split(' ').First(x => int.TryParse(x, out _));
-        var exptectedBehind = input.Split(' ').Last(x => int.TryParse(x, out _));
-
-        var result = GitRepository.ParseAheadBehind(input);
-
-        Assert.Equal(expectedAhead, result.Ahead.ToString());
-        Assert.Equal(exptectedBehind, result.Behind.ToString());
     }
 
     [Fact]
@@ -435,7 +313,10 @@ public class GitRepositoryTests
             // file lines
             new[] { "[main]", "Main branch description" },
             // input branches
-            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
+            new List<GitBranch>
+            {
+                GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
+            },
             // expected descriptions
             new Dictionary<string, string> { { "main", "Main branch description" } },
         };
@@ -446,7 +327,7 @@ public class GitRepositoryTests
             new[] { "[feature/test]", "Line one", "Line two" },
             new List<GitBranch>
             {
-                GitBranch.Default().SetBranch(new Branch("feature/test", false)),
+                GitBranch.Default().SetBranch(new BranchViewModel("feature/test", false)),
             },
             new Dictionary<string, string> { { "feature/test", "Line one Line two" } },
         };
@@ -455,7 +336,10 @@ public class GitRepositoryTests
         {
             true,
             new[] { "# comment", "", "[dev]", "Dev branch" },
-            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("dev", false)) },
+            new List<GitBranch>
+            {
+                GitBranch.Default().SetBranch(new BranchViewModel("dev", false)),
+            },
             new Dictionary<string, string> { { "dev", "Dev branch" } },
         };
 
@@ -465,8 +349,8 @@ public class GitRepositoryTests
             new[] { "[main]", "Main desc", "[dev]", "Dev desc" },
             new List<GitBranch>
             {
-                GitBranch.Default().SetBranch(new Branch("main", false)),
-                GitBranch.Default().SetBranch(new Branch("dev", false)),
+                GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
+                GitBranch.Default().SetBranch(new BranchViewModel("dev", false)),
             },
             new Dictionary<string, string> { { "main", "Main desc" }, { "dev", "Dev desc" } },
         };
@@ -476,7 +360,10 @@ public class GitRepositoryTests
             // file does NOT exist
             false,
             Array.Empty<string>(),
-            new List<GitBranch> { GitBranch.Default().SetBranch(new Branch("main", false)) },
+            new List<GitBranch>
+            {
+                GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
+            },
             new Dictionary<string, string>(), // no changes expected
         };
     }

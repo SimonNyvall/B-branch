@@ -56,7 +56,7 @@ public sealed class SetLastCommitTests
 
         var gitBranch = GitBranch
             .Default()
-            .SetBranch(new Branch(detachedBranchName, true))
+            .SetBranch(new BranchViewModel(detachedBranchName, true))
             .SetDetachedHead(commitHash);
 
         var branches = new List<GitBranch> { gitBranch };
@@ -82,7 +82,7 @@ public sealed class SetLastCommitTests
 
         var gitBranch = GitBranch
             .Default()
-            .SetBranch(new Branch($"{refBranch} -> {targetBranch}", false))
+            .SetBranch(new BranchViewModel($"{refBranch} -> {targetBranch}", false))
             .SetIsRemote(true)
             .SetSymLink(new Symbolic(refBranch, targetBranch));
 

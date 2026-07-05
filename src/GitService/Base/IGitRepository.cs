@@ -12,9 +12,9 @@ public interface IGitRepository
 
     Task<List<GitBranch>> GetBranchDescription(List<GitBranch> branches);
 
-    Task<AheadBehind> GetLocalAheadBehind(string localBranchName);
+    Task<GitBranch> GetLocalAheadBehind(GitBranch localBranchName);
 
-    Task<AheadBehind> GetRemoteAheadBehind(string localBranchName, string remoteBranchName);
+    Task<GitBranch> GetRemoteAheadBehind(GitBranch gitBranch, string remoteBranchName);
 
     Task<GitBranch> GetLastCommitDate(GitBranch branchName);
 

@@ -3,7 +3,8 @@ namespace Bbranch.Shared.TableData;
 public sealed class GitBranch
 {
     private const int ShortCommitHashLength = 7;
-    public Branch Branch { get; private set; } = null!;
+    public Guid Id { get; } = Guid.NewGuid();
+    public BranchViewModel Branch { get; private set; } = null!;
     public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
     public string? Description { get; private set; }
@@ -20,7 +21,7 @@ public sealed class GitBranch
     private GitBranch()
     {
         AheadBehind = new AheadBehind(0, 0);
-        Branch = new Branch("branchName", false);
+        Branch = new BranchViewModel("branchName", false);
         LastCommit = DateTime.MinValue;
         Description = string.Empty;
         DetachedHead = new DetachedHead(null);
@@ -39,7 +40,7 @@ public sealed class GitBranch
         return this;
     }
 
-    public GitBranch SetBranch(Branch branch)
+    public GitBranch SetBranch(BranchViewModel branch)
     {
         if (string.IsNullOrEmpty(branch.Name))
         {
