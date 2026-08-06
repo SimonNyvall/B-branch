@@ -12,7 +12,7 @@ public sealed class DefaultFixture : IAsyncLifetime
     private IContainer _container = null!;
     private readonly IFutureDockerImage _image;
 
-    public string PublishedArtifactPath => "./Cli";
+    private static string PublishedArtifactPath => "./Cli";
 
     public DefaultFixture()
     {
@@ -40,56 +40,13 @@ public sealed class DefaultFixture : IAsyncLifetime
         await _container.DisposeAsync();
     }
 
-    public Task<ExecResult> Exec(params string[] command)
+    public async Task<string> Exec(params string[] requestedCommands)
     {
-        return _container.ExecAsync(command);
-    }
+        var executionCommands = new List<string> { DefaultFixture.PublishedArtifactPath };
 
-    public Task<ExecResult> Exec(string command)
-    {
-        return Exec("bash", "-c", command);
-    }
+        executionCommands.AddRange(requestedCommands);
 
-    private async Task ExecOrThrow(string command)
-    {
-        Console.WriteLine();
-        Console.WriteLine($">>> {command}");
-
-        var result = await Exec(command);
-
-        Console.WriteLine($"Exit Code: {result.ExitCode}");
-
-        if (!string.IsNullOrWhiteSpace(result.Stdout))
-        {
-            Console.WriteLine("STDOUT:");
-            Console.WriteLine(result.Stdout);
-        }
-
-        if (!string.IsNullOrWhiteSpace(result.Stderr))
-        {
-            Console.WriteLine("STDERR:");
-            Console.WriteLine(result.Stderr);
-        }
-
-        if (result.ExitCode != 0)
-        {
-            throw new Exception(
-                $"""
-Command failed.
-
-Command:
-{command}
-
-Exit Code:
-{result.ExitCode}
-
-Stdout:
-{result.Stdout}
-
-Stderr:
-{result.Stderr}
-"""
-            );
-        }
+        var result = await _container.ExecAsync(executionCommands);
+        return result.Stdout.Replace("The less command was not found\n\n", "");
     }
 }

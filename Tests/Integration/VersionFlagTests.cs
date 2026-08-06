@@ -44,7 +44,7 @@ public class VersionFlagTests
 
         result = result.Replace("\r", "");
 
-        Assert.Equal("fatal: Value for --version is not allowed\n", result);
+        Assert.Equal("fatal: --version cannot be used with any other option\n", result);
     }
 
     [Fact]
@@ -54,33 +54,19 @@ public class VersionFlagTests
 
         result = result.Replace("\r", "");
 
-        Assert.Equal("fatal: --version cannot be used with any other option\n", result);
+        Assert.Equal("fatal: Value for --version is not allowed\n", result);
     }
 
     private class TestExecutor(DefaultFixture fixture)
     {
-        public async Task<string> ExecuteWithShortFlag()
-        {
-            var result = await fixture.Exec(fixture.PublishedArtifactPath, "-v");
-            return result.Stdout;
-        }
+        public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-v");
 
-        public async Task<string> ExcuteWithLongFlag()
-        {
-            var result = await fixture.Exec(fixture.PublishedArtifactPath, "--version");
-            return result.Stdout;
-        }
+        public async Task<string> ExcuteWithLongFlag() => await fixture.Exec("--version");
 
-        public async Task<string> ExecuteWithShortFlagAndValue()
-        {
-            var result = await fixture.Exec(fixture.PublishedArtifactPath, "-v", "value");
-            return result.Stdout;
-        }
+        public async Task<string> ExecuteWithShortFlagAndValue() =>
+            await fixture.Exec("-v", "value");
 
-        public async Task<string> ExcuteWithLongFlagAndValue()
-        {
-            var result = await fixture.Exec(fixture.PublishedArtifactPath, "--version", "-a");
-            return result.Stdout;
-        }
+        public async Task<string> ExcuteWithLongFlagAndValue() =>
+            await fixture.Exec("--version", "-a");
     }
 }
