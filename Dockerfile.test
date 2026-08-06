@@ -1,6 +1,6 @@
 FROM neotericsh/b-branch-test-base:latest
 
-COPY src/ ./src/
+COPY . .
 
 WORKDIR /app/src/Cli
 
