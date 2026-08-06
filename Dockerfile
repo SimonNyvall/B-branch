@@ -23,19 +23,14 @@ RUN git checkout -b test/branch1 && \
     git checkout -b test/branch2 && \
     git checkout -b test/branch3
 
-COPY *.slnx ./
 COPY src/ ./src/
-COPY tests/ ./tests/
+
+WORKDIR /app/src/Cli
 
 RUN dotnet restore
 
 RUN dotnet build --no-restore -c Debug
 
-WORKDIR /app/src/Cli
-RUN dotnet publish -r linux-x64 -c Release -o /app/publish
+RUN dotnet publish -r linux-x64 -c Release -o /app/published
 
-WORKDIR /app/tests/IntegrationTests
-
-ENV RUN_INTEGRATION_TESTS=true
-
-ENTRYPOINT ["dotnet", "test", "--no-build", "--results-directory", "/app/TestResults", "--logger", "trx"]
+WORKDIR /app/published

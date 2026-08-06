@@ -4,8 +4,5 @@
     <Project Path="src/GitService/GitService.csproj" />
     <Project Path="src/Shared/Shared.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/IntegrationTests/IntegrationTests.csproj" />
-    <Project Path="tests/UnitTests/UnitTests.csproj" />
-  </Folder>
+  <Project Path="Tests/Tests.csproj" />
 </Solution>
