@@ -23,4 +23,10 @@
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Cli\Cli.csproj" />
+    <ProjectReference Include="..\src\GitService\GitService.csproj" />
+    <ProjectReference Include="..\src\Shared\Shared.csproj" />
+  </ItemGroup>
 </Project>

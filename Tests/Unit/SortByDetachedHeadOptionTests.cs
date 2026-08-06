@@ -1,0 +1,56 @@
+using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
+using Bbranch.Shared.TableData;
+
+namespace Bbranch.Tests.Unit;
+
+[Trait("Category", "Unit")]
+public sealed class SortByDetachedHeadOptionTests
+{
+    [Fact]
+    public async Task Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches()
+    {
+        var commitHash = "6efb99e";
+        var detachedHeadName = $"(HEAD detached at {commitHash})";
+        var branches = new List<GitBranch>
+        {
+            GitBranch.Default().SetBranch(new BranchViewModel("feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("main", false)),
+            GitBranch
+                .Default()
+                .SetBranch(new BranchViewModel(detachedHeadName, true))
+                .SetDetachedHead(commitHash),
+        };
+
+        var sortByNameOption = new SortByDetachedHeadOption();
+
+        var result = await sortByNameOption.Execute(branches);
+
+        Assert.Equal(detachedHeadName, result.First().Branch.Name);
+        Assert.Equal("feature", result.ElementAt(1).Branch.Name);
+        Assert.Equal("main", result.ElementAt(2).Branch.Name);
+    }
+
+    [Fact]
+    public async Task Given_SortByDetachedHeadOptions_When_ExecuteRun_Then_Return_SortedBranches_WhenAlreadySorted()
+    {
+        var commitHash = "6efb99e";
+        var detachedHeadName = $"(HEAD detached at {commitHash})";
+        var branches = new List<GitBranch>
+        {
+            GitBranch
+                .Default()
+                .SetBranch(new BranchViewModel(detachedHeadName, true))
+                .SetDetachedHead(commitHash),
+            GitBranch.Default().SetBranch(new BranchViewModel("b_feature", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("c_feature", false)),
+        };
+
+        var sortByNameOption = new SortByNameOptions();
+
+        var result = await sortByNameOption.Execute(branches);
+
+        Assert.Equal(detachedHeadName, result.First().Branch.Name);
+        Assert.Equal("b_feature", result.ElementAt(1).Branch.Name);
+        Assert.Equal("c_feature", result.ElementAt(2).Branch.Name);
+    }
+}

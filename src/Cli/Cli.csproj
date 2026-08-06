@@ -2,7 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <ProjectReference Include="..\GitService\GitService.csproj" />
-    <InternalsVisibleTo Include="UnitTests" />
+    <InternalsVisibleTo Include="Tests" />
   </ItemGroup>
 
   <PropertyGroup>
