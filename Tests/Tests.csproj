@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Cli\Cli.csproj" />
-    <ProjectReference Include="..\src\GitService\GitService.csproj" />
-    <ProjectReference Include="..\src\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Cli\Cli.csproj" />
+    <ProjectReference Include="..\GitService\GitService.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 </Project>

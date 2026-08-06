@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Cli/Cli.csproj" />
-    <Project Path="src/GitService/GitService.csproj" />
-    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="Cli/Cli.csproj" />
+    <Project Path="GitService/GitService.csproj" />
+    <Project Path="Shared/Shared.csproj" />
   </Folder>
   <Project Path="Tests/Tests.csproj" />
 </Solution>
