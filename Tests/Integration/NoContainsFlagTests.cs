@@ -32,10 +32,7 @@ public class NoContainsFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines
-            .Skip(2)
-            .Select(l => l.Split('|')[2].Trim())
-            .ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
 
         Assert.Equal(3, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -61,10 +58,7 @@ public class NoContainsFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines
-            .Skip(2)
-            .Select(l => l.Split('|')[2].Trim())
-            .ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
 
         Assert.Equal(2, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -90,10 +84,7 @@ public class NoContainsFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines
-            .Skip(2)
-            .Select(l => l.Split('|')[2].Trim())
-            .ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
 
         Assert.Equal(2, branchNames.Length);
         Assert.DoesNotContain("main", branchNames);
@@ -125,12 +116,16 @@ public class NoContainsFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithRegex(string regex) => await fixture.Exec("-n", regex);
-        public async Task<string> ExecuteWithNoContainsShortFlagAndMultiValue() => await fixture.Exec("-n", "main;test/branch1");
-        public async Task<string> ExecuteWithNoContainsLongFlagAndMultiValue() => await fixture.Exec("--no-contains", "main;test/branch1");
-        public async Task<string> ExecuteWithNoContainsAndContainsFlag() => await fixture.Exec("--no-contains",
-            "main",
-            "--contains",
-            "main");
+
+        public async Task<string> ExecuteWithNoContainsShortFlagAndMultiValue() =>
+            await fixture.Exec("-n", "main;test/branch1");
+
+        public async Task<string> ExecuteWithNoContainsLongFlagAndMultiValue() =>
+            await fixture.Exec("--no-contains", "main;test/branch1");
+
+        public async Task<string> ExecuteWithNoContainsAndContainsFlag() =>
+            await fixture.Exec("--no-contains", "main", "--contains", "main");
+
         public async Task<string> ExecuteWithNoContainsFlagAndNoValue() => await fixture.Exec("-n");
     }
 }

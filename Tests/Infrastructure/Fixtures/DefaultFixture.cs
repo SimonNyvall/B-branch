@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-
 using Bbranch.Tests.Infrastucture.Fixtures;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;

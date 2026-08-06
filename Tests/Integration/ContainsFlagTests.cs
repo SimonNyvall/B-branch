@@ -111,9 +111,15 @@ public class ContainsFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithRegex(string regex) => await fixture.Exec("-c", regex);
-        public async Task<string> ExecuteWithShortFlagAndMultiValue() => await fixture.Exec("-c", "main;test/branch1");
-        public async Task<string> ExecuteWithLongFlagAndMultiValue() => await fixture.Exec("--contains", "main;test/branch1");
+
+        public async Task<string> ExecuteWithShortFlagAndMultiValue() =>
+            await fixture.Exec("-c", "main;test/branch1");
+
+        public async Task<string> ExecuteWithLongFlagAndMultiValue() =>
+            await fixture.Exec("--contains", "main;test/branch1");
+
         public async Task<string> ExecuteWithContainsAndNoContainsFlag() => await fixture.Exec("");
+
         public async Task<string> ExecuteWithNoValue() => await fixture.Exec("-c");
     }
 }

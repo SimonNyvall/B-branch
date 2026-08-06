@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-
 using Bbranch.Tests.Helpers;
 using Bbranch.Tests.Infrastucture.Fixtures;
 
@@ -20,7 +19,7 @@ public class NoFlagTests
     public async Task IntegrationTest_ValidOutput_WithNoFlags()
     {
         var result = await _sut.ExecuteWithNoFlag();
-    
+
         string[] lines = result.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         AssertHelper.Header(lines);

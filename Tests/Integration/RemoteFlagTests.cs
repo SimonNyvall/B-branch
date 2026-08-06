@@ -42,7 +42,7 @@ public class RemoteFlagTests
 
         foreach (string line in lines.Skip(2))
         {
-        var (ahead, behind) = AheadBehindHelper.GetAheadBehind(line);
+            var (ahead, behind) = AheadBehindHelper.GetAheadBehind(line);
 
             Assert.True(ahead >= 0, $"ahead was below 0... Actual: {ahead}... Line: {line}");
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
@@ -68,8 +68,11 @@ public class RemoteFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-r");
+
         public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--remote");
+
         public async Task<string> ExecuteWithValue() => await fixture.Exec("--remote", "value");
+
         public async Task<string> ExecuteWithAllFlag() => await fixture.Exec("--remote", "--all");
     }
 }

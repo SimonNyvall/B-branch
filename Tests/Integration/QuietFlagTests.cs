@@ -49,7 +49,9 @@ public class QuietFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-q");
+
         public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--quiet");
+
         public async Task<string> ExecuteWithValue() => await fixture.Exec("--quiet", "value");
     }
 }

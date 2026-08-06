@@ -60,7 +60,9 @@ public class TrackFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-t", "main");
+
         public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--track", "main");
+
         public async Task<string> ExecuteWithNoValue() => await fixture.Exec("--track");
     }
 }

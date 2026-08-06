@@ -65,9 +65,14 @@ public class AllFlagTests
 
     private class TestExecutor(DefaultFixture fixture)
     {
-        public async Task<string>  ExecuteWithShortFlag() => await fixture.Exec("-a");
-        public async Task<string>  ExecuteWithLongFlag() => await fixture.Exec("--all");
-        public async Task<string>  ExecuteWithLongFlagAndValue() => await fixture.Exec("--all", "value");
-        public async Task<string>  ExecuteWithLongFlagAndRemoteFlag() => await fixture.Exec("--all", "--remote");
+        public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-a");
+
+        public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--all");
+
+        public async Task<string> ExecuteWithLongFlagAndValue() =>
+            await fixture.Exec("--all", "value");
+
+        public async Task<string> ExecuteWithLongFlagAndRemoteFlag() =>
+            await fixture.Exec("--all", "--remote");
     }
 }

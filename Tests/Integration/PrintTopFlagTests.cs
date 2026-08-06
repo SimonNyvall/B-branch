@@ -64,9 +64,14 @@ public class PrintTopFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--print-top", "1");
+
         public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-p", "1");
-        public async Task<string> ExecuteWithInvalidValue() => await fixture.Exec("--print-top", "value");
+
+        public async Task<string> ExecuteWithInvalidValue() =>
+            await fixture.Exec("--print-top", "value");
+
         public async Task<string> ExecuteWithZeroValue() => await fixture.Exec("--print-top", "0");
+
         public async Task<string> ExecuteWithNoValue() => await fixture.Exec("--print-top");
     }
 }

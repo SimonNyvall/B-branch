@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-
 using Bbranch.Tests.Helpers;
 using Bbranch.Tests.Infrastucture.Fixtures;
 
@@ -33,10 +32,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines
-            .Skip(2)
-            .Select(l => l.Split('|')[2].Trim())
-            .ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -60,10 +56,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        string[] branchNames = lines
-            .Skip(2)
-            .Select(l => l.Split('|')[2].Trim())
-            .ToArray();
+        string[] branchNames = lines.Skip(2).Select(l => l.Split('|')[2].Trim()).ToArray();
 
         string[] sortedBranchNames = [.. branchNames.OrderBy(b => b)];
 
@@ -87,8 +80,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var aheadValues =
-            lines.Skip(2);
+        var aheadValues = lines.Skip(2);
 
         var sortedAheadValues = aheadValues.OrderByDescending(a => a);
 
@@ -112,8 +104,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var aheadValues =
-            lines.Skip(2);
+        var aheadValues = lines.Skip(2);
 
         var sortedAheadValues = aheadValues.OrderByDescending(a => a);
 
@@ -137,8 +128,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var behindValues =
-            lines.Skip(2);
+        var behindValues = lines.Skip(2);
 
         var sortedBehindValues = behindValues.OrderByDescending(b => b);
 
@@ -162,8 +152,7 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var behindValues =
-            lines.Skip(2);
+        var behindValues = lines.Skip(2);
 
         var sortedBehindValues = behindValues.OrderByDescending(b => b);
 
@@ -348,13 +337,27 @@ public class SortFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithShortFlagAndName() => await fixture.Exec("-s", "name");
-        public async Task<string> ExecuteWithLongFlagAndName() => await fixture.Exec("--sort", "name");
-        public async Task<string> ExecuteWithShortFlagAndAhead() => await fixture.Exec("-s", "ahead");
-        public async Task<string> ExecuteWithLongFlagAndAhead() => await fixture.Exec("--sort", "ahead");
-        public async Task<string> ExecuteWithShortFlagAndBehind() => await fixture.Exec("-s", "behind");
-        public async Task<string> ExecuteWithLongFlagAndBehind() => await fixture.Exec("--sort", "behind");
+
+        public async Task<string> ExecuteWithLongFlagAndName() =>
+            await fixture.Exec("--sort", "name");
+
+        public async Task<string> ExecuteWithShortFlagAndAhead() =>
+            await fixture.Exec("-s", "ahead");
+
+        public async Task<string> ExecuteWithLongFlagAndAhead() =>
+            await fixture.Exec("--sort", "ahead");
+
+        public async Task<string> ExecuteWithShortFlagAndBehind() =>
+            await fixture.Exec("-s", "behind");
+
+        public async Task<string> ExecuteWithLongFlagAndBehind() =>
+            await fixture.Exec("--sort", "behind");
+
         public async Task<string> ExecuteWithInvalidValue() => await fixture.Exec("-s", "invalid");
+
         public async Task<string> ExecuteWithShortFlagAndDate() => await fixture.Exec("-s", "date");
-        public async Task<string> ExecuteWithLongFlagAndDate() => await fixture.Exec("--sort", "date");
+
+        public async Task<string> ExecuteWithLongFlagAndDate() =>
+            await fixture.Exec("--sort", "date");
     }
 }

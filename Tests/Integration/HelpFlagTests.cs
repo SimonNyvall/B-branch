@@ -61,7 +61,9 @@ public class HelpFlagTests
     private class TestExecutor(DefaultFixture fixture)
     {
         public async Task<string> ExecuteWithShortFlag() => await fixture.Exec("-h");
+
         public async Task<string> ExecuteWithLongFlag() => await fixture.Exec("--help");
+
         public async Task<string> ExecuteWithValue() => await fixture.Exec("--help", "value");
     }
 }

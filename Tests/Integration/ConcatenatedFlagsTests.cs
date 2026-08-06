@@ -80,10 +80,18 @@ public class ConcatenatedFlagsTests
 
     private class TestExecutor(DefaultFixture fixture)
     {
-        public async Task<string> ExecuteWithAllAndQuietFlagsConcatenated() => await fixture.Exec("-qa");
-        public async Task<string> ExecuteWithRemoteAndQuietFlagConcatenated() => await fixture.Exec("-rq");
-        public async Task<string> ExecuteWithDoubleDashAndQuietAndAllFlagConcatenated() => await fixture.Exec("--qa");
-        public async Task<string> ExecuteWithDuplicateFlagsConcatenated() => await fixture.Exec("-qaq");
+        public async Task<string> ExecuteWithAllAndQuietFlagsConcatenated() =>
+            await fixture.Exec("-qa");
+
+        public async Task<string> ExecuteWithRemoteAndQuietFlagConcatenated() =>
+            await fixture.Exec("-rq");
+
+        public async Task<string> ExecuteWithDoubleDashAndQuietAndAllFlagConcatenated() =>
+            await fixture.Exec("--qa");
+
+        public async Task<string> ExecuteWithDuplicateFlagsConcatenated() =>
+            await fixture.Exec("-qaq");
+
         public async Task<string> ExecuteWithUnkownFlagConcatenated() => await fixture.Exec("-qz");
-    } 
+    }
 }
