@@ -7,93 +7,21 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/CLI/CLI.csproj"
+                "${workspaceFolder}/Cli/Cli.csproj"
             ],
             "problemMatcher": "$msCompile",
             "group": "build"
         },
         {
-            "label": "run-unit-tests",
+            "label": "run-tests",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/tests/UnitTests/UnitTests.csproj"
+                "${workspaceFolder}/Tests/Tests.csproj"
             ],
             "problemMatcher": "$msCompile",
             "group": "test"
-        },
-        {
-            "label": "docker-build-integration",
-            "type": "process",
-            "command": "docker",
-            "args": [
-                "build",
-                "-t",
-                "b-branch-integration-tests",
-                "."
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "docker-run-integration",
-            "type": "process",
-            "command": "docker",
-            "args": [
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}/TestResults:/app/TestResults",
-                "b-branch-integration-tests"
-            ]
-        },
-        {
-            "label": "docker-clean-integration-container",
-            "type": "process",
-            "command": "docker",
-            "args": [
-                "rm",
-                "-f",
-                "b-branch-integration-tests"
-            ]
-        },
-        {
-            "label": "docker-clean-integration-image",
-            "type": "process",
-            "command": "docker",
-            "args": [
-                "rmi",
-                "b-branch-integration-tests"
-            ]
-        },
-        {
-            "label": "run-integration-tests",
-            "dependsOn": [
-                "docker-build-integration",
-                "docker-run-integration",
-                "docker-clean-integration-container",
-                "docker-clean-integration-image"
-            ],
-            "dependsOrder": "sequence",
-            "group": "build"
-        },
-        {
-            "label": "aot-test-build",
-            "type": "shell",
-            "command": "dotnet",
-            "args": [
-                "publish",
-                "${workspaceFolder}/src/Cli/Cli.csproj",
-                "-r",
-                "win-x64",
-                "-c",
-                "Release",
-                "-o",
-                "${workspaceFolder}/aot-test-build"
-            ],
-            "group": "build"
         }
     ]
 }

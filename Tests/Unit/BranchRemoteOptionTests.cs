@@ -1,0 +1,40 @@
+using Bbranch.GitService.Base;
+using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
+using Bbranch.Shared.TableData;
+using FakeItEasy;
+
+namespace Bbranch.Tests.Unit;
+
+[Trait("Category", "Unit")]
+public sealed class BranchRemoteOptionTests
+{
+    [Fact]
+    public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_RemoteBranches()
+    {
+        var remoteBranches = new List<GitBranch>
+        {
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/main", false)),
+            GitBranch.Default().SetBranch(new BranchViewModel("origin/feature/branch", false)),
+        };
+
+        var gitRepositoryFake = A.Fake<IGitRepository>();
+        A.CallTo(() => gitRepositoryFake.GetRemoteBranchNames()).Returns(remoteBranches);
+
+        var sut = new BranchRemoteOptions(gitRepositoryFake);
+
+        List<GitBranch> result = await sut.Execute([]);
+
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoRemoteBranches()
+    {
+        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var branchRemoteOptions = new BranchRemoteOptions(gitRepositoryFake);
+
+        List<GitBranch> result = await branchRemoteOptions.Execute([]);
+
+        Assert.Empty(result);
+    }
+}

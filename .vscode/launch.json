@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Cli/bin/Debug/net10.0/Cli.exe",
+            "program": "${workspaceFolder}/Cli/bin/Debug/net10.0/Cli.exe",
             "args": ["--track", "main"],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

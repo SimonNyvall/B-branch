@@ -1,22 +1,12 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/tests/IntegrationTests"
+    directory: "/Tests"
     schedule:
       interval: "weekly"
     target-branch: "main"
     labels:
-      - "integration-tests"
-      - "x-unit"
-
-  - package-ecosystem: "nuget"
-    directory: "/tests/UnitTests"
-    schedule:
-      interval: "weekly"
-    target-branch: "main"
-    labels:
-      - "unit-tests"
-      - "x-unit"
+      - "Tests"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -25,25 +15,25 @@ updates:
     target-branch: "main"
     labels:
       - "github-actions"
-        
+
   - package-ecosystem: "nuget"
-    directory: "/src/Cli"
+    directory: "/Cli"
     schedule:
       interval: "weekly"
     target-branch: "main"
     labels:
-      - "cli"
-        
+      - "Cli"
+
   - package-ecosystem: "nuget"
-    directory: "/src/GitService"
+    directory: "/GitService"
     schedule:
       interval: "weekly"
     target-branch: "main"
     labels:
       - "GitService"
-        
+
   - package-ecosystem: "nuget"
-    directory: "/src/Shared"
+    directory: "/Shared"
     schedule:
       interval: "weekly"
     target-branch: "main"
