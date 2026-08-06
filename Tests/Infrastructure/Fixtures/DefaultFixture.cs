@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 using Bbranch.Tests.Infrastucture.Fixtures;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
@@ -46,7 +48,9 @@ public sealed class DefaultFixture : IAsyncLifetime
 
         executionCommands.AddRange(requestedCommands);
 
-        var result = await _container.ExecAsync(executionCommands);
-        return result.Stdout.Replace("The less command was not found\n\n", "");
+        var execResult = await _container.ExecAsync(executionCommands);
+        var result = execResult.Stdout.Replace("The less command was not found\n\n", "");
+        result = Regex.Replace(result, @"\x1B\[[0-9;]*[A-Za-z]", "");
+        return result.Replace("\r", "");
     }
 }
