@@ -22,15 +22,3 @@ RUN echo "# Placeholder" > README.md && \
 RUN git checkout -b test/branch1 && \
     git checkout -b test/branch2 && \
     git checkout -b test/branch3
-
-COPY src/ ./src/
-
-WORKDIR /app/src/Cli
-
-RUN dotnet restore
-
-RUN dotnet build --no-restore -c Debug
-
-RUN dotnet publish -r linux-x64 -c Release -o /app/published
-
-WORKDIR /app/published

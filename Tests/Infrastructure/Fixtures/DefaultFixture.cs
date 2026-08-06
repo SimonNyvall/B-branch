@@ -23,7 +23,7 @@ public sealed class DefaultFixture : IAsyncLifetime
 
         _image = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(solutionRoot)
-            .WithDockerfile("Dockerfile")
+            .WithDockerfile("Dockerfile.test")
             .Build();
     }
 
@@ -43,7 +43,7 @@ public sealed class DefaultFixture : IAsyncLifetime
 
     public async Task<string> Exec(params string[] requestedCommands)
     {
-        var executionCommands = new List<string> { DefaultFixture.PublishedArtifactPath };
+        var executionCommands = new List<string> { PublishedArtifactPath };
 
         executionCommands.AddRange(requestedCommands);
 

@@ -111,6 +111,11 @@ public class NoFlagTests
             int daysAgo = int.Parse(dateStr.Split(' ')[0]);
             return now.AddDays(-daysAgo);
         }
+        else if (dateStr.Contains("months ago"))
+        {
+            int monthsAgo = int.Parse(dateStr.Split(' ')[0]);
+            return now.AddMonths(-monthsAgo);
+        }
         else
         {
             throw new ArgumentException("Unknown date format: " + dateStr);

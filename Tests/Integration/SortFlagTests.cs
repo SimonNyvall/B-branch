@@ -104,9 +104,11 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var aheadValues = lines.Skip(2);
+        var gitLines = lines.Skip(2);
 
-        var sortedAheadValues = aheadValues.OrderByDescending(a => a);
+        var aheadValues = GetAheadValues(gitLines);
+
+        var sortedAheadValues = aheadValues.OrderDescending();
 
         Assert.Equal(aheadValues, sortedAheadValues);
     }
@@ -128,9 +130,11 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var behindValues = lines.Skip(2);
+        var gitLines = lines.Skip(2);
 
-        var sortedBehindValues = behindValues.OrderByDescending(b => b);
+        var behindValues = GetBehindValues(gitLines);
+
+        var sortedBehindValues = behindValues.OrderDescending();
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
@@ -152,9 +156,11 @@ public class SortFlagTests
             Assert.True(behind >= 0, $"behind was below 0... Actual: {behind} Line: {line}");
         }
 
-        var behindValues = lines.Skip(2);
+        var gitLines = lines.Skip(2);
 
-        var sortedBehindValues = behindValues.OrderByDescending(b => b);
+        var behindValues = GetBehindValues(gitLines);
+
+        var sortedBehindValues = behindValues.OrderDescending();
 
         Assert.Equal(behindValues, sortedBehindValues);
     }
@@ -314,6 +320,11 @@ public class SortFlagTests
             int daysAgo = int.Parse(dateStr.Split(' ')[0]);
             return now.AddDays(-daysAgo);
         }
+        else if (dateStr.Contains("months ago"))
+        {
+            int monthsAgo = int.Parse(dateStr.Split(' ')[0]);
+            return now.AddMonths(-monthsAgo);
+        }
         else
         {
             throw new ArgumentException("Unknown date format: " + dateStr);
@@ -359,5 +370,17 @@ public class SortFlagTests
 
         public async Task<string> ExecuteWithLongFlagAndDate() =>
             await fixture.Exec("--sort", "date");
+    }
+
+    private static IEnumerable<int> GetAheadValues(IEnumerable<string> lines)
+    {
+        return lines.Select(line => int.Parse(Regex.Match(line, @"\d+").Value));
+    }
+
+    private static IEnumerable<int> GetBehindValues(IEnumerable<string> lines)
+    {
+        return lines.Select(line =>
+            int.Parse(Regex.Match(line, @"^\s*\d+\s*\|\s*(\d+)").Groups[1].Value)
+        );
     }
 }

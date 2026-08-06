@@ -118,7 +118,8 @@ public class ContainsFlagTests
         public async Task<string> ExecuteWithLongFlagAndMultiValue() =>
             await fixture.Exec("--contains", "main;test/branch1");
 
-        public async Task<string> ExecuteWithContainsAndNoContainsFlag() => await fixture.Exec("");
+        public async Task<string> ExecuteWithContainsAndNoContainsFlag() =>
+            await fixture.Exec("-c", "main", "-n", "test/branch1");
 
         public async Task<string> ExecuteWithNoValue() => await fixture.Exec("-c");
     }

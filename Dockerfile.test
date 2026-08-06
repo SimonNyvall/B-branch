@@ -1,0 +1,13 @@
+FROM neotericsh/b-branch-test-base:latest
+
+COPY src/ ./src/
+
+WORKDIR /app/src/Cli
+
+RUN dotnet restore
+
+RUN dotnet build --no-restore -c Debug
+
+RUN dotnet publish -r linux-x64 -c Release -o /app/published
+
+WORKDIR /app/published
