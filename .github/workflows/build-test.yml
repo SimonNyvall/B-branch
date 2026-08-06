@@ -24,12 +24,6 @@ jobs:
       - name: Build Solution
         run: dotnet build --no-restore
 
-      - name: Run Unit-Test
-        working-directory: ./tests/UnitTests/
+      - name: Run Test
+        working-directory: ./Tests/
         run: dotnet test --no-build --verbosity detailed
-
-      - name: Build Docker Integration-Test Image
-        run: docker build -t integration-tests .
-
-      - name: Run Docker Integration-Tests Container
-        run: docker run --rm integration-tests
