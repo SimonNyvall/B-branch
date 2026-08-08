@@ -21,6 +21,8 @@ public sealed class DefaultFixture : IAsyncLifetime
             Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..")
         );
 
+        Console.WriteLine(solutionRoot);
+
         _image = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(solutionRoot)
             .WithDockerfile("Dockerfile.test")

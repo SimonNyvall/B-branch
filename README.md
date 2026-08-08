@@ -39,7 +39,7 @@
 
 ## 🌿 What is B-branch?
 
-You've been staring at `git branch` output for years, an alphabetical wall of names with zero context. _When was this branch last touched? How far behind is it? What was I even doing here? test_
+You've been staring at `git branch` output for years, an alphabetical wall of names with zero context. _When was this branch last touched? How far behind is it? What was I even doing here?_
 
 **B-branch fixes that.**
 

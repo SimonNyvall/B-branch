@@ -22,8 +22,15 @@ internal class Pager : IPager
         if (process == null)
             return;
 
-        process.StandardInput.Write(input);
-        process.StandardInput.Close();
+        try
+        {
+            process.StandardInput.Write(input);
+            process.StandardInput.Close();
+        }
+        catch (IOException)
+        {
+            // Ignore error
+        }
 
         process.WaitForExit();
     }
