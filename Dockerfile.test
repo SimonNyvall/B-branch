@@ -2,7 +2,7 @@ FROM neotericsh/b-branch-test-base:latest
 
 COPY . .
 
-WORKDIR /app/src/Cli
+WORKDIR /app/Cli
 
 RUN dotnet restore
 
