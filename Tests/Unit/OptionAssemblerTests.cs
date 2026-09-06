@@ -13,13 +13,13 @@ using FakeItEasy;
 namespace Bbranch.Tests.Unit;
 
 [Trait("Category", "Unit")]
-public class BranchTableAssemblerTests
+public class OptionAssemblerTests
 {
-    private readonly IGitRepository _repositoryFake;
+    private readonly IInternalGitRepository _repositoryFake;
 
-    public BranchTableAssemblerTests()
+    public OptionAssemblerTests()
     {
-        _repositoryFake = A.Fake<IGitRepository>();
+        _repositoryFake = A.Fake<IInternalGitRepository>();
     }
 
     [Fact]
@@ -27,11 +27,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection();
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -50,11 +50,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<AllFlag>.Create(null) };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchAllOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -73,11 +73,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<RemoteFlag>.Create(null) };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchRemoteOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -96,11 +96,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<TrackFlag>.Create(null) };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -119,11 +119,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<ContainsFlag>.Create(null) };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(10, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(10, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -143,11 +143,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<NoContainsFlag>.Create(null) };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(10, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(10, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -167,11 +167,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<SortFlag>.Create("name") };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -190,11 +190,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<SortFlag>.Create("ahead") };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -213,11 +213,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<SortFlag>.Create("behind") };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -236,11 +236,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<SortFlag>.Create("date") };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(9, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(9, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),
@@ -259,11 +259,11 @@ public class BranchTableAssemblerTests
     {
         var arguments = new FlagCollection { IFlag<PrintTopFlag>.Create("5") };
 
-        var result = await BranchTableAssembler.AssembleBranchTable(_repositoryFake, arguments);
+        var result = await OptionAssembler.AssembleBranchTable(_repositoryFake, arguments);
 
-        Assert.Equal(10, BranchTableAssembler._optionStrategies.Options.Count);
+        Assert.Equal(10, OptionAssembler._optionStrategies.Options.Count);
         Assert.Collection(
-            BranchTableAssembler._optionStrategies.Options,
+            OptionAssembler._optionStrategies.Options,
             flag => Assert.IsType<BranchLocalOptions>(flag),
             flag => Assert.IsType<SetLastCommitOptions>(flag),
             flag => Assert.IsType<WorkingBranchOption>(flag),

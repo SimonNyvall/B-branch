@@ -35,16 +35,16 @@ public class GitRepositoryTests
 
     private static void Reset()
     {
-        GitRepository._instance = null;
-        GitRepository._gitPath = string.Empty;
-        GitRepository._isWorktreeRepo = false;
+        InternalGitRepository._instance = null;
+        InternalGitRepository._gitPath = string.Empty;
+        InternalGitRepository._isWorktreeRepo = false;
     }
 
     [Fact]
     public async Task GetInstance_ShouldInitializeSingleton_WhenCalledFirstTime()
     {
-        var firstInstance = GitRepository.GetInstanceForTests(_iOAbstration);
-        var secondInstance = GitRepository.GetInstanceForTests(_iOAbstration);
+        var firstInstance = InternalGitRepository.GetInstanceForTests(_iOAbstration);
+        var secondInstance = InternalGitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.Same(firstInstance, secondInstance);
     }
@@ -59,10 +59,10 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.DirectoryExists(currentPath)).Returns(false);
         A.CallTo(() => _iOAbstration.DirectoryExists(parentPath)).Returns(true);
 
-        var gitRepository = GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstance(_iOAbstration);
 
         Assert.NotNull(gitRepository);
-        Assert.Equal(parentPath, GitRepository._gitPath);
+        Assert.Equal(parentPath, InternalGitRepository._gitPath);
     }
 
     [Fact]
@@ -82,10 +82,10 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.DirectoryExists(Path.Combine(_directoryInfo.FullName, "refs")))
             .Returns(true);
 
-        var gitRepository = GitRepository.GetInstance(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstance(_iOAbstration);
 
         Assert.NotNull(gitRepository);
-        Assert.True(GitRepository._isWorktreeRepo);
+        Assert.True(InternalGitRepository._isWorktreeRepo);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class GitRepositoryTests
     {
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._)).Returns("ref: refs/heads/master");
 
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -107,7 +107,7 @@ public class GitRepositoryTests
     {
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._)).Returns("heads/master");
 
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -122,7 +122,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._))
             .Returns("c3c88501151013b69bae2a49bbcfc6b6aa85d1c9");
 
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -137,7 +137,7 @@ public class GitRepositoryTests
         A.CallTo(() => _iOAbstration.ReadAllText(A<string>._))
             .Returns("ref: refs/heads/feature/feature-1");
 
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
 
         Assert.NotNull(gitRepository);
 
@@ -149,10 +149,10 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetLastCommit_ShouldReturnFileWriteTime_WhenObjectExists()
     {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
-        var commitHashPath = Path.Combine(GitRepository._gitPath, "refs", "heads", "main");
+        var commitHashPath = Path.Combine(InternalGitRepository._gitPath, "refs", "heads", "main");
         var lastWriteTime = DateTime.Now;
 
         A.CallTo(() => _iOAbstration.FileExists(A<string>._)).Returns(true);
@@ -174,14 +174,14 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetLocalBranchNames_ShouldReturnBranches_FromHeadsDirectory()
     {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
-        var headsPath = Path.Combine(GitRepository._gitPath, "refs", "heads");
+        var headsPath = Path.Combine(InternalGitRepository._gitPath, "refs", "heads");
         var masterBranch = "master";
         var featureBranch = "feature/feature-1";
         var localBranches = new string[] { masterBranch, featureBranch };
-        var packedRefPath = Path.Combine(GitRepository._gitPath, "packed-refs");
+        var packedRefPath = Path.Combine(InternalGitRepository._gitPath, "packed-refs");
         var packedRefContent = new string[]
         {
             "# some comment here",
@@ -191,7 +191,7 @@ public class GitRepositoryTests
             "aaa955733eee66e1d0d0f670e5cc1281adaffb52 refs/heads/some-packed-branch",
             "aaa955733eee66e1d0d0f670e5cc1281adaffb52 refs/heads/feat/some-packed-branch-feat",
         };
-        var headPath = Path.Combine(GitRepository._gitPath, "HEAD");
+        var headPath = Path.Combine(InternalGitRepository._gitPath, "HEAD");
 
         A.CallTo(() => _iOAbstration.DirectoryExists(headsPath)).Returns(true);
         A.CallTo(() => _iOAbstration.GetFiles(A<string>._)).Returns(localBranches);
@@ -226,14 +226,14 @@ public class GitRepositoryTests
     [Fact]
     public async Task GetRemoteBranchNames_ShouldReturnBranches_FromRemotesDirectory()
     {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
-        var remotePath = Path.Combine(GitRepository._gitPath, "refs", "remotes");
+        var remotePath = Path.Combine(InternalGitRepository._gitPath, "refs", "remotes");
         var masterBranch = "origin/master";
         var featureBranch = "origin/feature/feature-1";
         var localBranches = new string[] { masterBranch, featureBranch };
-        var packedRefPath = Path.Combine(GitRepository._gitPath, "packed-refs");
+        var packedRefPath = Path.Combine(InternalGitRepository._gitPath, "packed-refs");
         var packedRefContent = new string[]
         {
             "# some comment here",
@@ -243,7 +243,7 @@ public class GitRepositoryTests
             "aaa955733eee66e1d0d0f670e5cc1281adaffb52 refs/remotes/origin/some-packed-branch",
             "aaa955733eee66e1d0d0f670e5cc1281adaffb52 refs/remotes/origin/feat/some-packed-branch-feat",
         };
-        var headPath = Path.Combine(GitRepository._gitPath, "HEAD");
+        var headPath = Path.Combine(InternalGitRepository._gitPath, "HEAD");
 
         A.CallTo(() => _iOAbstration.DirectoryExists(remotePath)).Returns(true);
         A.CallTo(() => _iOAbstration.GetFiles(A<string>._)).Returns(localBranches);
@@ -277,10 +277,10 @@ public class GitRepositoryTests
         Dictionary<string, string> expectedDescriptions
     )
     {
-        var gitRepository = GitRepository.GetInstanceForTests(_iOAbstration);
+        var gitRepository = InternalGitRepository.GetInstanceForTests(_iOAbstration);
         Assert.NotNull(gitRepository);
 
-        var descriptionPath = Path.Combine(GitRepository._gitPath, "EDIT_DESCRIPTION");
+        var descriptionPath = Path.Combine(InternalGitRepository._gitPath, "EDIT_DESCRIPTION");
 
         A.CallTo(() => _iOAbstration.FileExists(descriptionPath)).Returns(fileExists);
 

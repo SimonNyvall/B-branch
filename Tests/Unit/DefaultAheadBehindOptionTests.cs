@@ -8,7 +8,7 @@ namespace Bbranch.Tests.Unit;
 [Trait("Category", "Unit")]
 public sealed class DefaultAheadBehindOptionTests
 {
-    private readonly IGitRepository _gitRepositoryFake;
+    private readonly IInternalGitRepository _gitRepositoryFake;
     private readonly List<GitBranch> _gitBranches;
 
     public DefaultAheadBehindOptionTests()
@@ -19,7 +19,7 @@ public sealed class DefaultAheadBehindOptionTests
             GitBranch.Default().SetAheadBehind(new AheadBehind(1, 1)),
         ];
 
-        _gitRepositoryFake = A.Fake<IGitRepository>();
+        _gitRepositoryFake = A.Fake<IInternalGitRepository>();
         A.CallTo(() => _gitRepositoryFake.GetLocalAheadBehind(A<GitBranch>._))
             .Returns(_gitBranches.First());
     }

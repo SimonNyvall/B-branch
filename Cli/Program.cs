@@ -1,10 +1,10 @@
-﻿using Bbranch.CLI;
-using Bbranch.CLI.Arguments;
+﻿using Bbranch.CLI.Arguments;
+using Bbranch.CLI.Arguments.FlagSystem;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
+using Bbranch.Cli.Assemblers;
 using Bbranch.CLI.Options;
 using Bbranch.CLI.Output;
-using Bbranch.GitService.Base;
-using Bbranch.Shared.TableData;
+using Bbranch.GitService.GitRepositories;
 
 var arguments = new List<string>(args);
 bool foundLessCommand = true;
@@ -37,10 +37,7 @@ if (options.Contains<VersionFlag>())
 
 var gitRepository = await GitRepository.GetInstance();
 
-List<GitBranch> branchTable = await BranchTableAssembler.AssembleBranchTable(
-    gitRepository,
-    options
-);
+var strategies = OptionAssembler.AssembleOptions(gitRepository, options);
 
 var lessCommandPath = foundLessCommand ? arguments[0] : null;
 
@@ -49,16 +46,31 @@ var pager = new Pager();
 if (options.Contains<quietFlag>())
 {
     var quietOutput = new PrintLightTable(pager);
-    quietOutput.Print(branchTable, lessCommandPath);
+    await quietOutput.Print(strategies, lessCommandPath, gitRepository, GetBranchScope(options));
     return;
 }
 
 var fullOutput = new PrintFullTable(pager);
-fullOutput.Print(branchTable, lessCommandPath);
+await fullOutput.Print(strategies, lessCommandPath, gitRepository, GetBranchScope(options));
 
 static void PrintWarning(string message)
 {
     Console.ForegroundColor = ConsoleColor.Yellow;
     Console.WriteLine($"{message}\n");
     Console.ResetColor();
+}
+
+static BranchScope GetBranchScope(FlagCollection flags)
+{
+    if (flags.Contains<AllFlag>())
+    {
+        return BranchScope.Both;
+    }
+
+    if (flags.Contains<RemoteFlag>())
+    {
+        return BranchScope.Remote;
+    }
+
+    return BranchScope.Local;
 }

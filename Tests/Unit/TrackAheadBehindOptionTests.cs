@@ -8,7 +8,7 @@ namespace Bbranch.Tests.Unit;
 [Trait("Category", "Unit")]
 public sealed class TrackAheadBehindOptionTests
 {
-    private readonly IGitRepository _gitRepositoryFake;
+    private readonly IInternalGitRepository _gitRepositoryFake;
     private readonly List<GitBranch> _gitBranches;
 
     public TrackAheadBehindOptionTests()
@@ -19,7 +19,7 @@ public sealed class TrackAheadBehindOptionTests
             GitBranch.Default().SetAheadBehind(new AheadBehind(1, 1)),
         ];
 
-        _gitRepositoryFake = A.Fake<IGitRepository>();
+        _gitRepositoryFake = A.Fake<IInternalGitRepository>();
         A.CallTo(() => _gitRepositoryFake.GetRemoteAheadBehind(A<GitBranch>._, A<string>._))
             .Returns(_gitBranches.First());
     }

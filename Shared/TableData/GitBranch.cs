@@ -4,6 +4,7 @@ public sealed class GitBranch
 {
     private const int ShortCommitHashLength = 7;
     public Guid Id { get; } = Guid.NewGuid();
+    public Status Status { get; private set; }
     public BranchViewModel Branch { get; private set; } = null!;
     public AheadBehind AheadBehind { get; private set; }
     public DateTime LastCommit { get; private set; }
@@ -11,6 +12,7 @@ public sealed class GitBranch
     public DetachedHead DetachedHead { get; private set; }
     public bool IsRemote { get; private set; }
     public bool IsPacked { get; private set; }
+    public string MergeRequestUrl { get; private set; }
     public bool IsSymbolic
     {
         get => SymLink != null;
@@ -20,12 +22,33 @@ public sealed class GitBranch
 
     private GitBranch()
     {
+        Status = Status.Active;
         AheadBehind = new AheadBehind(0, 0);
         Branch = new BranchViewModel("branchName", false);
         LastCommit = DateTime.MinValue;
         Description = string.Empty;
         DetachedHead = new DetachedHead(null);
         IsPacked = false;
+        MergeRequestUrl = string.Empty;
+    }
+
+    public GitBranch SetStatus(Status status)
+    {
+        if (!Enum.TryParse<Status>(status.ToString(), out var _))
+            throw new ArgumentException("Value is not in enum");
+
+        Status = status;
+        return this;
+    }
+
+    public GitBranch SetMergeRequestUrl(string url)
+    {
+        if (Status != Status.Merged)
+            throw new ArgumentException("Status must be merged to have a merge request url.");
+
+        MergeRequestUrl = url;
+
+        return this;
     }
 
     public GitBranch SetAheadBehind(AheadBehind aheadBehind)

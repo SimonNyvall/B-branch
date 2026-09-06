@@ -13,6 +13,7 @@ public interface IIOAbstration
     DirectoryInfo? GetCurrentDirectory();
     public string[] GetFiles(string path);
     string? GetRelativePath(string relativeTo, string path);
+    IEnumerable<string> EnumerateFiles(string path);
 }
 
 public sealed class IOAbstraction : IIOAbstration
@@ -42,4 +43,7 @@ public sealed class IOAbstraction : IIOAbstration
 
     public string? GetRelativePath(string relativeTo, string path) =>
         Path.GetRelativePath(relativeTo, path);
+
+    public IEnumerable<string> EnumerateFiles(string path) =>
+        Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories);
 }

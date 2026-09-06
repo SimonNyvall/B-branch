@@ -1,9 +1,10 @@
-using Bbranch.GitService.Base;
+using Bbranch.GitService.GitRepositories;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Strategies;
 
-public sealed class DefaultAheadBehindOption(IGitRepository gitRepository) : IOption
+public sealed class TrackAheadBehindOption(GitRepository gitRepository, string remoteBranchName)
+    : IOption
 {
     public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
@@ -12,7 +13,10 @@ public sealed class DefaultAheadBehindOption(IGitRepository gitRepository) : IOp
 
         foreach (var branch in branches)
         {
-            var aheadBehindTask = gitRepository.GetLocalAheadBehind(branch);
+            var aheadBehindTask = gitRepository.InternalRepo.GetRemoteAheadBehind(
+                branch,
+                remoteBranchName
+            );
             aheadBehindTasks.Add(aheadBehindTask);
         }
 

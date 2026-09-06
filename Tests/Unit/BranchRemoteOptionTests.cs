@@ -17,7 +17,7 @@ public sealed class BranchRemoteOptionTests
             GitBranch.Default().SetBranch(new BranchViewModel("origin/feature/branch", false)),
         };
 
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
         A.CallTo(() => gitRepositoryFake.GetRemoteBranchNames()).Returns(remoteBranches);
 
         var sut = new BranchRemoteOptions(gitRepositoryFake);
@@ -30,7 +30,7 @@ public sealed class BranchRemoteOptionTests
     [Fact]
     public async Task Given_BranchRemoteOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoRemoteBranches()
     {
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
         var branchRemoteOptions = new BranchRemoteOptions(gitRepositoryFake);
 
         List<GitBranch> result = await branchRemoteOptions.Execute([]);

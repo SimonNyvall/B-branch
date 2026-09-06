@@ -4,7 +4,7 @@ namespace Bbranch.CLI.Output;
 
 internal class Pager : IPager
 {
-    public void StartLess(string input, string lessCommandPath)
+    public async Task StartLess(IAsyncEnumerable<string> batches, string lessCommandPath)
     {
         var processStartInfo = new ProcessStartInfo
         {
@@ -24,7 +24,12 @@ internal class Pager : IPager
 
         try
         {
-            process.StandardInput.Write(input);
+            await foreach (var line in batches)
+            {
+                process.StandardInput.Write(line);
+            }
+
+            process.StandardInput.Flush();
             process.StandardInput.Close();
         }
         catch (IOException)
@@ -32,6 +37,6 @@ internal class Pager : IPager
             // Ignore error
         }
 
-        process.WaitForExit();
+        await process.WaitForExitAsync();
     }
 }

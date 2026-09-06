@@ -1,4 +1,4 @@
 public interface IPager
 {
-    void StartLess(string input, string lessCommandPath);
+    Task StartLess(IAsyncEnumerable<string> batches, string lessCommandPath);
 }

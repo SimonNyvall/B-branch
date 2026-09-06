@@ -23,7 +23,7 @@ public class BranchAllOptionTests
             GitBranch.Default().SetBranch(new BranchViewModel("origin/feature/branch", false)),
         };
 
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
 
         A.CallTo(() => gitRepositoryFake.GetLocalBranchNames()).Returns(localBranches);
         A.CallTo(() => gitRepositoryFake.GetRemoteBranchNames()).Returns(remoteBranches);
@@ -38,7 +38,7 @@ public class BranchAllOptionTests
     [Fact]
     public async Task Given_BranchAllOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoBranches()
     {
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
         var sut = new BranchAllOptions(gitRepositoryFake);
 
         List<GitBranch> result = await sut.Execute([]);

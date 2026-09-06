@@ -8,11 +8,11 @@ namespace Bbranch.Tests.Unit;
 [Trait("Category", "Unit")]
 public sealed class SetLastCommitTests
 {
-    private readonly IGitRepository _gitRepositoryFake;
+    private readonly IInternalGitRepository _gitRepositoryFake;
 
     public SetLastCommitTests()
     {
-        _gitRepositoryFake = A.Fake<IGitRepository>();
+        _gitRepositoryFake = A.Fake<IInternalGitRepository>();
 
         var gitBranch = GitBranch.Default();
 

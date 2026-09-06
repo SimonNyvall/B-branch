@@ -1,9 +1,9 @@
-using Bbranch.GitService.Base;
+using Bbranch.GitService.GitRepositories;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Shared.Setters;
 
-public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
+public sealed class SetLastCommitOptions(GitRepository gitRepository) : IOption
 {
     public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
@@ -29,7 +29,7 @@ public sealed class SetLastCommitOptions(IGitRepository gitBase) : IOption
                 branchName = branch.SymLink!.Target;
             }
 
-            branchesResultTasks.Add(gitBase.GetLastCommitDate(branch));
+            branchesResultTasks.Add(gitRepository.InternalRepo.GetLastCommitDate(branch));
         }
 
         await Task.WhenAll(

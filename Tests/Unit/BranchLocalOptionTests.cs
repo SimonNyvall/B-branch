@@ -17,7 +17,7 @@ public sealed class BranchLocalOptionTests
             GitBranch.Default().SetBranch(new BranchViewModel("feature/branch", true)),
         };
 
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
 
         A.CallTo(() => gitRepositoryFake.GetLocalBranchNames()).Returns(localBranches);
 
@@ -31,7 +31,7 @@ public sealed class BranchLocalOptionTests
     [Fact]
     public async Task Given_BranchLocalOptions_When_ExecuteRun_Then_Return_EmptyList_IfNoLocalBranches()
     {
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
 
         var branchLocalOptions = new BranchLocalOptions(gitRepositoryFake);
 

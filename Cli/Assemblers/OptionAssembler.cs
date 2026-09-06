@@ -1,33 +1,32 @@
 using Bbranch.CLI.Arguments.FlagSystem;
 using Bbranch.CLI.Arguments.FlagSystem.Flags;
-using Bbranch.GitService.Base;
+using Bbranch.GitService.GitRepositories;
 using Bbranch.GitService.OptionStrategies;
 using Bbranch.GitService.OptionStrategies.Common;
-using Bbranch.GitService.OptionStrategies.Common.BranchStrategies;
 using Bbranch.GitService.OptionStrategies.Common.ContainsStrategies;
 using Bbranch.GitService.OptionStrategies.Common.SortStrategies;
 using Bbranch.GitService.OptionStrategies.Shared.Setters;
 using Bbranch.GitService.OptionStrategies.Shared.Strategies;
-using Bbranch.Shared.TableData;
 
-namespace Bbranch.CLI;
+namespace Bbranch.Cli.Assemblers;
 
-public static class BranchTableAssembler
+public static class OptionAssembler
 {
-    private static IGitRepository _gitRepository = null!;
+    private static GitRepository _gitRepository = null!;
     internal static CompositeOptionStrategy _optionStrategies = null!;
 
-    internal static async Task<List<GitBranch>> AssembleBranchTable(
-        IGitRepository gitRepository,
+    public static CompositeOptionStrategy AssembleOptions(
+        GitRepository gitRepository,
         FlagCollection arguments
     )
     {
         _gitRepository = gitRepository;
 
-        List<IOption> options = CreateOptions(arguments);
+        List<IOption> options = [];
         _optionStrategies = new CompositeOptionStrategy(options);
 
         AddLastCommitOption();
+        AddStatusOption();
         AddWorkingBranchOption();
         AddDescriptionOption();
         AddTrackOption(arguments);
@@ -36,39 +35,19 @@ public static class BranchTableAssembler
         AddPrintTopOption(arguments);
         AddWorktreeOption();
 
-        return await _optionStrategies.Execute([]);
-    }
-
-    private static List<IOption> CreateOptions(FlagCollection arguments)
-    {
-        List<IOption> options = [];
-
-        if (arguments.Contains<AllFlag>())
-        {
-            IOption allOption = new BranchAllOptions(_gitRepository);
-            options.Add(allOption);
-
-            return options;
-        }
-
-        if (arguments.Contains<RemoteFlag>())
-        {
-            IOption remoteOption = new BranchRemoteOptions(_gitRepository);
-            options.Add(remoteOption);
-
-            return options;
-        }
-
-        IOption localOption = new BranchLocalOptions(_gitRepository);
-        options.Add(localOption);
-
-        return options;
+        return _optionStrategies;
     }
 
     private static void AddLastCommitOption()
     {
         IOption lastCommitOption = new SetLastCommitOptions(_gitRepository);
         _optionStrategies.AddStrategyOption(lastCommitOption);
+    }
+
+    private static void AddStatusOption()
+    {
+        IOption statusOption = new StatusOption(_gitRepository);
+        _optionStrategies.AddStrategyOption(statusOption);
     }
 
     private static void AddContainsOptions(FlagCollection arguments)

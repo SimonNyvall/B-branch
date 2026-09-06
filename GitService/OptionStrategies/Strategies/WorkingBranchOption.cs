@@ -1,13 +1,13 @@
-using Bbranch.GitService.Base;
+using Bbranch.GitService.GitRepositories;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.GitService.OptionStrategies.Common;
 
-public sealed class WorkingBranchOption(IGitRepository _gitRepository) : IOption
+public sealed class WorkingBranchOption(GitRepository _gitRepository) : IOption
 {
     public async Task<List<GitBranch>> Execute(List<GitBranch> branches)
     {
-        string workingBranchName = await _gitRepository.GetWorkingBranch();
+        string workingBranchName = await _gitRepository.InternalRepo.GetWorkingBranch();
 
         if (string.IsNullOrEmpty(workingBranchName))
         {

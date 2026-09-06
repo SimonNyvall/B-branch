@@ -17,7 +17,7 @@ public sealed class WorkingBranchOptionTests
             GitBranch.Default().SetBranch(new BranchViewModel("feature", false)),
         };
 
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
         A.CallTo(() => gitRepositoryFake.GetWorkingBranch()).Returns("main");
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);
@@ -33,7 +33,7 @@ public sealed class WorkingBranchOptionTests
     {
         List<GitBranch> branches = [];
 
-        var gitRepositoryFake = A.Fake<IGitRepository>();
+        var gitRepositoryFake = A.Fake<IInternalGitRepository>();
         A.CallTo(() => gitRepositoryFake.GetWorkingBranch()).Returns("main");
 
         var workingBranchOption = new WorkingBranchOption(gitRepositoryFake);

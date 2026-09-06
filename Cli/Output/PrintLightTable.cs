@@ -1,4 +1,7 @@
 using System.Text;
+using Bbranch.Cli.Assemblers;
+using Bbranch.GitService.GitRepositories;
+using Bbranch.GitService.OptionStrategies;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
@@ -12,54 +15,75 @@ public class PrintLightTable
         _pager = pager;
     }
 
-    public void Print(List<GitBranch> branches, string? lessCommandPath)
+    public async Task Print(
+        CompositeOptionStrategy compositeOptionStrategy,
+        string? lessCommandPath,
+        GitRepository gitRepository,
+        BranchScope scope
+    )
     {
-        if (branches.Count == 0)
-        {
-            return;
-        }
+        Console.OutputEncoding = Encoding.UTF8;
 
-        var output = BuildOutput(branches);
+        var batchSize = GetWindowHeight();
+        var batch = BranchAssembler.AssembleBranches(
+            compositeOptionStrategy,
+            gitRepository,
+            scope,
+            batchSize
+        );
+
+        var output = BuildOutput(batch);
 
         if (string.IsNullOrEmpty(lessCommandPath))
         {
-            Console.Write(output);
+            await foreach (var line in output)
+            {
+                Console.Write(line);
+            }
+
             return;
         }
 
-        _pager.StartLess(output, lessCommandPath);
+        await _pager.StartLess(output, lessCommandPath);
     }
 
-    private static string BuildOutput(List<GitBranch> branches)
+    private static async IAsyncEnumerable<string> BuildOutput(
+        IAsyncEnumerable<List<GitBranch>> batch
+    )
     {
         var stringBuilder = new StringBuilder();
-        const string reset = "\x1b[0m";
-        const string green = "\x1b[32m";
-        const string red = "\x1b[31m";
-        const string blue = "\x1b[36m";
 
-        var longestBranchName = branches.Max(x => x.Branch.Name.Length);
-
-        foreach (var branch in branches)
+        await foreach (var branches in batch)
         {
-            if (branch.Branch.IsWorkingBranch)
+            foreach (var branch in branches)
             {
-                stringBuilder.AppendLine($"* {green}{branch.Branch.Name}{reset}");
-            }
-            else if (branch.IsRemote)
-            {
-                stringBuilder.AppendLine($"  {red}{branch.Branch.Name}{reset}");
-            }
-            else if (branch.IsCheckoutWorktree)
-            {
-                stringBuilder.AppendLine($"+ {blue}{branch.Branch.Name}{reset}");
-            }
-            else
-            {
-                stringBuilder.AppendLine($"  {branch.Branch.Name}");
-            }
-        }
+                if (branch.Branch.IsWorkingBranch)
+                {
+                    stringBuilder.Append(
+                        $"* {Constants.green}{branch.Branch.Name}{Constants.reset}"
+                    );
+                }
+                else if (branch.IsRemote)
+                {
+                    stringBuilder.Append($"  {Constants.red}{branch.Branch.Name}{Constants.reset}");
+                }
+                else if (branch.IsCheckoutWorktree)
+                {
+                    stringBuilder.Append(
+                        $"+ {Constants.blue}{branch.Branch.Name}{Constants.reset}"
+                    );
+                }
+                else
+                {
+                    stringBuilder.Append($"  {branch.Branch.Name}");
+                }
 
-        return stringBuilder.ToString();
+                stringBuilder.Append('\n');
+            }
+
+            yield return stringBuilder.ToString();
+        }
     }
+
+    private static int GetWindowHeight() => Console.WindowHeight;
 }

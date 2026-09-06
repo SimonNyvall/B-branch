@@ -1,14 +1,14 @@
 using Bbranch.Shared.TableData;
 
-namespace Bbranch.GitService.Base;
+namespace Bbranch.GitService.GitRepositories;
 
-public interface IGitRepository
+public interface IInternalGitRepository
 {
     Task<string> GetWorkingBranch();
 
-    Task<List<GitBranch>> GetLocalBranchNames();
+    IAsyncEnumerable<List<GitBranch>> GetLocalBranchNames(int batchSize);
 
-    Task<List<GitBranch>> GetRemoteBranchNames();
+    IAsyncEnumerable<List<GitBranch>> GetRemoteBranchNames(int batchSize);
 
     Task<List<GitBranch>> GetBranchDescription(List<GitBranch> branches);
 
@@ -19,4 +19,6 @@ public interface IGitRepository
     Task<GitBranch> GetLastCommitDate(GitBranch branchName);
 
     List<GitBranch> StichWorkTreeBranches(List<GitBranch> branches);
+
+    bool IsBranchMerged(string branchName);
 }

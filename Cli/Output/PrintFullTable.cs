@@ -1,4 +1,7 @@
 using System.Text;
+using Bbranch.Cli.Assemblers;
+using Bbranch.GitService.GitRepositories;
+using Bbranch.GitService.OptionStrategies;
 using Bbranch.Shared.TableData;
 
 namespace Bbranch.CLI.Output;
@@ -12,88 +15,111 @@ public class PrintFullTable
         _pager = pager;
     }
 
-    public void Print(List<GitBranch> branches, string? lessCommandPath)
+    public async Task Print(
+        CompositeOptionStrategy compositeOptionStrategy,
+        string? lessCommandPath,
+        GitRepository gitRepository,
+        BranchScope scope
+    )
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.OutputEncoding = Encoding.UTF8;
 
-        var output = BuildOutput(branches);
+        var batchSize = GetWindowHeight();
+        var batch = BranchAssembler.AssembleBranches(
+            compositeOptionStrategy,
+            gitRepository,
+            scope,
+            batchSize
+        );
+
+        var output = BuildOutput(batch);
 
         if (string.IsNullOrEmpty(lessCommandPath))
         {
-            Console.Write(output);
+            await foreach (var line in output)
+            {
+                Console.Write(line);
+            }
+
             return;
         }
 
-        _pager.StartLess(output, lessCommandPath);
+        await _pager.StartLess(output, lessCommandPath);
     }
 
-    private static string BuildOutput(List<GitBranch> branches)
+    private static async IAsyncEnumerable<string> BuildOutput(
+        IAsyncEnumerable<List<GitBranch>> branchBatches
+    )
     {
-        var stringBuilder = new StringBuilder();
-
-        const string reset = "\x1b[0m";
-        const string green = "\x1b[32m";
-        const string red = "\x1b[31m";
-        const string gray = "\x1b[90m";
-        const string blue = "\x1b[36m";
-
         int minWidth = 15;
         int longest = minWidth;
 
-        if (branches.Count > 0)
+        var line =
+            $"\n--------- | ---------- | ----------------- | ----------- | ----------------\n";
+
+        yield return BuildHeaders(longest);
+        yield return line;
+
+        await foreach (var branches in branchBatches)
         {
-            longest = Math.Max(minWidth, branches.Max(x => x.Branch.Name.Length + 2));
+            foreach (var branch in branches)
+            {
+                var stringBuilder = new StringBuilder();
+
+                var ahead = branch.AheadBehind.Ahead.ToString().PadRight(8);
+                var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
+                var name = branch.Branch.Name.PadRight(longest);
+                var lastCommit = PrintFormatter.GetTimePrefix(branch.LastCommit, DateTime.Now);
+                var status = branch.Status.ToString();
+                var desc = branch.Description ?? "";
+                var mergeRequestUrl = branch.MergeRequestUrl;
+
+                stringBuilder.Append(" ");
+                stringBuilder.Append(ahead);
+                stringBuilder.Append(" |  ");
+                stringBuilder.Append(behind);
+                stringBuilder.Append(" | ");
+
+                stringBuilder.Append(lastCommit.PadRight(18));
+                stringBuilder.Append("|  ");
+
+                stringBuilder.Append(
+                    string.IsNullOrEmpty(mergeRequestUrl)
+                        ? status.PadRight(11)
+                        : HyperLink(status, mergeRequestUrl).PadRight(11)
+                );
+
+                stringBuilder.Append("| ");
+
+                if (branch.Branch.IsWorkingBranch)
+                {
+                    stringBuilder.Append($"{Constants.green} {name}{Constants.reset}");
+                }
+                else if (branch.IsRemote)
+                {
+                    stringBuilder.Append($"{Constants.red} {name}{Constants.reset}");
+                }
+                else if (branch.IsCheckoutWorktree)
+                {
+                    stringBuilder.Append($"{Constants.blue} {name}{Constants.reset}");
+                }
+                else
+                {
+                    stringBuilder.Append($" {name}");
+                }
+
+                stringBuilder.Append($"{Constants.gray}{desc}{Constants.reset}");
+
+                stringBuilder.AppendLine();
+
+                yield return stringBuilder.ToString();
+            }
         }
+    }
 
-        var line = $"--------- | ---------- | {new string('-', longest)} | ---------------";
-
-        stringBuilder.AppendLine(BuildHeaders(longest));
-        stringBuilder.AppendLine(line);
-
-        if (branches.Count == 0)
-        {
-            return stringBuilder.ToString();
-        }
-
-        foreach (var branch in branches)
-        {
-            var ahead = branch.AheadBehind.Ahead.ToString().PadRight(8);
-            var behind = branch.AheadBehind.Behind.ToString().PadRight(9);
-            var name = branch.Branch.Name.PadRight(longest);
-            var lastCommit = PrintFormatter.GetTimePrefix(branch.LastCommit, DateTime.Now);
-            var desc = branch.Description ?? "";
-
-            stringBuilder.Append(" ");
-            stringBuilder.Append(ahead);
-            stringBuilder.Append(" |  ");
-            stringBuilder.Append(behind);
-            stringBuilder.Append(" | ");
-
-            if (branch.Branch.IsWorkingBranch)
-            {
-                stringBuilder.Append($"{green} {name}{reset}");
-            }
-            else if (branch.IsRemote)
-            {
-                stringBuilder.Append($"{red} {name}{reset}");
-            }
-            else if (branch.IsCheckoutWorktree)
-            {
-                stringBuilder.Append($"{blue} {name}{reset}");
-            }
-            else
-            {
-                stringBuilder.Append($" {name}");
-            }
-
-            stringBuilder.Append("|  ");
-            stringBuilder.Append(lastCommit.PadRight(20));
-            stringBuilder.Append($"{gray}{desc}{reset}");
-
-            stringBuilder.AppendLine();
-        }
-
-        return stringBuilder.ToString();
+    private static string HyperLink(string text, string url)
+    {
+        return $"\x1b]8;;{url}\x1b\\{text}\x1b]8;;\x1b\\";
     }
 
     private static string BuildHeaders(int longest)
@@ -112,9 +138,10 @@ public class PrintFullTable
             ? $"Branch name {branchIcon}".PadRight(longest)
             : "Branch name".PadRight(longest);
 
+        // TODO: fix the nerd font header for status
         string line = isUsingNerdFonts
-            ? $"{yellow} Ahead {aheadIcon}  {reset}|{yellow}  Behind {behindIcon}  {reset}|{yellow}  {branchHeader}{reset}|{yellow}  Last commit {commitIcon} {reset}"
-            : $"{yellow} Ahead    {reset}|{yellow}  Behind    {reset}|{yellow}  {branchHeader}{reset}|{yellow}  Last commit   {reset}";
+            ? $"{yellow} Ahead {aheadIcon}  {reset}|{yellow}  Behind {behindIcon}  |{yellow}  Last commit {commitIcon} {reset}"
+            : $"{yellow} Ahead    {reset}|{yellow}  Behind    {reset}|{yellow}  Last commit   {reset}   |  {yellow}Status{reset}     | {yellow} {branchHeader}{reset}";
 
         return line;
     }
@@ -132,5 +159,11 @@ public class PrintFullTable
         string[] gitConfigLines = File.ReadAllLines(gitConfigPath);
 
         return gitConfigLines.Any(line => line.Contains("\tuseNerdFonts = true"));
+    }
+
+    private static int GetWindowHeight()
+    {
+        const int headerHeight = 2;
+        return Console.WindowHeight - headerHeight;
     }
 }
